@@ -210,21 +210,21 @@ SEARCH & FILTER
 
                 </a>
 
-                <a href="{% url 'services:salary_export_excel' %}" class="btn btn-success">
+                <a href="{% url 'services:salary_export_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">
 
-                    <i class="bi bi-file-earmark-excel"></i>
+    <i class="bi bi-file-earmark-excel"></i>
 
-                    Export Excel
+    Export Excel
 
-                </a>
+</a>
 
-                <a href="{% url 'services:salary_export_pdf' %}" class="btn btn-danger">
+                <a href="{% url 'services:salary_export_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger">
 
-                    <i class="bi bi-file-earmark-pdf"></i>
+    <i class="bi bi-file-earmark-pdf"></i>
 
-                    Export PDF
+    Export PDF
 
-                </a>
+</a>
 
             </div>
 

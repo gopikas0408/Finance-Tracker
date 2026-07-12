@@ -300,6 +300,54 @@ def delete_expense(request, id):
 
     return redirect("expenses:expense_list")
 
+# =====================================================
+# FILTERED EXPENSE QUERY
+# =====================================================
+
+def get_filtered_expenses(request):
+
+    expenses = Expense.objects.all().order_by("-id")
+
+    search = request.GET.get("search")
+
+    payment_mode = request.GET.get("payment_mode")
+
+    expense_date = request.GET.get("expense_date")
+
+    if search:
+
+        expenses = expenses.filter(
+
+            Q(expense_name__icontains=search)
+
+            |
+
+            Q(description__icontains=search)
+
+            |
+
+            Q(payment_mode__icontains=search)
+
+        )
+
+    if payment_mode:
+
+        expenses = expenses.filter(
+
+            payment_mode=payment_mode
+
+        )
+
+    if expense_date:
+
+        expenses = expenses.filter(
+
+            expense_date=expense_date
+
+        )
+
+    return expenses
+
 def export_expense_excel(request):
 
     workbook = openpyxl.Workbook()
@@ -316,7 +364,7 @@ def export_expense_excel(request):
         "Expense Date",
     ])
 
-    expenses = Expense.objects.all()
+    expenses = get_filtered_expenses(request)
 
     for expense in expenses:
 
@@ -393,7 +441,7 @@ def export_expense_pdf(request):
 
     ]]
 
-    expenses = Expense.objects.all().order_by("-id")
+    expenses = get_filtered_expenses(request)
 
     for index, expense in enumerate(expenses, start=1):
 

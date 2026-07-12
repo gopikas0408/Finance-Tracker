@@ -20,21 +20,21 @@ PAGE HEADER
 
     <div class="page-actions">
 
-    <a href="{% url 'export_transaction_excel' %}" class="btn btn-success">
+    <a href="{% url 'export_transaction_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">
 
-        <i class="bi bi-file-earmark-excel"></i>
+    <i class="bi bi-file-earmark-excel"></i>
 
-        Export Excel
+    Export Excel
 
-    </a>
+</a>
 
-    <a href="{% url 'export_transaction_pdf' %}" class="btn btn-danger">
+<a href="{% url 'export_transaction_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger">
 
-        <i class="bi bi-file-earmark-pdf"></i>
+    <i class="bi bi-file-earmark-pdf"></i>
 
-        Export PDF
+    Export PDF
 
-    </a>
+</a>
 
 </div>
 </div>

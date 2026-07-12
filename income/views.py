@@ -418,6 +418,50 @@ def delete_income(request, id):
 
     return redirect("income_list")
 
+
+
+def get_filtered_income(request):
+
+    incomes = Income.objects.all().order_by("-id")
+
+    search = request.GET.get("search")
+    payment_mode = request.GET.get("payment_mode")
+    received_date = request.GET.get("received_date")
+
+    if search:
+
+        incomes = incomes.filter(
+
+            Q(income_source__source_name__icontains=search)
+
+            |
+
+            Q(description__icontains=search)
+
+            |
+
+            Q(payment_mode__icontains=search)
+
+        )
+
+    if payment_mode:
+
+        incomes = incomes.filter(
+
+            payment_mode=payment_mode
+
+        )
+
+    if received_date:
+
+        incomes = incomes.filter(
+
+            received_date=received_date
+
+        )
+
+    return incomes
+
 # =====================================================
 # EXPORT INCOME EXCEL
 # =====================================================
@@ -453,7 +497,7 @@ def export_income_excel(request):
 
         cell.font = Font(bold=True)
 
-    incomes = Income.objects.all().order_by("-id")
+    incomes = get_filtered_income(request)
 
     for index, income in enumerate(incomes, start=1):
 
@@ -507,7 +551,7 @@ def export_income_pdf(request):
         "Date",
     ]]
 
-    incomes = Income.objects.all().order_by("-id")
+    incomes = get_filtered_income(request)
 
     for income in incomes:
 

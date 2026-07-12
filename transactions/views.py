@@ -265,6 +265,73 @@ def view_transaction(request, id):
         context,
 
     )
+    
+# =====================================================
+# FILTER TRANSACTIONS
+# =====================================================
+
+def get_filtered_transactions(request):
+
+    transactions = Transaction.objects.all().order_by("-created_at")
+
+    search = request.GET.get("search", "").strip()
+
+    if search == "None":
+        search = ""
+
+    transaction_type = request.GET.get("transaction_type")
+
+    status = request.GET.get("status")
+
+    source_module = request.GET.get("source_module")
+
+    payment_mode = request.GET.get("payment_mode")
+
+    # ===============================
+    # Search
+    # ===============================
+
+    if search:
+
+        transactions = transactions.filter(
+
+            Q(transaction_id__icontains=search)
+
+            |
+
+            Q(reference__icontains=search)
+
+        )
+
+    # ===============================
+    # Filters
+    # ===============================
+
+    if transaction_type:
+
+        transactions = transactions.filter(
+            transaction_type=transaction_type
+        )
+
+    if status:
+
+        transactions = transactions.filter(
+            status=status
+        )
+
+    if source_module:
+
+        transactions = transactions.filter(
+            source_module=source_module
+        )
+
+    if payment_mode:
+
+        transactions = transactions.filter(
+            payment_mode=payment_mode
+        )
+
+    return transactions
 # =====================================================
 # EXPORT TRANSACTION EXCEL
 # =====================================================
@@ -307,7 +374,7 @@ def export_transaction_excel(request):
 
         cell.font = Font(bold=True)
 
-    transactions = Transaction.objects.all().order_by("-created_at")
+    transactions = get_filtered_transactions(request)
 
     for transaction in transactions:
 
@@ -400,8 +467,8 @@ def export_transaction_pdf(request):
 
     ]]
 
-    transactions = Transaction.objects.all().order_by("-created_at")
-
+    transactions = get_filtered_transactions(request)
+    
     for transaction in transactions:
 
         data.append([

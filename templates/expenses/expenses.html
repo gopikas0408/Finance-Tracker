@@ -33,21 +33,21 @@ PAGE HEADER
 
         </a>
 
-        <a href="{% url 'expenses:export_expense_excel' %}" class="btn btn-primary">
+        <a href="{% url 'expenses:export_expense_excel' %}?{{ request.GET.urlencode }}" class="btn btn-primary">
 
-            <i class="bi bi-download"></i>
+    <i class="bi bi-download"></i>
 
-            Export Excel
+    Export Excel
 
-        </a>
+</a>
 
-        <a href="{% url 'expenses:export_expense_pdf' %}" class="btn btn-danger">
+        <a href="{% url 'expenses:export_expense_pdf' %}?{{ request.GET.urlencode }}" class="btn btn-danger">
 
-            <i class="bi bi-file-earmark-pdf"></i>
+    <i class="bi bi-file-earmark-pdf"></i>
 
-            Export PDF
+    Export PDF
 
-        </a>
+</a>
 
     </div>
 

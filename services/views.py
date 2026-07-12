@@ -1482,6 +1482,36 @@ def delete_salary(request, id):
 
     )
     
+# ======================================================
+# FILTER SALARY
+# ======================================================
+
+def get_filtered_salary(request):
+
+    salaries = EmployeeSalary.objects.select_related(
+        "project"
+    ).all().order_by("-id")
+
+    search = request.GET.get("search")
+
+    if search:
+
+        salaries = salaries.filter(
+
+            Q(employee_name__icontains=search)
+
+            |
+
+            Q(employee_id__icontains=search)
+
+            |
+
+            Q(project__project_name__icontains=search)
+
+        )
+
+    return salaries
+    
 def salary_export_excel(request):
 
     workbook = Workbook()
@@ -1502,9 +1532,7 @@ def salary_export_excel(request):
         "Payment Status"
     ])
 
-    salaries = EmployeeSalary.objects.select_related(
-        "project"
-    ).all().order_by("-id")
+    salaries = get_filtered_salary(request)
 
     for salary in salaries:
 
@@ -1569,9 +1597,7 @@ def salary_export_pdf(request):
         "Status"
     ]]
 
-    salaries = EmployeeSalary.objects.select_related(
-        "project"
-    ).all().order_by("-id")
+    salaries = get_filtered_salary(request)
 
     for salary in salaries:
 
