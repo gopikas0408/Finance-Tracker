@@ -1,0 +1,402 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Student Management{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+PAGE HEADER
+========================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Student Management</h2>
+
+        <p>Manage all training students efficiently.</p>
+
+    </div>
+
+    <div class="page-actions">
+
+        <a href="{% url 'add_student' %}" class="btn btn-success">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add Student
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+SUMMARY CARDS
+========================================== -->
+
+<div class="dashboard-cards">
+
+    <div class="dashboard-card revenue">
+
+        <div class="card-icon">
+
+            <i class="bi bi-people-fill"></i>
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Total Students</h5>
+
+            <h2>{{ total_students }}</h2>
+
+            <p>Registered Students</p>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card profit">
+
+        <div class="card-icon">
+
+            <i class="bi bi-person-check-fill"></i>
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Active Students</h5>
+
+            <h2>{{ active_students }}</h2>
+
+            <p>Currently Active</p>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card target">
+
+        <div class="card-icon">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Completed</h5>
+
+            <h2>{{ completed_students }}</h2>
+
+            <p>Course Completed</p>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card expense">
+
+        <div class="card-icon">
+
+            <i class="bi bi-currency-rupee"></i>
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Pending Fees</h5>
+
+            <h2>₹ {{ pending_fee }}</h2>
+
+            <p>Total Balance</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+TRAINING NAVIGATION
+========================================== -->
+
+<div class="service-nav">
+
+    <a href="{% url 'course_list' %}" class="service-link {% if active_page == 'courses' %}active{% endif %}">
+        📚 Courses
+    </a>
+
+    <a href="{% url 'student_list' %}" class="service-link {% if active_page == 'students' %}active{% endif %}">
+        👨‍🎓 Students
+    </a>
+
+    <a href="{% url 'payment_list' %}" class="service-link {% if active_page == 'payments' %}active{% endif %}">
+        💳 Payments
+    </a>
+
+</div>
+
+<!-- ==========================================
+SEARCH
+========================================== -->
+
+<div class="filter-card">
+
+    <form method="GET">
+
+        <div class="filter-grid">
+
+            <div class="filter-group">
+
+                <label>Search Student</label>
+
+                <input type="text" name="search" value="{{ search }}" placeholder="Student Name" maxlength="100"
+                    autocomplete="off">
+
+            </div>
+
+            <div class="filter-buttons">
+
+                <button class="btn btn-success">
+
+                    <i class="bi bi-search"></i>
+
+                    Search
+
+                </button>
+
+                <a href="{% url 'student_list' %}" class="btn btn-secondary">
+
+                    Reset
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<!-- ==========================================
+STUDENT TABLE
+========================================== -->
+
+<div class="dashboard-table">
+
+    <div class="box-header">
+
+        <h3>Student List</h3>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Course</th>
+                <th>Phone</th>
+                <th>Total Fee</th>
+                <th>Status</th>
+                <th class="text-center">Actions</th>
+
+            </tr>
+
+        </thead>
+
+
+
+        <tbody>
+
+            {% for student in students %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>
+
+                    {% if student.photo %}
+
+                    <img src="{{ student.photo.url }}" class="table-avatar" alt="Student">
+
+                    {% else %}
+
+                    <div class="default-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <strong>{{ student.student_name }}</strong>
+
+                </td>
+
+                <td>
+
+                    {{ student.course.course_name }}
+
+                </td>
+
+                <td>
+
+                    {{ student.phone }}
+
+                </td>
+
+                <td>
+
+                    ₹ {{ student.course_fee }}
+
+                </td>
+
+               
+
+                <td>
+
+                    {% if student.status == "Active" %}
+
+                    <span class="badge bg-success">
+
+                        Active
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-secondary">
+
+                        {{ student.status }}
+
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td class="text-center">
+
+                    <a href="{% url 'view_student' student.id %}" class="btn btn-sm btn-info">
+
+                        <i class="bi bi-eye"></i>
+
+                    </a>
+
+                    <a href="{% url 'edit_student' student.id %}" class="btn btn-sm btn-warning">
+
+                        <i class="bi bi-pencil-square"></i>
+
+                    </a>
+
+                    <a href="{% url 'delete_student' student.id %}" class="btn btn-sm btn-danger">
+
+                        <i class="bi bi-trash"></i>
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="10" class="text-center">
+
+                    No Students Found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+<!-- ==========================================
+DELETE MODAL
+========================================== -->
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Delete Student
+
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                Are you sure you want to delete this student?
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+                <a id="deleteLink" href="#" class="btn btn-danger">
+
+                    Delete
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll(".delete-btn").forEach(function (button) {
+
+            button.addEventListener("click", function () {
+
+                document.getElementById("deleteLink").href =
+                    this.dataset.url;
+
+            });
+
+        });
+
+    });
+
+</script>
+{% endblock %}

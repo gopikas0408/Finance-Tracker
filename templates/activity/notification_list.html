@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+
+<!-- ========================================== -->
+<!-- PAGE HEADER -->
+<!-- ========================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Notifications</h2>
+
+        <p>View all real-time ERP notifications.</p>
+
+    </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- SUMMARY CARDS -->
+<!-- ========================================== -->
+
+<div class="dashboard-cards">
+
+    <div class="dashboard-card revenue">
+
+        <div class="card-icon">
+
+            🔔
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Total Notifications</h5>
+
+            <h2>{{ total_notifications }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card profit">
+
+        <div class="card-icon">
+
+            🟢
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Read</h5>
+
+            <h2>{{ read_notifications }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card expense">
+
+        <div class="card-icon">
+
+            🔴
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Unread</h5>
+
+            <h2>{{ unread_notifications }}</h2>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- FILTER -->
+<!-- ========================================== -->
+
+<div class="filter-card">
+
+    <form method="GET">
+
+        <div class="filter-grid">
+
+            <div class="filter-group">
+
+                <label>Search</label>
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Title or Module">
+
+            </div>
+
+            <div class="filter-buttons">
+
+                <button class="btn btn-success">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+<!-- ===================================== -->
+<!-- NAVIGATION -->
+<!-- ===================================== -->
+
+<div class="service-nav">
+
+    <a href="{% url 'notification_list' %}"
+        class="service-link {% if active_activity == 'notifications' %}active{% endif %}">
+
+        🔔 Notifications
+
+        </a>
+
+        <a href="{% url 'activity_history' %}"
+            class="service-link {% if active_activity == 'history' %}active{% endif %}">
+
+            📜 Activity History
+
+        </a>
+
+        <a href="{% url 'reminder_list' %}"
+            class="service-link {% if active_activity == 'reminders' %}active{% endif %}">
+
+            ⏰ Reminders
+
+        </a>
+
+        <a href="{% url 'target_list' %}" class="service-link {% if active_activity == 'targets' %}active{% endif %}">
+
+            🎯 Targets
+
+        </a>
+
+        <a href="{% url 'achievement_list' %}"
+            class="service-link {% if active_activity == 'achievements' %}active{% endif %}">
+
+            🏆 Achievements
+
+        </a>
+
+</div>
+
+
+<!-- ========================================== -->
+<!-- TABLE -->
+<!-- ========================================== -->
+
+<div class="dashboard-table">
+
+    <div class="box-header">
+
+        <h3>Notification List</h3>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Title</th>
+
+                <th>Module</th>
+
+                <th>Action</th>
+
+                <th>Priority</th>
+
+                <th>Status</th>
+
+                <th>Date & Time</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for notification in notifications %}
+
+            <tr>
+
+                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+
+                <td>
+
+                    <strong>
+
+                        {{ notification.title }}
+
+                    </strong>
+
+                    <br>
+
+                    <small>
+
+                        {{ notification.message }}
+
+                    </small>
+
+                </td>
+
+                <td>
+
+                    {{ notification.module }}
+
+                </td>
+
+                <td>
+
+                    {{ notification.action }}
+
+                </td>
+
+                <td>
+
+                    {% if notification.priority == "Critical" %}
+
+                        <span class="badge bg-danger">
+
+                            Critical
+
+                        </span>
+
+                    {% elif notification.priority == "High" %}
+
+                        <span class="badge bg-warning">
+
+                            High
+
+                        </span>
+
+                    {% elif notification.priority == "Medium" %}
+
+                        <span class="badge bg-primary">
+
+                            Medium
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-secondary">
+
+                            Low
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if notification.is_read %}
+
+                        <span class="badge bg-success">
+
+                            Read
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger">
+
+                            Unread
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {{ notification.created_at }}
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="7" align="center">
+
+                    No Notifications Found
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+<div class="pagination-container">
+
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    {% endif %}
+
+    {% for page in page_obj.paginator.page_range %}
+
+        {% if page == page_obj.number %}
+
+            <span class="page-btn active">{{ page }}</span>
+
+        {% else %}
+
+            <a href="?page={{ page }}" class="page-btn">{{ page }}</a>
+
+        {% endif %}
+
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-right"></i>
+    </a>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}Monthly Targets{% endblock %}
+
+{% block content %}
+
+<!-- ========================================== -->
+<!-- PAGE HEADER -->
+<!-- ========================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Monthly Targets</h2>
+
+        <p>Track income, expense and profit goals.</p>
+
+    </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- SUMMARY CARDS -->
+<!-- ========================================== -->
+
+<div class="dashboard-cards">
+
+    <div class="dashboard-card revenue">
+
+        <div class="card-icon">
+            🎯
+        </div>
+
+        <div class="card-content">
+
+            <h5>Total Targets</h5>
+
+            <h2>{{ total_targets }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card profit">
+
+        <div class="card-icon">
+            💰
+        </div>
+
+        <div class="card-content">
+
+            <h5>Income Goal</h5>
+
+            <h2>₹{{ total_income_target|floatformat:2 }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card expense">
+
+        <div class="card-icon">
+            💸
+        </div>
+
+        <div class="card-content">
+
+            <h5>Expense Limit</h5>
+
+            <h2>₹{{ total_expense_limit|floatformat:2 }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card target">
+
+        <div class="card-icon">
+            📈
+        </div>
+
+        <div class="card-content">
+
+            <h5>Profit Goal</h5>
+
+            <h2>₹ {{ total_profit_target|floatformat:2 }}</h2>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ===================================== -->
+<!-- NAVIGATION -->
+<!-- ===================================== -->
+
+<div class="service-nav">
+
+    <a href="{% url 'notification_list' %}"
+        class="service-link {% if active_activity == 'notifications' %}active{% endif %}">
+
+        🔔 Notifications
+
+        </a>
+
+        <a href="{% url 'activity_history' %}"
+            class="service-link {% if active_activity == 'history' %}active{% endif %}">
+
+            📜 Activity History
+
+        </a>
+
+        <a href="{% url 'reminder_list' %}"
+            class="service-link {% if active_activity == 'reminders' %}active{% endif %}">
+
+            ⏰ Reminders
+
+        </a>
+
+        <a href="{% url 'target_list' %}" class="service-link {% if active_activity == 'targets' %}active{% endif %}">
+
+            🎯 Targets
+
+        </a>
+
+        <a href="{% url 'achievement_list' %}"
+            class="service-link {% if active_activity == 'achievements' %}active{% endif %}">
+
+            🏆 Achievements
+
+        </a>
+
+</div>
+
+<!-- ========================================== -->
+<!-- TARGET TABLE -->
+<!-- ========================================== -->
+
+<div class="dashboard-table">
+
+    <div class="box-header">
+
+        <h3>Monthly Target List</h3>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>#</th>
+
+                <th>Month</th>
+
+                <th>Income Target</th>
+
+                <th>Expense Limit</th>
+
+                <th>Profit Goal</th>
+
+                <th>Status</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for target in targets %}
+
+        <tr>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+
+            <td>
+
+                {{ target.month }} {{ target.year }}
+
+            </td>
+
+            <td>
+
+                ₹ {{ target.income_target }}
+
+            </td>
+
+            <td>
+
+                ₹ {{ target.expense_limit }}
+
+            </td>
+
+            <td>
+
+                ₹ {{ target.profit_target }}
+
+            </td>
+
+            <td>
+
+                <span class="badge bg-success">
+
+                    Active
+
+                </span>
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="5" align="center">
+
+                No Monthly Target Found
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- ==========================================
+TARGET PROGRESS
+========================================== -->
+
+<div class="dashboard-box">
+
+    <h3>Target Progress</h3>
+
+    <br>
+
+    {% for target in targets %}
+
+    <!-- Income -->
+
+    <label>
+        <strong>
+            Income Target
+            (₹ {{ current_income|floatformat:2 }} /
+            ₹ {{ target.income_target|floatformat:2 }})
+        </strong>
+    </label>
+
+    <div class="progress">
+
+        <div
+            class="progress-bar bg-success"
+            role="progressbar"
+            style="width: {{ target.income_progress }}%;">
+
+            {{ target.income_progress|floatformat:0 }}%
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- Expense -->
+
+    <label>
+        <strong>
+            Expense Limit
+            (₹ {{ current_expense|floatformat:2 }} /
+            ₹ {{ target.expense_limit|floatformat:2 }})
+        </strong>
+    </label>
+
+    <div class="progress">
+
+        <div
+            class="progress-bar bg-danger"
+            role="progressbar"
+            style="width: {{ target.expense_progress }}%;">
+
+            {{ target.expense_progress|floatformat:0 }}%
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- Profit -->
+
+    <label>
+        <strong>
+            Profit Goal
+            (₹ {{ current_profit|floatformat:2 }} /
+            ₹ {{ target.profit_goal|floatformat:2 }})
+        </strong>
+    </label>
+
+    <div class="progress">
+
+        <div
+            class="progress-bar bg-primary"
+            role="progressbar"
+            style="width: {{ target.profit_progress }}%;">
+
+            {{ target.profit_progress|floatformat:0 }}%
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

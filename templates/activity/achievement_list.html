@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}Achievements{% endblock %}
+
+{% block content %}
+
+<!-- ========================================== -->
+<!-- PAGE HEADER -->
+<!-- ========================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Achievements</h2>
+
+        <p>Celebrate milestones and business achievements.</p>
+
+    </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- SUMMARY CARDS -->
+<!-- ========================================== -->
+
+<div class="dashboard-cards">
+
+    <div class="dashboard-card revenue">
+
+        <div class="card-icon">
+            🏆
+        </div>
+
+        <div class="card-content">
+
+            <h5>Total Achievements</h5>
+
+            <h2>{{ total_achievements }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card profit">
+
+        <div class="card-icon">
+            🎯
+        </div>
+
+        <div class="card-content">
+
+            <h5>Monthly Targets</h5>
+
+            <h2>{{ monthly_targets }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card expense">
+
+        <div class="card-icon">
+            💰
+        </div>
+
+        <div class="card-content">
+
+            <h5>Revenue Milestones</h5>
+
+            <h2>{{ revenue_milestones }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card target">
+
+        <div class="card-icon">
+            ⭐
+        </div>
+
+        <div class="card-content">
+
+            <h5>Business Awards</h5>
+
+            <h2>{{ business_awards }}</h2>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ===================================== -->
+<!-- NAVIGATION -->
+<!-- ===================================== -->
+
+<div class="service-nav">
+
+    <a href="{% url 'notification_list' %}"
+        class="service-link {% if active_activity == 'notifications' %}active{% endif %}">
+
+        🔔 Notifications
+
+    </a>
+
+    <a href="{% url 'activity_history' %}" class="service-link {% if active_activity == 'history' %}active{% endif %}">
+
+        📜 Activity History
+
+    </a>
+
+    <a href="{% url 'reminder_list' %}" class="service-link {% if active_activity == 'reminders' %}active{% endif %}">
+
+        ⏰ Reminders
+
+    </a>
+
+    <a href="{% url 'target_list' %}" class="service-link {% if active_activity == 'targets' %}active{% endif %}">
+
+        🎯 Targets
+
+    </a>
+
+    <a href="{% url 'achievement_list' %}"
+        class="service-link {% if active_activity == 'achievements' %}active{% endif %}">
+
+        🏆 Achievements
+
+    </a>
+
+</div>
+
+
+<!-- ========================================== -->
+<!-- ACHIEVEMENT TABLE -->
+<!-- ========================================== -->
+
+<div class="dashboard-table">
+
+    <div class="box-header">
+
+        <h3>Achievement History</h3>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Achievement</th>
+
+                <th>Description</th>
+
+                <th>Date</th>
+
+                <th>Status</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for achievement in achievements %}
+
+            <tr>
+
+                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+
+                <td>{{ achievement.title }}</td>
+
+                <td>{{ achievement.description }}</td>
+
+                <td>{{ achievement.achieved_date }}</td>
+
+                <td>
+
+                    <span class="badge bg-success">
+
+                        {{ achievement.status }}
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5" class="text-center">
+
+                    No Achievements Yet
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+<div class="pagination-container">
+
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    {% endif %}
+
+    {% for page in page_obj.paginator.page_range %}
+
+        {% if page == page_obj.number %}
+
+            <span class="page-btn active">{{ page }}</span>
+
+        {% else %}
+
+            <a href="?page={{ page }}" class="page-btn">{{ page }}</a>
+
+        {% endif %}
+
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-right"></i>
+    </a>
+    {% endif %}
+
+</div>
+<!-- ========================================== -->
+<!-- UPCOMING MILESTONES -->
+<!-- ========================================== -->
+
+<div class="dashboard-box">
+
+    <h3>Upcoming Milestones</h3>
+
+    <br>
+
+    <ul>
+
+        <li>🎯 Reach Monthly Income Target</li>
+
+        <li>💰 Complete ₹1,00,000 Revenue</li>
+
+        <li>👨‍🎓 Register 100 Students</li>
+
+        <li>💼 Complete 50 Projects</li>
+
+        <li>📈 Reach 25% Profit Growth</li>
+
+    </ul>
+
+</div>
+
+{% endblock %}

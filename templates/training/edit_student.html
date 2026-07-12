@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Student{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Edit Student</h2>
+
+        <p>Update student information.</p>
+
+    </div>
+
+    <div>
+
+        <a href="{% url 'student_list' %}" class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+<div class="dashboard-box">
+
+    <form method="POST"
+      enctype="multipart/form-data"
+      id="studentForm"
+      novalidate>
+
+        {% csrf_token %}
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+    <label>Student Name</label>
+
+    {{ form.student_name }}
+
+    <small class="text-danger">
+
+        {{ form.student_name.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Email</label>
+
+    {{ form.email }}
+
+    <small class="text-danger">
+
+        {{ form.email.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Phone</label>
+
+    {{ form.phone }}
+
+    <small class="text-danger">
+
+        {{ form.phone.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Gender</label>
+
+    {{ form.gender }}
+
+    <small class="text-danger">
+
+        {{ form.gender.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Date of Birth</label>
+
+    {{ form.date_of_birth }}
+
+    <small class="text-danger">
+
+        {{ form.date_of_birth.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Course</label>
+
+    {{ form.course }}
+
+    <small class="text-danger">
+
+        {{ form.course.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Admission Date</label>
+
+    {{ form.admission_date }}
+
+    <small class="text-danger">
+
+        {{ form.admission_date.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Paid Amount</label>
+
+    {{ form.paid_amount }}
+
+    <small class="text-danger">
+
+        {{ form.paid_amount.errors|striptags }}
+
+    </small>
+
+</div>
+            <div class="col-md-6 mb-3">
+
+    <label>Status</label>
+
+    {{ form.status }}
+
+    <small class="text-danger">
+
+        {{ form.status.errors|striptags }}
+
+    </small>
+
+</div>            </div>
+
+           <div class="col-md-6 mb-3">
+
+    <label>Student Photo</label>
+
+    {{ form.photo }}
+
+    <small class="text-danger">
+
+        {{ form.photo.errors|striptags }}
+
+    </small>
+
+</div>
+
+           <div class="col-md-12 mb-3">
+
+    <label>Address</label>
+
+    {{ form.address }}
+
+    <small class="text-danger">
+
+        {{ form.address.errors|striptags }}
+
+    </small>
+
+</div>
+
+        </div>
+
+        <hr>
+
+        <button type="submit" class="btn btn-warning">
+
+            <i class="bi bi-check-circle"></i>
+
+            Update Student
+
+        </button>
+
+        <a href="{% url 'student_list' %}" class="btn btn-secondary">
+
+            Cancel
+
+        </a>
+
+    </form>
+
+</div>
+<script>
+
+document.getElementById("studentForm").addEventListener("submit", function(e){
+
+    let name = document.getElementById("id_student_name");
+    let email = document.getElementById("id_email");
+    let phone = document.getElementById("id_phone");
+    let dob = document.getElementById("id_date_of_birth");
+    let admission = document.getElementById("id_admission_date");
+    let paid = document.getElementById("id_paid_amount");
+    let address = document.getElementById("id_address");
+
+    // Student Name
+
+    if(name.value.trim().length < 3){
+
+        alert("Student name must contain at least 3 characters.");
+
+        name.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Email
+
+    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(!emailRegex.test(email.value)){
+
+        alert("Enter a valid email address.");
+
+        email.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Phone
+
+    if(!/^\d{10}$/.test(phone.value)){
+
+        alert("Phone number must contain exactly 10 digits.");
+
+        phone.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Age
+
+    let today = new Date();
+
+    let birth = new Date(dob.value);
+
+    let age = today.getFullYear() - birth.getFullYear();
+
+    if(age < 15){
+
+        alert("Student must be at least 15 years old.");
+
+        dob.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Admission Date
+
+    let admissionDate = new Date(admission.value);
+
+    if(admissionDate > today){
+
+        alert("Admission date cannot be in the future.");
+
+        admission.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Paid Amount
+
+    if(Number(paid.value) < 0){
+
+        alert("Paid amount cannot be negative.");
+
+        paid.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Address
+
+    if(address.value.length > 500){
+
+        alert("Address cannot exceed 500 characters.");
+
+        address.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+});
+
+
+// Photo Validation
+
+document.getElementById("id_photo").addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(file){
+
+        if(file.size > 2 * 1024 * 1024){
+
+            alert("Photo size must be less than 2 MB.");
+
+            this.value = "";
+
+            return;
+
+        }
+
+        const allowed = [
+            "image/jpeg",
+            "image/png",
+            "image/jpg",
+            "image/webp"
+        ];
+
+        if(!allowed.includes(file.type)){
+
+            alert("Only JPG, JPEG, PNG and WEBP images are allowed.");
+
+            this.value = "";
+
+            return;
+
+        }
+
+    }
+
+});
+
+</script>
+{% endblock %}

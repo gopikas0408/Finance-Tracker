@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Details{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Student Details</h2>
+
+        <p>View complete student information.</p>
+
+    </div>
+
+    <div>
+
+        <a href="{% url 'student_list' %}" class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+<div class="dashboard-box">
+
+    <div class="row">
+
+        <div class="col-md-3 text-center">
+
+            {% if student.photo %}
+
+                <img src="{{ student.photo.url }}"
+                     class="img-fluid rounded-circle"
+                     width="180">
+
+            {% else %}
+
+                <img src="https://ui-avatars.com/api/?name={{ student.student_name }}&size=180"
+                     class="img-fluid rounded-circle">
+
+            {% endif %}
+
+        </div>
+
+        <div class="col-md-9">
+
+            <table class="table table-bordered">
+
+                <tr>
+
+                    <th width="30%">Student Name</th>
+
+                    <td>{{ student.student_name }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Email</th>
+
+                    <td>{{ student.email }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Phone</th>
+
+                    <td>{{ student.phone }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Gender</th>
+
+                    <td>{{ student.gender }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Date of Birth</th>
+
+                    <td>{{ student.date_of_birth }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Course</th>
+
+                    <td>{{ student.course.course_name }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Admission Date</th>
+
+                    <td>{{ student.admission_date }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Course Fee</th>
+
+                    <td>₹ {{ student.course_fee }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Paid Amount</th>
+
+                    <td>₹ {{ student.paid_amount }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Balance Amount</th>
+
+                    <td>₹ {{ student.balance_amount }}</td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Status</th>
+
+                    <td>
+
+                        {% if student.status == "Active" %}
+
+                            <span class="badge bg-success">
+
+                                Active
+
+                            </span>
+
+                        {% elif student.status == "Completed" %}
+
+                            <span class="badge bg-primary">
+
+                                Completed
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Dropped
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <th>Address</th>
+
+                    <td>{{ student.address }}</td>
+
+                </tr>
+
+            </table>
+
+            <a href="{% url 'edit_student' student.id %}"
+               class="btn btn-warning">
+
+                <i class="bi bi-pencil-square"></i>
+
+                Edit Student
+
+            </a>
+
+            <a href="{% url 'student_list' %}"
+               class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

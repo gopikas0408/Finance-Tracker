@@ -1,0 +1,923 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- ======================================================
+                    DASHBOARD HEADER
+====================================================== -->
+
+<div class="dashboard-header">
+
+    <div>
+
+        <h2>
+            Hello,
+            {{ request.user.username }} 👋
+        </h2>
+
+        <p>
+
+            Welcome to your Finance Tracker Dashboard.
+
+        </p>
+
+    </div>
+
+    <div class="dashboard-actions">
+
+        <a href="{% url 'add_income' %}" class="btn btn-income">
+            <i class="bi bi-plus-circle"></i> Add Income
+        </a>
+
+        <a href="{% url 'expenses:add_expense' %}" class="btn btn-expense">
+            <i class="bi bi-dash-circle"></i> Add Expense
+        </a>
+
+        
+    </div>
+
+</div>
+
+{% if reminder_count > 0 %}
+
+<div class="alert alert-warning">
+
+    <h5>🔔 Today's Reminders ({{ reminder_count }})</h5>
+
+    <ul>
+
+    {% for reminder in today_reminders %}
+
+        <li>
+            <strong>{{ reminder.title }}</strong><br>
+            {{ reminder.message }}
+        </li>
+
+    {% endfor %}
+
+    </ul>
+
+</div>
+
+{% endif %}
+
+<!-- ======================================================
+                    KPI CARDS
+====================================================== -->
+
+<div class="dashboard-cards">
+
+    <div class="dashboard-card income-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-cash-stack"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Total Income</span>
+
+            <h2>
+
+                ₹ {{ total_income }}
+
+            </h2>
+
+            <small>
+
+                Monthly ₹ {{ monthly_income }}
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card expense-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-wallet2"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Total Expense</span>
+
+            <h2>
+
+                ₹ {{ total_expense }}
+
+            </h2>
+
+            <small>
+
+                Monthly ₹ {{ monthly_expense }}
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card profit-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-graph-up-arrow"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Net Profit</span>
+
+            <h2>
+
+                ₹ {{ net_profit }}
+
+            </h2>
+
+            <small>
+
+                Overall Profit
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card target-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-bullseye"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Monthly Target</span>
+
+            <h2>
+
+                ₹ {{ monthly_target }}
+
+            </h2>
+
+            <small>
+
+                Current Target
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card student-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-mortarboard-fill"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Students</span>
+
+            <h2>
+
+                {{ total_students }}
+
+            </h2>
+
+            <small>
+
+                Registered
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card client-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-buildings"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Clients</span>
+
+            <h2>
+
+                {{ total_clients }}
+
+            </h2>
+
+            <small>
+
+                Active Clients
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card project-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-kanban-fill"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Projects</span>
+
+            <h2>
+
+                {{ total_projects }}
+
+            </h2>
+
+            <small>
+
+                Active {{ active_projects }}
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card transaction-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-arrow-left-right"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Transactions</span>
+
+            <h2>
+
+                {{ total_transactions }}
+
+            </h2>
+
+            <small>
+
+                Today {{ today_transactions }}
+
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ======================================================
+                ANALYTICS SECTION
+====================================================== -->
+
+<div class="dashboard-grid">
+
+    <!-- Income vs Expense -->
+
+    <div class="dashboard-box chart-box">
+
+        <div class="box-header">
+
+            <h3>
+
+                <i class="bi bi-graph-up-arrow"></i>
+
+                Income vs Expense
+
+            </h3>
+
+            <select id="chartFilter" class="form-select">
+
+    <option value="month"
+    {% if selected_filter == "month" %}
+    selected
+    {% endif %}
+    >
+    This Month
+    </option>
+
+    <option value="last_month"
+    {% if selected_filter == "last_month" %}
+    selected
+    {% endif %}
+    >
+    Last Month
+    </option>
+
+    <option value="year"
+    {% if selected_filter == "year" %}
+    selected
+    {% endif %}
+    >
+    This Year
+    </option>
+
+    <option value="week"
+    {% if selected_filter == "week" %}
+    selected
+    {% endif %}
+    >
+    This Week
+    </option>
+
+</select>
+
+        </div>
+
+        <canvas id="incomeExpenseChart" height="120"></canvas>
+
+    </div>
+
+    <!-- Expense Category -->
+
+    <div class="dashboard-box chart-box">
+
+        <div class="box-header">
+
+            <h3>
+
+                <i class="bi bi-pie-chart-fill"></i>
+
+                Expense Categories
+
+            </h3>
+
+        </div>
+
+        <canvas id="expenseChart" height="230"></canvas>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+                    TODAY SUMMARY
+====================================================== -->
+
+<div class="today-summary">
+
+    <div class="summary-card">
+
+        <i class="bi bi-cash-stack"></i>
+
+        <div>
+
+            <span>Today's Income</span>
+
+            <h3>
+
+                ₹ {{ today_income }}
+
+            </h3>
+
+        </div>
+
+    </div>
+
+    <div class="summary-card">
+
+        <i class="bi bi-wallet-fill"></i>
+
+        <div>
+
+            <span>Today's Expense</span>
+
+            <h3>
+
+                ₹ {{ today_expense }}
+
+            </h3>
+
+        </div>
+
+    </div>
+
+    <div class="summary-card">
+
+        <i class="bi bi-arrow-left-right"></i>
+
+        <div>
+
+            <span>Transactions</span>
+
+            <h3>
+
+                {{ today_transactions }}
+
+            </h3>
+
+        </div>
+
+    </div>
+
+    <div class="summary-card">
+
+        <i class="bi bi-bullseye"></i>
+
+        <div>
+
+            <span>Monthly Target</span>
+
+            <h3>
+
+                ₹ {{ monthly_target }}
+
+            </h3>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+        TARGET + TRANSACTIONS + ACTIVITIES
+====================================================== -->
+
+<div class="dashboard-bottom-grid">
+
+    <!-- =======================
+            TARGET
+    ======================== -->
+
+    <div class="dashboard-box">
+
+        <div class="box-header">
+
+            <h3>
+                <i class="bi bi-bullseye"></i>
+                Monthly Target
+            </h3>
+
+        </div>
+
+        <div class="progress dashboard-progress">
+
+            <div class="progress-bar bg-success" style="width:{{ target_progress }}%;">
+                {{ target_progress }}%
+            </div>
+
+        </div>
+
+        <div class="progress-details">
+
+            <div class="summary-card">
+
+                <h5>Target</h5>
+
+                <h2>₹ {{ monthly_target }}</h2>
+
+            </div>
+
+            <div class="summary-card">
+
+                <h5>Current Profit</h5>
+
+                <h2>₹ {{ net_profit }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =======================
+        RECENT TRANSACTIONS
+    ======================== -->
+
+    <div class="dashboard-box">
+
+        <div class="box-header">
+
+            <h3>
+
+                <i class="bi bi-arrow-left-right"></i>
+
+                Recent Transactions
+
+            </h3>
+
+            <a href="{% url 'transaction_list' %}" class="mini-btn">
+                View
+            </a>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table dashboard-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for transaction in recent_transactions %}
+
+                    <tr>
+
+                        <td>{{ transaction.transaction_id }}</td>
+
+                        <td>{{ transaction.transaction_type }}</td>
+
+                        <td>₹ {{ transaction.amount }}</td>
+
+                        <td>
+
+                            {% if transaction.status == "Success" %}
+
+                            <span class="badge bg-success">
+
+                                {{ transaction.status }}
+
+                            </span>
+
+                            {% elif transaction.status == "Pending" %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                {{ transaction.status }}
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-danger">
+
+                                {{ transaction.status }}
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center">
+
+                            No Transactions
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- =======================
+        RECENT ACTIVITIES
+    ======================== -->
+
+    <div class="dashboard-box">
+
+        <div class="box-header">
+
+            <h3>
+
+                <i class="bi bi-activity"></i>
+
+                Recent Activities
+
+            </h3>
+
+            <a href="{% url 'activity_center' %}" class="mini-btn">
+
+                View
+
+            </a>
+
+        </div>
+
+        <div class="notification-list">
+
+            {% for activity in recent_activities %}
+
+            <div class="notification-item">
+
+                <div class="notification-icon">
+
+                    <i class="bi bi-activity"></i>
+
+                </div>
+
+                <div class="notification-content">
+
+                    <h5>{{ activity.title }}</h5>
+
+                    <p>{{ activity.description }}</p>
+
+                    <small>{{ activity.created_at|timesince }} ago</small>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="text-center py-5">
+
+                No Recent Activities
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ======================================================
+        QUICK ACTIONS + SERVICES + TRAINING + BUDGET
+====================================================== -->
+
+<div class="dashboard-bottom-grid dashboard-four-grid">
+
+    <!-- Quick Actions -->
+
+    <div class="dashboard-box">
+
+        <div class="box-header">
+            <h3><i class="bi bi-lightning-fill"></i> Quick Actions</h3>
+        </div>
+
+        <div class="quick-actions-grid">
+
+            <a href="{% url 'add_income' %}" class="quick-action income-action">
+                <i class="bi bi-cash-stack"></i>
+                <span>Add Income</span>
+            </a>
+
+            <a href="{% url 'expenses:add_expense' %}" class="quick-action expense-action">
+                <i class="bi bi-wallet2"></i>
+                <span>Add Expense</span>
+            </a>
+
+            <a href="{% url 'services:add_project' %}" class="quick-action project-action">
+                <i class="bi bi-kanban-fill"></i>
+                <span>Add Project</span>
+            </a>
+
+            <a href="{% url 'add_student' %}" class="quick-action student-action">
+                <i class="bi bi-mortarboard-fill"></i>
+                <span>Add Student</span>
+            </a>
+
+            <a href="{% url 'activity_center' %}" class="quick-action report-action">
+                <i class="bi bi-file-earmark-bar-graph"></i>
+                <span>Activity</span>
+            </a>
+
+            <a href="{% url 'transaction_list' %}" class="quick-action transaction-action">
+                <i class="bi bi-arrow-left-right"></i>
+                <span>Transactions</span>
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- IT Services -->
+
+    <div class="dashboard-box">
+
+        <div class="box-header">
+
+            <h3><i class="bi bi-briefcase-fill"></i> IT Services</h3>
+
+            <a href="/services/" class="mini-btn">View</a>
+
+        </div>
+
+        <div class="summary-list">
+
+            <div class="summary-item">
+                <span>Total Clients</span>
+                <strong>{{ total_clients }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Total Projects</span>
+                <strong>{{ total_projects }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Active Projects</span>
+                <strong>{{ active_projects }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Completed Projects</span>
+                <strong>{{ completed_projects }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Revenue</span>
+                <strong>₹ {{ project_revenue }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- IT Training -->
+
+    <div class="dashboard-box">
+
+        <div class="box-header">
+
+            <h3><i class="bi bi-mortarboard-fill"></i> IT Training</h3>
+
+            <a href="{% url 'student_list' %}" class="mini-btn">View</a>
+
+        </div>
+
+        <div class="summary-list">
+
+            <div class="summary-item">
+                <span>Total Students</span>
+                <strong>{{ total_students }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Total Courses</span>
+                <strong>{{ total_courses }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Fees Collected</span>
+                <strong>₹ {{ fees_collected }}</strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Pending Fees</span>
+                <strong>₹ {{ pending_fees }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ======================================================
+                BUDGET OVERVIEW
+====================================================== -->
+
+    <div class="dashboard-box">
+
+        <div class="box-header">
+
+            <h3>
+
+                <i class="bi bi-bar-chart-fill"></i>
+
+                Budget Overview
+
+            </h3>
+
+        </div>
+
+        <!-- Revenue -->
+
+        <div class="budget-item">
+
+            <div class="d-flex justify-content-between mb-2">
+
+                <span>Revenue</span>
+
+                <strong>₹ {{ total_income }}</strong>
+
+            </div>
+
+            <div class="progress dashboard-progress">
+
+                <div class="progress-bar bg-success" style="width:{{ revenue_progress }}%;">
+
+                    {{ revenue_progress }}%
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Expense -->
+
+        <div class="budget-item mt-4">
+
+            <div class="d-flex justify-content-between mb-2">
+
+                <span>Expenses</span>
+
+                <strong>₹ {{ total_expense }}</strong>
+
+            </div>
+
+            <div class="progress dashboard-progress">
+
+                <div class="progress-bar bg-danger" style="width:{{ expense_progress }}%;">
+
+                    {{ expense_progress }}%
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Profit -->
+
+        <div class="budget-item mt-4">
+
+            <div class="d-flex justify-content-between mb-2">
+
+                <span>Net Profit</span>
+
+                <strong>₹ {{ net_profit }}</strong>
+
+            </div>
+
+            <div class="progress dashboard-progress">
+
+                <div class="progress-bar bg-primary" style="width:{{ profit_progress }}%;">
+
+                    {{ profit_progress }}%
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- ======================================
+        CHART DATA FROM DJANGO
+======================================= -->
+
+    <script>
+
+        const incomeLabels = {{ week_labels|safe }};
+
+        const incomeValues = {{ weekly_income_values|safe }};
+
+        const expenseValues = {{ weekly_expense_values|safe }};
+
+        const expenseCategoryLabels = {{ expense_category_labels| safe }};
+
+        const expenseCategoryValues = {{ expense_category_values| safe }};
+
+    </script>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+
+    {% endblock %}

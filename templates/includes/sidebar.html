@@ -1,0 +1,121 @@
+{% load static %}
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+
+        <button class="toggle-btn" id="menu-btn">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                💰
+            </div>
+
+            <div class="brand-text">
+
+                <h2>Finance Tracker</h2>
+
+                <span>Startup Finance ERP</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="menu-title">
+        MAIN MENU
+    </div>
+
+    <ul class="sidebar-menu">
+
+        <li>
+            <a href="/dashboard/" class="{% if '/dashboard/' in request.path %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/income/" class="{% if '/income/' in request.path %}active{% endif %}">
+                <i class="bi bi-cash-stack"></i>
+                <span>Income</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/expenses/" class="{% if '/expenses/' in request.path %}active{% endif %}">
+                <i class="bi bi-wallet2"></i>
+                <span>Expenses</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/services/" class="{% if '/services/' in request.path %}active{% endif %}">
+                <i class="bi bi-briefcase"></i>
+                <span>IT Services</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/training/" class="{% if '/training/' in request.path %}active{% endif %}">
+                <i class="bi bi-mortarboard"></i>
+                <span>IT Training</span>
+            </a>
+        </li>
+
+       <li>
+            <a href="/transactions/" class="{% if '/transactions/' in request.path %}active{% endif %}">
+                <i class="bi bi-arrow-left-right"></i>
+                <span>Transactions</span>
+            </a>
+        </li> 
+
+        <!-- Activity Center -->
+        <li>
+            <a href="/activity/" class="{% if '/activity/' in request.path %}active{% endif %}">
+                <i class="bi bi-activity"></i>
+                <span>Activity Center</span>
+            </a>
+        </li>
+
+      <!--  <li>
+            <a href="/reports/" class="{% if '/reports/' in request.path %}active{% endif %}">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>Reports</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/settings/" class="{% if '/settings/' in request.path %}active{% endif %}">
+                <i class="bi bi-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li> -->
+
+    </ul>
+
+    <div class="sidebar-footer">
+
+        <a href="/admin/">
+
+            <i class="bi bi-person-circle"></i>
+
+            <span>{{ request.user.username }}</span>
+
+        </a>
+
+        <a href="/logout/">
+
+            <i class="bi bi-box-arrow-right"></i>
+
+            <span>Logout</span>
+
+        </a>
+
+    </div>
+
+</aside>

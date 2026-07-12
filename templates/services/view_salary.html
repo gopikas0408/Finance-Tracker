@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}View Employee Salary{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+PAGE HEADER
+========================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Employee Salary Details</h2>
+
+        <p>View complete employee salary information.</p>
+
+    </div>
+
+    <div class="page-actions">
+
+        <a href="{% url 'services:salary_list' %}"
+           class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+SALARY DETAILS
+========================================== -->
+
+<div class="form-card">
+
+    <div class="details-grid">
+
+        <div class="detail-item">
+
+            <label>Employee ID</label>
+
+            <p>{{ salary.employee_id }}</p>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Employee Name</label>
+
+            <p>{{ salary.employee_name }}</p>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Project</label>
+
+            <p>{{ salary.project.project_name }}</p>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Salary Month</label>
+
+            <p>{{ salary.salary_month }}</p>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Basic Salary</label>
+
+            <p>₹ {{ salary.basic_salary|floatformat:2 }}</p>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Bonus</label>
+
+            <p>₹ {{ salary.bonus|floatformat:2 }}</p>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Deduction</label>
+
+            <p>₹ {{ salary.deduction|floatformat:2 }}</p>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Net Salary</label>
+
+            <p>
+
+                <strong class="text-success">
+
+                    ₹ {{ salary.net_salary|floatformat:2 }}
+
+                </strong>
+
+            </p>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Payment Status</label>
+
+            <p>
+
+                {% if salary.payment_status == "Paid" %}
+
+                    <span class="badge bg-success">
+
+                        Paid
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-warning text-dark">
+
+                        Pending
+
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Payment Date</label>
+
+            <p>{{ salary.payment_date }}</p>
+
+        </div>
+
+    </div>
+
+    <div class="form-buttons">
+
+        <a href="{% url 'services:edit_salary' salary.id %}"
+           class="btn btn-warning">
+
+            <i class="bi bi-pencil-square"></i>
+
+            Edit Salary
+
+        </a>
+
+        <a href="{% url 'services:salary_list' %}"
+           class="btn btn-secondary">
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

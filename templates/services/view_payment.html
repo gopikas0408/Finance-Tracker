@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}View Payment{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Payment Details</h2>
+
+        <p>View complete payment information.</p>
+
+    </div>
+
+    <a href="{% url 'services:service_payment_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="dashboard-box">
+
+    <div class="details-grid">
+
+        <div class="detail-item">
+
+            <label>Project</label>
+
+            <h5>{{ payment.project.project_name }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Client</label>
+
+            <h5>{{ payment.project.client.company_name }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Amount</label>
+
+            <h5>₹ {{ payment.amount }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Payment Mode</label>
+
+            <h5>{{ payment.payment_mode }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Payment Date</label>
+
+            <h5>{{ payment.payment_date }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Created Date</label>
+
+            <h5>{{ payment.created_at|date:"d M Y" }}</h5>
+
+        </div>
+
+    </div>
+
+    <div class="detail-item mt-4">
+
+        <label>Remarks</label>
+
+        <div class="description-box">
+
+            {{ payment.remarks|default:"No Remarks Available" }}
+
+        </div>
+
+    </div>
+
+    <div class="form-buttons mt-4">
+
+        <a href="{% url 'services:edit_payment' payment.id %}"
+
+           class="btn btn-warning">
+
+            <i class="bi bi-pencil-square"></i>
+
+            Edit Payment
+
+        </a>
+
+        <a href="{% url 'services:service_payment_list' %}"
+
+           class="btn btn-secondary">
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

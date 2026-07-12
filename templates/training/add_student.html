@@ -1,0 +1,458 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Student{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+PAGE HEADER
+========================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Add Student</h2>
+
+        <p>Register a new training student.</p>
+
+    </div>
+
+    <div>
+
+        <a href="{% url 'student_list' %}" class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+FORM
+========================================== -->
+
+<div class="dashboard-box">
+
+    <form method="POST" enctype="multipart/form-data" id="studentForm" novalidate>
+
+        {% csrf_token %}
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+                <label>Student Name</label>
+
+                {{ form.student_name }}
+
+                <small class="text-danger">
+
+                    {{ form.student_name.errors|striptags }}
+
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Email</label>
+
+                {{ form.email }}
+
+                <small class="text-danger">
+
+                    {{ form.email.errors|striptags }}
+
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Phone</label>
+
+                {{ form.phone }}
+
+                <small class="text-danger">
+
+                    {{ form.phone.errors|striptags }}
+
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Gender</label>
+
+                {{ form.gender }}
+
+                <small class="text-danger">
+
+                    {{ form.gender.errors|striptags }}
+
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Date of Birth</label>
+
+                {{ form.date_of_birth }}
+
+                <small class="text-danger">
+
+                    {{ form.date_of_birth.errors|striptags }}
+
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Course</label>
+
+                <select name="course" id="id_course" class="form-select">
+
+                    <option value="">Select Course</option>
+
+                    {% for course in form.fields.course.queryset %}
+                    <option value="{{ course.id }}" data-fee="{{ course.course_fee }}"
+                        data-trainer="{{ course.trainer_name }}">
+                        {{ course.course_name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+                <small class="text-danger">
+
+                    {{ form.course.errors|striptags }}
+
+                </small>
+
+            </div>
+            <div class="col-md-6 mb-3">
+
+                <label>Trainer Name</label>
+
+                {{ form.trainer_name }}
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Course Fee</label>
+
+                {{ form.course_fee }}
+
+            </div>
+            
+
+            <div class="col-md-6 mb-3">
+
+                <label>Admission Date</label>
+
+                {{ form.admission_date }}
+
+                <small class="text-danger">
+
+                    {{ form.admission_date.errors|striptags }}
+
+                </small>
+
+            </div>
+
+
+
+
+
+            <div class="col-md-6 mb-3">
+
+                <label>Status</label>
+
+                {{ form.status }}
+
+                <small class="text-danger">
+
+                    {{ form.status.errors|striptags }}
+
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Student Photo</label>
+
+                {{ form.photo }}
+
+                <small class="text-danger">
+
+                    {{ form.photo.errors|striptags }}
+
+                </small>
+
+            </div>
+
+            <div class="col-md-12 mb-3">
+
+                <label>Address</label>
+
+                {{ form.address }}
+
+                <small class="text-danger">
+
+                    {{ form.address.errors|striptags }}
+
+                </small>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <button type="submit" class="btn btn-success">
+
+            <i class="bi bi-check-circle"></i>
+
+            Save Student
+
+        </button>
+
+        <a href="{% url 'student_list' %}" class="btn btn-secondary">
+
+            Cancel
+
+        </a>
+
+    </form>
+
+</div>
+<script>
+
+// ==========================================
+// ELEMENTS
+// ==========================================
+
+const form = document.getElementById("studentForm");
+
+const name = document.getElementById("id_student_name");
+const email = document.getElementById("id_email");
+const phone = document.getElementById("id_phone");
+const dob = document.getElementById("id_date_of_birth");
+const admission = document.getElementById("id_admission_date");
+const course = document.getElementById("id_course");
+const trainer = document.getElementById("id_trainer_name");
+const fee = document.getElementById("id_course_fee");
+const paid = document.getElementById("id_paid_amount");
+const balance = document.getElementById("id_balance_amount");
+const address = document.getElementById("id_address");
+const photo = document.getElementById("id_photo");
+
+// ==========================================
+// PHONE - ONLY 10 DIGITS
+// ==========================================
+
+phone.addEventListener("input", function () {
+
+    this.value = this.value.replace(/\D/g, "");
+
+    if (this.value.length > 10) {
+
+        this.value = this.value.slice(0, 10);
+
+    }
+
+});
+
+// ==========================================
+// COURSE CHANGE
+// ==========================================
+
+function calculateBalance() {
+
+    let total = parseFloat(fee.value) || 0;
+
+    let paidAmt = parseFloat(paid.value) || 0;
+
+    balance.value = (total - paidAmt).toFixed(2);
+
+}
+
+if (course) {
+
+    course.addEventListener("change", function () {
+
+        const option = this.options[this.selectedIndex];
+
+        trainer.value = option.dataset.trainer || "";
+
+        fee.value = option.dataset.fee || "";
+
+        calculateBalance();
+
+    });
+
+}
+
+paid.addEventListener("input", calculateBalance);
+
+// ==========================================
+// PHOTO VALIDATION
+// ==========================================
+
+photo.addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+
+        alert("Photo size must be less than 2 MB.");
+
+        this.value = "";
+
+    }
+
+});
+
+// ==========================================
+// FORM VALIDATION
+// ==========================================
+
+form.addEventListener("submit", function (e) {
+
+    // Student Name
+
+    if (name.value.trim().length < 3) {
+
+        alert("Student name must contain at least 3 characters.");
+
+        name.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Email
+
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+    if (!emailRegex.test(email.value.trim())) {
+
+        alert("Please enter a valid Email Address.");
+
+        email.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Phone
+
+    if (!/^[6-9]\d{9}$/.test(phone.value.trim())) {
+
+        alert("Phone number must contain exactly 10 digits.");
+
+        phone.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Paid Amount
+
+    if (Number(paid.value) < 0) {
+
+        alert("Paid amount cannot be negative.");
+
+        paid.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Address
+
+    if (address.value.length > 500) {
+
+        alert("Address cannot exceed 500 characters.");
+
+        address.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Date of Birth
+
+    const today = new Date();
+
+    const birth = new Date(dob.value);
+
+    if (birth > today) {
+
+        alert("Future Date of Birth is not allowed.");
+
+        dob.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    const age = today.getFullYear() - birth.getFullYear();
+
+    if (age < 15) {
+
+        alert("Student must be at least 15 years old.");
+
+        dob.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Admission Date
+
+    const todayString = new Date().toISOString().split("T")[0];
+
+    if (admission.value > todayString) {
+
+        alert("Future Admission Date is not allowed.");
+
+        admission.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

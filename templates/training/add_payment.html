@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+
+{% block title %}Receive Payment{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Receive Student Payment</h2>
+
+        <p>Record a new fee payment from a student.</p>
+
+    </div>
+
+    <a href="{% url 'payment_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="dashboard-box">
+
+    <form method="POST" id="paymentForm" novalidate>
+
+        {% csrf_token %}
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+                <label>Student</label>
+
+                {{ form.student }}
+
+                <small class="text-danger">
+                    {{ form.student.errors|striptags }}
+                </small>
+
+            </div>
+            <div class="col-md-6 mb-3">
+
+                <label>Total Fee</label>
+
+                {{ form.course_fee }}
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Already Paid</label>
+
+                {{ form.paid_amount }}
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Balance Amount</label>
+
+                {{ form.balance_amount }}
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Amount</label>
+
+                {{ form.amount }}
+
+                <small class="text-danger">
+                    {{ form.amount.errors|striptags }}
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Payment Mode</label>
+
+                {{ form.payment_mode }}
+
+                <small class="text-danger">
+                    {{ form.payment_mode.errors|striptags }}
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Payment Date</label>
+
+                {{ form.payment_date }}
+
+                <small class="text-danger">
+                    {{ form.payment_date.errors|striptags }}
+                </small>
+
+            </div>
+
+            <div class="col-md-12 mb-3">
+
+                <label>Remarks</label>
+
+                {{ form.remarks }}
+
+                <small class="text-danger">
+                    {{ form.remarks.errors|striptags }}
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="form-buttons">
+
+            <button type="submit" class="btn btn-success">
+
+                <i class="bi bi-check-circle"></i>
+
+                Receive Payment
+
+            </button>
+
+            <a href="{% url 'payment_list' %}" class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+<script>
+
+document.getElementById("paymentForm").addEventListener("submit", function (e) {
+
+    let student = document.getElementById("id_student");
+    let amount = document.getElementById("id_amount");
+    let paymentDate = document.getElementById("id_payment_date");
+    let remarks = document.getElementById("id_remarks");
+    let balance = document.getElementById("id_balance_amount");
+
+    // Student
+
+    if (student.value === "") {
+
+        alert("Please select a student.");
+        student.focus();
+        e.preventDefault();
+        return;
+
+    }
+
+    // Amount
+
+    if (amount.value === "" || Number(amount.value) <= 0) {
+
+        alert("Amount must be greater than zero.");
+        amount.focus();
+        e.preventDefault();
+        return;
+
+    }
+
+    // Don't allow payment more than balance
+
+    if (balance && Number(amount.value) > Number(balance.value)) {
+
+        alert("Payment amount cannot exceed the remaining balance.");
+        amount.focus();
+        e.preventDefault();
+        return;
+
+    }
+
+    // Payment Date
+
+    const today = new Date().toISOString().split("T")[0];
+
+    if (paymentDate.value > today) {
+
+        alert("Future Date is not allowed.");
+        paymentDate.focus();
+        e.preventDefault();
+        return;
+
+    }
+
+    // Remarks
+
+    if (remarks.value.trim().length > 500) {
+
+        alert("Remarks cannot exceed 500 characters.");
+        remarks.focus();
+        e.preventDefault();
+        return;
+
+    }
+
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const totalFee = document.getElementById("id_course_fee");
+    const paidAmount = document.getElementById("id_paid_amount");
+    const balanceAmount = document.getElementById("id_balance_amount");
+    const paymentAmount = document.getElementById("id_amount");
+
+    if (!totalFee || !paidAmount || !balanceAmount || !paymentAmount) {
+        return;
+    }
+
+    function calculateBalance() {
+
+        let total = parseFloat(totalFee.value) || 0;
+        let paid = parseFloat(paidAmount.value) || 0;
+        let current = parseFloat(paymentAmount.value) || 0;
+
+        let remaining = total - paid - current;
+
+        if (remaining < 0) {
+
+            alert("Payment exceeds remaining balance.");
+
+            paymentAmount.value = "";
+
+            remaining = total - paid;
+
+        }
+
+        balanceAmount.value = remaining.toFixed(2);
+
+    }
+
+    paymentAmount.addEventListener("input", calculateBalance);
+
+});
+
+const student = document.getElementById("id_student");
+
+student.addEventListener("change", function () {
+
+    if (!this.value) {
+
+        document.getElementById("id_course_fee").value = "";
+        document.getElementById("id_paid_amount").value = "";
+        document.getElementById("id_balance_amount").value = "";
+
+        return;
+    }
+
+    fetch("/training/student-fee/" + this.value + "/")
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            document.getElementById("id_course_fee").value = data.course_fee;
+
+            document.getElementById("id_paid_amount").value = data.paid_amount;
+
+            document.getElementById("id_balance_amount").value = data.balance_amount;
+
+        });
+
+});
+
+</script>
+{% endblock %}

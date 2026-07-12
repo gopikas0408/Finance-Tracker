@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}View Project Expense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Project Expense Details</h2>
+
+        <p>View complete expense information.</p>
+
+    </div>
+
+    <a href="{% url 'services:expense_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="dashboard-box">
+
+    <div class="details-grid">
+
+        <div class="detail-item">
+
+            <label>Project Name</label>
+
+            <h5>{{ expense.project.project_name }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Expense Name</label>
+
+            <h5>{{ expense.expense_name }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Amount</label>
+
+            <h5>₹ {{ expense.amount }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Expense Date</label>
+
+            <h5>{{ expense.expense_date }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Created Date</label>
+
+            <h5>{{ expense.created_at|date:"d M Y" }}</h5>
+
+        </div>
+
+    </div>
+
+    <div class="detail-item mt-4">
+
+        <label>Remarks</label>
+
+        <div class="description-box">
+
+            {{ expense.remarks|default:"No Remarks Available" }}
+
+        </div>
+
+    </div>
+
+    <div class="form-buttons mt-4">
+
+        <a href="{% url 'services:edit_expense' expense.id %}"
+           class="btn btn-warning">
+
+            <i class="bi bi-pencil-square"></i>
+
+            Edit Expense
+
+        </a>
+
+        <a href="{% url 'services:expense_list' %}"
+           class="btn btn-secondary">
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,388 @@
+/* =====================================================
+                    NAVBAR
+===================================================== */
+
+.navbar{
+    height:80px;
+    background:#fff;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 35px;
+    border-bottom:1px solid #e5e7eb;
+    position:sticky;
+    top:0;
+    z-index:999;
+}
+
+/* =====================================================
+                    LEFT SIDE
+===================================================== */
+
+.navbar-left{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+/* =====================================================
+                    MOBILE MENU
+===================================================== */
+
+.mobile-menu-btn{
+    display:none;
+    width:48px;
+    height:48px;
+    border:none;
+    border-radius:14px;
+    background:#f8fafc;
+    cursor:pointer;
+    font-size:24px;
+    transition:.35s;
+}
+
+.mobile-menu-btn:hover{
+    background:#16a34a;
+    color:#fff;
+}
+
+/* =====================================================
+                    SEARCH BOX
+===================================================== */
+
+.search-box{
+    position:relative;
+    width:430px;
+    height:52px;
+    display:flex;
+    align-items:center;
+    padding:0 18px;
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    transition:.35s;
+}
+
+.search-box:focus-within{
+    border-color:#16a34a;
+    box-shadow:0 0 0 4px rgba(22,163,74,.12);
+}
+
+.search-box i{
+    color:#94a3b8;
+    font-size:18px;
+}
+
+.search-box input{
+    width:100%;
+    height:100%;
+    border:none;
+    outline:none;
+    background:transparent;
+    padding-left:12px;
+    font-size:15px;
+}
+
+.search-box input::placeholder{
+    color:#94a3b8;
+}
+
+/* =====================================================
+                SEARCH RESULTS
+===================================================== */
+
+.search-results{
+    position:absolute;
+    top:58px;
+    left:0;
+    width:100%;
+    background:#fff;
+    border-radius:16px;
+    border:1px solid #e5e7eb;
+    box-shadow:0 18px 40px rgba(0,0,0,.12);
+    display:none;
+    overflow:hidden;
+    z-index:9999;
+}
+
+.search-item{
+    display:block;
+    padding:14px 18px;
+    text-decoration:none;
+    color:#0f172a;
+    transition:.3s;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.search-item:last-child{
+    border-bottom:none;
+}
+
+.search-item:hover{
+    background:#f8fafc;
+}
+
+.search-item h6{
+    margin:0;
+    font-size:14px;
+    font-weight:600;
+}
+
+.search-item p{
+    margin-top:5px;
+    font-size:12px;
+    color:#64748b;
+}
+
+/* =====================================================
+                    RIGHT SIDE
+===================================================== */
+
+.navbar-right{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+/* =====================================================
+                    ICON
+===================================================== */
+
+/* =====================================================
+                NOTIFICATION ICON
+===================================================== */
+
+/* ===========================================
+        NOTIFICATION ICON
+=========================================== */
+
+/* ===========================================
+        NOTIFICATION ICON
+=========================================== */
+
+.nav-icon{
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    text-decoration: none;
+
+    color: #fbde02;   /* Professional Gold */
+
+    font-size: 24px;
+
+    border-radius: 50%;
+
+    transition: all .3s ease;
+
+}
+
+.nav-icon:hover{
+
+    color: #f7eb0e;
+
+    background: #FFF7E6;
+
+    transform: scale(1.08);
+
+}
+
+/* ===========================================
+        NOTIFICATION COUNT
+=========================================== */
+
+.count{
+
+    position:absolute;
+
+    top:-4px;
+
+    right:-8px;
+
+    min-width:19px;
+
+    height:19px;
+
+    padding:0 5px;
+
+    border-radius:999px;
+
+    background:#ef4444;
+
+    color:#fff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    line-height:1;
+
+    border:2px solid #fff;
+
+    box-shadow:0 4px 10px rgba(239,68,68,.35);
+
+}
+
+@keyframes pulse{
+
+0%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.15);
+}
+
+100%{
+transform:scale(1);
+}
+
+}
+
+/* =====================================================
+                PROFILE
+===================================================== */
+
+.profile{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:6px 10px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:.35s;
+    
+}
+
+.profile:hover{
+    background:#f8fafc;
+}
+
+.profile img{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #e5e7eb;
+}
+
+.profile h5{
+    margin:0;
+    font-size:15px;
+    color:#0f172a;
+    font-weight:600;
+}
+
+.profile span{
+    font-size:12px;
+    color:#64748b;
+}
+
+/* =====================================================
+            NOTIFICATION DROPDOWN
+===================================================== */
+
+.notification-dropdown{
+    position:relative;
+}
+
+.notification-menu{
+    position:absolute;
+    top:60px;
+    right:0;
+    width:320px;
+    max-height:350px;
+    overflow-y:auto;
+    background:#fff;
+    border-radius:18px;
+    border:1px solid #e5e7eb;
+    box-shadow:0 20px 45px rgba(0,0,0,.12);
+    display:none;
+    z-index:9999;
+}
+
+.notification-dropdown:hover .notification-menu{
+    display:block;
+}
+
+.notification-row{
+    padding:15px 18px;
+    border-bottom:1px solid #f1f5f9;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.notification-row:last-child{
+    border-bottom:none;
+}
+
+.notification-row:hover{
+    background:#f8fafc;
+}
+
+.notification-row h6{
+    margin:0;
+    font-size:14px;
+    font-weight:600;
+    color:#0f172a;
+}
+
+.notification-row small{
+    display:block;
+    margin-top:5px;
+    color:#64748b;
+    font-size:12px;
+}
+
+/* =====================================================
+                RESPONSIVE
+===================================================== */
+
+@media(max-width:992px){
+
+.mobile-menu-btn{
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.search-box{
+width:260px;
+}
+
+}
+
+@media(max-width:768px){
+
+.navbar{
+padding:0 18px;
+}
+
+.search-box{
+display:none;
+}
+
+.profile div{
+display:none;
+}
+
+.navbar-right{
+gap:12px;
+}
+
+}

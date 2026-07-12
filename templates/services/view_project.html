@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}View Project{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Project Details</h2>
+
+        <p>View complete project information.</p>
+
+    </div>
+
+    <a href="{% url 'services:project_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="dashboard-box">
+
+    <div class="details-grid">
+
+        <div class="detail-item">
+
+            <label>Project Name</label>
+
+            <h5>{{ project.project_name }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Client</label>
+
+            <h5>{{ project.client.company_name }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Service Type</label>
+
+            <h5>{{ project.service_type }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Project Amount</label>
+
+            <h5>₹ {{ project.project_amount }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Start Date</label>
+
+            <h5>{{ project.start_date }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>End Date</label>
+
+            <h5>{{ project.end_date }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Status</label>
+
+            <h5>
+
+                {% if project.status == "Completed" %}
+
+                    <span class="badge bg-success">
+                        Completed
+                    </span>
+
+                {% elif project.status == "In Progress" %}
+
+                    <span class="badge bg-primary">
+                        In Progress
+                    </span>
+
+                {% elif project.status == "Pending" %}
+
+                    <span class="badge bg-warning text-dark">
+                        Pending
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-secondary">
+                        On Hold
+                    </span>
+
+                {% endif %}
+
+            </h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Created Date</label>
+
+            <h5>{{ project.created_at|date:"d M Y" }}</h5>
+
+        </div>
+
+    </div>
+
+    <div class="detail-item mt-4">
+
+        <label>Description</label>
+
+        <div class="description-box">
+
+            {{ project.description|default:"No Description Available" }}
+
+        </div>
+
+    </div>
+
+    <div class="form-buttons mt-4">
+
+        <a href="{% url 'services:edit_project' project.id %}"
+           class="btn btn-warning">
+
+            <i class="bi bi-pencil-square"></i>
+
+            Edit Project
+
+        </a>
+
+        <a href="{% url 'services:project_list' %}"
+           class="btn btn-secondary">
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

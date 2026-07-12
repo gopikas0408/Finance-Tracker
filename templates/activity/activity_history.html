@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}Activity History{% endblock %}
+
+{% block content %}
+
+<!-- ========================================== -->
+<!-- PAGE HEADER -->
+<!-- ========================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Activity History</h2>
+
+        <p>Complete audit trail of all ERP activities.</p>
+
+    </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- SUMMARY CARDS -->
+<!-- ========================================== -->
+
+<div class="dashboard-cards">
+
+    <div class="dashboard-card revenue">
+
+        <div class="card-icon">
+
+            📜
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Total Activities</h5>
+
+            <h2>{{ total_activities }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card profit">
+
+        <div class="card-icon">
+
+            ➕
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Add Actions</h5>
+
+            <h2>{{ add_actions }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card target">
+
+        <div class="card-icon">
+
+            ✏️
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Edit Actions</h5>
+
+            <h2>{{ edit_actions }}</h2>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card expense">
+
+        <div class="card-icon">
+
+            🗑️
+
+        </div>
+
+        <div class="card-content">
+
+            <h5>Delete Actions</h5>
+
+            <h2>{{ delete_actions }}</h2>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- SEARCH -->
+<!-- ========================================== -->
+
+<div class="filter-card">
+
+    <form method="GET">
+
+        <div class="filter-grid">
+
+            <div class="filter-group">
+
+                <label>Search Activity</label>
+
+                <input
+    type="text"
+    name="search"
+    value="{{ search }}"
+    placeholder="Module, Action or Record">
+
+            </div>
+
+            <div class="filter-buttons">
+
+                <button class="btn btn-success">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+<!-- ===================================== -->
+<!-- NAVIGATION -->
+<!-- ===================================== -->
+
+<div class="service-nav">
+
+    <a href="{% url 'notification_list' %}"
+        class="service-link {% if active_activity == 'notifications' %}active{% endif %}">
+
+        🔔 Notifications
+
+        </a>
+
+        <a href="{% url 'activity_history' %}"
+            class="service-link {% if active_activity == 'history' %}active{% endif %}">
+
+            📜 Activity History
+
+        </a>
+
+        <a href="{% url 'reminder_list' %}"
+            class="service-link {% if active_activity == 'reminders' %}active{% endif %}">
+
+            ⏰ Reminders
+
+        </a>
+
+        <a href="{% url 'target_list' %}" class="service-link {% if active_activity == 'targets' %}active{% endif %}">
+
+            🎯 Targets
+
+        </a>
+
+        <a href="{% url 'achievement_list' %}"
+            class="service-link {% if active_activity == 'achievements' %}active{% endif %}">
+
+            🏆 Achievements
+
+        </a>
+
+</div>
+
+
+<!-- ========================================== -->
+<!-- TABLE -->
+<!-- ========================================== -->
+
+<div class="dashboard-table">
+
+    <div class="box-header">
+
+        <h3>Activity History</h3>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>#</th>
+
+                <th>Module</th>
+
+                <th>Action</th>
+
+                <th>Record</th>
+
+                <th>Description</th>
+
+                <th>User</th>
+
+                <th>Date & Time</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for activity in history %}
+
+        <tr>
+
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+
+            <td>{{ activity.module }}</td>
+
+            <td>
+
+                {% if activity.action == "Add" %}
+
+                    <span class="badge bg-success">
+
+                        Add
+
+                    </span>
+
+                {% elif activity.action == "Edit" %}
+
+                    <span class="badge bg-warning">
+
+                        Edit
+
+                    </span>
+
+                {% elif activity.action == "Delete" %}
+
+                    <span class="badge bg-danger">
+
+                        Delete
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-primary">
+
+                        {{ activity.action }}
+
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {{ activity.record_name }}
+
+            </td>
+
+            <td>
+
+                {{ activity.description }}
+
+            </td>
+
+            <td>
+
+                {{ activity.user }}
+
+            </td>
+
+            <td>
+
+                {{ activity.created_at }}
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="7" align="center">
+
+                No Activity Found
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+<div class="pagination-container">
+
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    {% endif %}
+
+    {% for page in page_obj.paginator.page_range %}
+
+        {% if page == page_obj.number %}
+
+            <span class="page-btn active">{{ page }}</span>
+
+        {% else %}
+
+            <a href="?page={{ page }}" class="page-btn">{{ page }}</a>
+
+        {% endif %}
+
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-right"></i>
+    </a>
+    {% endif %}
+
+</div>
+
+{% endblock %}

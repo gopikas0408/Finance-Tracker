@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}View Course{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Course Details</h2>
+
+        <p>View complete course information.</p>
+
+    </div>
+
+    <a href="{% url 'course_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="dashboard-box">
+
+    <table class="table table-bordered">
+
+        <tr>
+
+            <th width="30%">Course Name</th>
+
+            <td>{{ course.course_name }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Duration</th>
+
+            <td>{{ course.duration }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Course Fee</th>
+
+            <td>₹ {{ course.course_fee }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Trainer</th>
+
+            <td>{{ course.trainer_name }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Training Mode</th>
+
+            <td>{{ course.training_mode }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Status</th>
+
+            <td>
+
+                <span class="badge bg-success">
+
+                    {{ course.status }}
+
+                </span>
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>Description</th>
+
+            <td>{{ course.description }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Created On</th>
+
+            <td>{{ course.created_at }}</td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+{% endblock %}

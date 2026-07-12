@@ -1,0 +1,182 @@
+/* ===========================
+   SERVICES NAVIGATION
+=========================== */
+
+.service-nav{
+
+    display:flex;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    margin:25px 0;
+
+}
+
+.service-link{
+
+    flex:1;
+
+    min-width:180px;
+
+    background:#fff;
+
+    border-radius:15px;
+
+    padding:18px;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    color:#222;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.service-link i{
+
+    font-size:28px;
+
+    display:block;
+
+    color:#043b59;
+
+    margin-bottom:10px;
+
+}
+
+.service-link span{
+
+    font-weight:600;
+
+    font-size:16px;
+
+}
+
+.service-link:hover{
+
+    background:#043b59;
+
+    color:#fff;
+
+    transform:translateY(-5px);
+
+}
+
+.service-link:hover i{
+
+    color:#fff;
+
+}
+
+.service-link.active{
+
+    background:#043b59;
+
+    color:#fff;
+
+}
+
+.service-link.active i{
+
+    color:#fff;
+
+}
+/*=========================================
+PAGE ACTIONS
+=========================================*/
+
+.page-actions{
+
+    display:flex;
+
+    gap:18px;
+
+    flex-wrap:wrap;
+
+    align-items:center;
+
+    margin-top:20px;
+
+}
+
+.page-actions .btn{
+
+    min-width:210px;
+
+    height:55px;
+
+    border:none;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:#fff;
+
+    transition:all .3s ease;
+
+    box-shadow:0 8px 18px rgba(0,0,0,.12);
+
+}
+
+.page-actions .btn i{
+
+    font-size:20px;
+
+}
+
+.page-actions .btn:hover{
+
+    transform:translateY(-3px);
+
+    color:#fff;
+
+    box-shadow:0 12px 24px rgba(0,0,0,.18);
+
+}
+
+/*==========================
+ADD BUTTON
+==========================*/
+
+.page-actions .btn-success{
+
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+
+}
+
+/*==========================
+EXCEL BUTTON
+==========================*/
+
+.page-actions .btn-primary{
+
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+
+}
+
+/*==========================
+PDF BUTTON
+==========================*/
+
+.page-actions .btn-danger{
+
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+
+}

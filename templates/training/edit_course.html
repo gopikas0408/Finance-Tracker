@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Course{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Edit Course</h2>
+
+        <p>Update course details.</p>
+
+    </div>
+
+    <a href="{% url 'course_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="dashboard-box">
+
+    <form method="POST" id="courseForm" novalidate>
+
+        {% csrf_token %}
+
+        <div class="row">
+
+            <div class="col-md-6 mb-3">
+
+    <label>Course Name</label>
+
+    {{ form.course_name }}
+
+    <small class="text-danger">
+
+        {{ form.course_name.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Duration</label>
+
+    {{ form.duration }}
+
+    <small class="text-danger">
+
+        {{ form.duration.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Course Fee</label>
+
+    {{ form.course_fee }}
+
+    <small class="text-danger">
+
+        {{ form.course_fee.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Trainer</label>
+
+    {{ form.trainer_name }}
+
+    <small class="text-danger">
+
+        {{ form.trainer_name.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Training Mode</label>
+
+    {{ form.training_mode }}
+
+    <small class="text-danger">
+
+        {{ form.training_mode.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-6 mb-3">
+
+    <label>Status</label>
+
+    {{ form.status }}
+
+    <small class="text-danger">
+
+        {{ form.status.errors|striptags }}
+
+    </small>
+
+</div>
+
+            <div class="col-md-12 mb-3">
+
+                <label>Description</label>
+
+                {{ form.description }}
+
+                <small class="text-danger">
+
+                    {{ form.description.errors|striptags }}
+
+                </small>
+
+            </div>
+
+            </div>
+
+        </div>
+
+        <button class="btn btn-warning">
+
+            <i class="bi bi-pencil-square"></i>
+
+            Update Course
+
+        </button>
+
+    </form>
+
+</div>
+<script>
+
+document.getElementById("courseForm").addEventListener("submit", function (e) {
+
+    let course = document.getElementById("id_course_name");
+
+    let duration = document.getElementById("id_duration");
+
+    let fee = document.getElementById("id_course_fee");
+
+    let trainer = document.getElementById("id_trainer_name");
+
+    let description = document.getElementById("id_description");
+
+    // Course Name
+
+    if (course.value.trim().length < 3) {
+
+        alert("Course name must contain at least 3 characters.");
+
+        course.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Duration
+
+    if (duration.value.trim().length < 2) {
+
+        alert("Please enter a valid duration.");
+
+        duration.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Course Fee
+
+    if (fee.value <= 0 || fee.value == "") {
+
+        alert("Course fee must be greater than zero.");
+
+        fee.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Trainer
+
+    let trainerRegex = /^[A-Za-z ]+$/;
+
+    if (!trainerRegex.test(trainer.value.trim())) {
+
+        alert("Trainer name should contain only letters.");
+
+        trainer.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Description
+
+    if (description.value.length > 500) {
+
+        alert("Description cannot exceed 500 characters.");
+
+        description.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+});
+
+</script>
+{% endblock %}

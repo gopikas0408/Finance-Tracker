@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Project Expense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Edit Project Expense</h2>
+
+        <p>Update project expense details.</p>
+
+    </div>
+
+    <a href="{% url 'services:expense_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="dashboard-box">
+
+    <form method="POST" id="expenseForm" novalidate>
+
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+
+                    Project <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.project }}
+
+                <small id="projectError" class="text-danger"></small>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+
+                    Expense Name <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.expense_name }}
+
+                <small id="expenseError" class="text-danger"></small>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+
+                    Amount <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.amount }}
+
+                <small id="amountError" class="text-danger"></small>
+
+            </div>
+            <div class="form-group">
+
+                <label>
+                    Payment Mode
+                    <span class="text-danger">*</span>
+                </label>
+
+                {{ form.payment_mode }}
+
+                {{ form.payment_mode.errors }}
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+
+                    Expense Date <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.expense_date }}
+
+                <small id="dateError" class="text-danger"></small>
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                Remarks
+
+            </label>
+
+            {{ form.remarks }}
+
+            <small id="remarksError" class="text-danger"></small>
+
+        </div>
+
+        <div class="form-buttons">
+
+            <button type="submit" class="btn btn-warning">
+
+                <i class="bi bi-pencil-square"></i>
+
+                Update Expense
+
+            </button>
+
+            <a href="{% url 'services:expense_list' %}" class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+
+    const form = document.getElementById("expenseForm");
+
+    const project = document.getElementById("id_project");
+
+    const expense = document.getElementById("id_expense_name");
+
+    const amount = document.getElementById("id_amount");
+
+    const date = document.getElementById("id_expense_date");
+
+    const remarks = document.getElementById("id_remarks");
+
+
+    // =====================================
+    // PROJECT
+    // =====================================
+
+    project.addEventListener("change", function () {
+
+        document.getElementById("projectError").textContent = "";
+
+        if (project.value === "") {
+
+            document.getElementById("projectError").textContent =
+                "Please select a project.";
+
+        }
+
+    });
+
+
+    // =====================================
+    // EXPENSE NAME
+    // =====================================
+
+    expense.addEventListener("input", function () {
+
+        expense.value = expense.value.replace(
+            /[^A-Za-z0-9&().,_\- ]/g,
+            ""
+        );
+
+        document.getElementById("expenseError").textContent = "";
+
+        if (expense.value.trim().length < 3) {
+
+            document.getElementById("expenseError").textContent =
+                "Expense name must contain at least 3 characters.";
+
+        }
+
+    });
+
+
+    // =====================================
+    // AMOUNT
+    // =====================================
+
+    amount.addEventListener("input", function () {
+
+        document.getElementById("amountError").textContent = "";
+
+        if (parseFloat(amount.value) <= 0 || amount.value === "") {
+
+            document.getElementById("amountError").textContent =
+                "Amount must be greater than zero.";
+
+        }
+
+    });
+
+
+    // =====================================
+    // DATE
+    // =====================================
+
+    date.addEventListener("change", function () {
+
+        document.getElementById("dateError").textContent = "";
+
+        const today = new Date().toISOString().split("T")[0];
+
+        if (date.value > today) {
+
+            document.getElementById("dateError").textContent =
+                "Future dates are not allowed.";
+
+        }
+
+    });
+
+
+    // =====================================
+    // REMARKS
+    // =====================================
+
+    remarks.addEventListener("input", function () {
+
+        document.getElementById("remarksError").textContent = "";
+
+        if (remarks.value.length > 500) {
+
+            document.getElementById("remarksError").textContent =
+                "Maximum 500 characters allowed.";
+
+        }
+
+    });
+
+
+    // =====================================
+    // FORM SUBMIT
+    // =====================================
+
+    form.addEventListener("submit", function (e) {
+
+        let valid = true;
+
+        if (project.value === "") {
+
+            valid = false;
+
+        }
+
+        if (expense.value.trim().length < 3) {
+
+            valid = false;
+
+        }
+
+        if (parseFloat(amount.value) <= 0 || amount.value === "") {
+
+            valid = false;
+
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+
+        if (date.value > today) {
+
+            valid = false;
+
+        }
+
+        if (!valid) {
+
+            e.preventDefault();
+
+            alert("Please correct the highlighted fields before updating.");
+
+        }
+
+    });
+
+</script>
+
+{% endblock %}

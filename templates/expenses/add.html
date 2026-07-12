@@ -1,0 +1,418 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Expense{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+PAGE HEADER
+========================================== -->
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        <h2>
+            <i class="bi bi-wallet2"></i>
+            Add Expense
+        </h2>
+
+        <p>Create a new expense transaction.</p>
+
+    </div>
+
+    <div class="page-actions">
+
+        <a href="{% url 'expenses:expense_list' %}" class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+FORM CARD
+========================================== -->
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <div>
+
+            <h3>
+
+                <i class="bi bi-plus-circle-fill text-danger"></i>
+
+                Expense Information
+
+            </h3>
+
+            <p>Fill all required expense details.</p>
+
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="expenseForm" novalidate>
+
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+
+                    Expense Name 
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.expense_name }}
+
+                <small class="text-muted">
+
+                    Enter expense name.
+
+                </small>
+
+                <div class="text-danger mt-1" id="expenseNameError">
+                </div>
+
+                {% if form.expense_name.errors %}
+
+                <div class="text-danger">
+
+                    {{ form.expense_name.errors }}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+            <div class="form-group">
+
+                <label>
+
+                    Category 
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.category }}
+
+                <small class="text-muted">
+
+                    Select expense category.
+
+                </small>
+
+                <div class="text-danger mt-1" id="categoryError">
+                </div>
+
+                {% if form.category.errors %}
+
+                <div class="text-danger">
+
+                    {{ form.category.errors }}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+
+                    Amount 
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.amount }}
+
+                <small class="text-muted">
+
+                    Enter amount greater than 0.
+
+                </small>
+
+                <div class="text-danger mt-1" id="amountError">
+                </div>
+
+                {% if form.amount.errors %}
+
+                <div class="text-danger">
+
+                    {{ form.amount.errors }}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+
+                    Payment Mode 
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.payment_mode }}
+
+                <small class="text-muted">
+
+                    Select payment mode.
+
+                </small>
+
+                <div class="text-danger mt-1" id="paymentError">
+                </div>
+
+                {% if form.payment_mode.errors %}
+
+                <div class="text-danger">
+
+                    {{ form.payment_mode.errors }}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            <div class="form-group">
+
+    <label>
+
+        Expense Date 
+
+        <span class="text-danger">*</span>
+
+    </label>
+
+    {{ form.expense_date }}
+
+    <small class="text-muted">
+
+        Select the expense date. Future dates are not allowed.
+
+    </small>
+
+    <div
+        class="text-danger mt-1"
+        id="expenseDateError">
+    </div>
+
+    {% if form.expense_date.errors %}
+
+        <div class="text-danger">
+
+            {{ form.expense_date.errors }}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+            <div class="form-group full-width">
+
+    <label>
+
+        Description
+
+    </label>
+
+    {{ form.description }}
+
+    <small class="text-muted">
+
+        Optional notes about this expense.
+
+    </small>
+
+    <div id="descriptionError" class="text-danger mt-1"></div>
+
+    {% if form.description.errors %}
+
+        <div class="text-danger">
+
+            {{ form.description.errors }}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+        </div>
+
+        <div class="form-buttons">
+
+            <button type="submit" class="btn btn-success">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                Save Expense
+
+            </button>
+
+            <button type="reset" class="btn btn-warning">
+
+                <i class="bi bi-arrow-clockwise"></i>
+
+                Reset
+
+            </button>
+
+            <a href="{% url 'expenses:expense_list' %}" class="btn btn-danger">
+
+                <i class="bi bi-x-circle"></i>
+
+                Cancel
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+// ========================================
+// EXPENSE DATE VALIDATION
+// ========================================
+
+const expenseDate = document.getElementById("id_expense_date");
+const expenseDateError = document.getElementById("expenseDateError");
+
+if (expenseDate) {
+
+    expenseDate.addEventListener("change", validateExpenseDate);
+
+    expenseDate.addEventListener("blur", validateExpenseDate);
+
+}
+
+function validateExpenseDate() {
+
+    expenseDateError.innerHTML = "";
+
+    expenseDate.classList.remove("is-invalid");
+
+    if (expenseDate.value.trim() === "") {
+
+        expenseDateError.innerHTML =
+            "Expense Date is required.";
+
+        expenseDate.classList.add("is-invalid");
+
+        return false;
+
+    }
+
+    return true;
+
+}
+document.getElementById("expenseForm").addEventListener("submit", function(e){
+
+    let valid = true;
+
+    if(!validateExpenseDate()){
+
+        valid = false;
+
+    }
+
+    if(!valid){
+
+        e.preventDefault();
+
+    }
+
+});
+
+// ========================================
+// ATTACHMENT VALIDATION (OPTIONAL)
+// ========================================
+
+const attachment = document.getElementById("id_attachment");
+const attachmentError = document.getElementById("attachmentError");
+
+if (attachment) {
+
+    attachment.addEventListener("change", validateAttachment);
+
+}
+
+function validateAttachment() {
+
+    attachmentError.innerHTML = "";
+
+    attachment.classList.remove("is-invalid");
+
+    // Optional field
+    if (attachment.files.length === 0) {
+
+        return true;
+
+    }
+
+    const file = attachment.files[0];
+
+    const allowedTypes = [
+
+        "application/pdf",
+
+        "image/jpeg",
+
+        "image/jpg",
+
+        "image/png"
+
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+
+        attachmentError.innerHTML =
+        "Only PDF, JPG, JPEG and PNG files are allowed.";
+
+        attachment.classList.add("is-invalid");
+
+        return false;
+
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+
+        attachmentError.innerHTML =
+        "File size must be less than 5 MB.";
+
+        attachment.classList.add("is-invalid");
+
+        return false;
+
+    }
+
+    return true;
+
+}
+</script>
+
+{% endblock %}

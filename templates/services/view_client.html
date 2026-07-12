@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}View Client{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Client Details</h2>
+
+        <p>View complete client information.</p>
+
+    </div>
+
+    <a href="{% url 'services:client_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="dashboard-box">
+
+    <div class="details-grid">
+
+        <div class="detail-item">
+
+            <label>Company Name</label>
+
+            <h5>{{ client.company_name }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Contact Person</label>
+
+            <h5>{{ client.contact_person }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Phone Number</label>
+
+            <h5>{{ client.phone }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Email Address</label>
+
+            <h5>{{ client.email }}</h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>GST Number</label>
+
+            <h5>
+
+                {% if client.gst_number %}
+
+                    {{ client.gst_number }}
+
+                {% else %}
+
+                    -
+
+                {% endif %}
+
+            </h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Status</label>
+
+            <h5>
+
+                {% if client.status == "Active" %}
+
+                    <span class="badge bg-success">
+
+                        Active
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-danger">
+
+                        Inactive
+
+                    </span>
+
+                {% endif %}
+
+            </h5>
+
+        </div>
+
+        <div class="detail-item">
+
+            <label>Created Date</label>
+
+            <h5>{{ client.created_at|date:"d M Y" }}</h5>
+
+        </div>
+
+    </div>
+
+    <div class="detail-item mt-4">
+
+        <label>Company Address</label>
+
+        <div class="description-box">
+
+            {{ client.address|default:"No Address Available" }}
+
+        </div>
+
+    </div>
+
+    <div class="form-buttons mt-4">
+
+        <a href="{% url 'services:edit_client' client.id %}"
+           class="btn btn-warning">
+
+            <i class="bi bi-pencil-square"></i>
+
+            Edit Client
+
+        </a>
+
+        <a href="{% url 'services:client_list' %}"
+           class="btn btn-secondary">
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,370 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Project{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Add Project</h2>
+
+        <p>Create a new client project.</p>
+
+    </div>
+
+    <a href="{% url 'services:project_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="dashboard-box">
+
+    <form method="POST" id="projectForm" novalidate>
+
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+
+                    Client <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.client }}
+
+                <small id="clientError" class="text-danger"></small>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                Project Name <span class="text-danger">*</span>
+
+            </label>
+
+            {{ form.project_name }}
+
+            <small id="projectError" class="text-danger"></small>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                Service Type <span class="text-danger">*</span>
+
+            </label>
+
+            {{ form.service_type }}
+
+            <small id="serviceError" class="text-danger"></small>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                Project Amount <span class="text-danger">*</span>
+
+            </label>
+
+            {{ form.project_amount }}
+
+            <small id="amountError" class="text-danger"></small>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                Start Date <span class="text-danger">*</span>
+
+            </label>
+
+            {{ form.start_date }}
+
+            <small id="startError" class="text-danger"></small>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                End Date <span class="text-danger">*</span>
+
+            </label>
+
+            {{ form.end_date }}
+
+            <small id="endError" class="text-danger"></small>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                Status <span class="text-danger">*</span>
+
+            </label>
+
+            {{ form.status }}
+
+            <small id="statusError" class="text-danger"></small>
+
+        </div>
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        Description
+
+    </label>
+
+    {{ form.description }}
+
+    <small id="descriptionError" class="text-danger"></small>
+
+</div>
+
+<div class="form-buttons">
+
+    <button type="submit" class="btn btn-success">
+
+        <i class="bi bi-check-circle"></i>
+
+        Save Project
+
+    </button>
+
+    <a href="{% url 'services:project_list' %}" class="btn btn-danger">
+
+        Cancel
+
+    </a>
+
+</div>
+
+</form>
+
+</div>
+<script>
+
+const form=document.getElementById("projectForm");
+
+const client=document.getElementById("id_client");
+
+const project=document.getElementById("id_project_name");
+
+const service=document.getElementById("id_service_type");
+
+const amount=document.getElementById("id_project_amount");
+
+const start=document.getElementById("id_start_date");
+
+const end=document.getElementById("id_end_date");
+
+const status=document.getElementById("id_status");
+
+const description=document.getElementById("id_description");
+
+
+// ==========================================
+// CLIENT
+// ==========================================
+
+client.addEventListener("change",()=>{
+
+document.getElementById("clientError").textContent="";
+
+if(client.value===""){
+
+document.getElementById("clientError").textContent="Please select a client.";
+
+}
+
+});
+
+
+// ==========================================
+// PROJECT NAME
+// ==========================================
+
+project.addEventListener("input",()=>{
+
+project.value=project.value.replace(/[^A-Za-z0-9&().,_\- ]/g,"");
+
+document.getElementById("projectError").textContent="";
+
+if(project.value.trim().length<3){
+
+document.getElementById("projectError").textContent="Minimum 3 characters required.";
+
+}
+
+});
+
+
+// ==========================================
+// SERVICE TYPE
+// ==========================================
+
+service.addEventListener("change",()=>{
+
+document.getElementById("serviceError").textContent="";
+
+if(service.value===""){
+
+document.getElementById("serviceError").textContent="Select a service type.";
+
+}
+
+});
+
+
+// ==========================================
+// PROJECT AMOUNT
+// ==========================================
+
+amount.addEventListener("input",()=>{
+
+document.getElementById("amountError").textContent="";
+
+if(parseFloat(amount.value)<=0 || amount.value===""){
+
+document.getElementById("amountError").textContent="Amount must be greater than zero.";
+
+}
+
+});
+
+
+// ==========================================
+// START DATE
+// ==========================================
+
+start.addEventListener("change",()=>{
+
+document.getElementById("startError").textContent="";
+
+const today=new Date().toISOString().split("T")[0];
+
+if(start.value>today){
+
+document.getElementById("startError").textContent="Future start date is not allowed.";
+
+}
+
+});
+
+
+// ==========================================
+// END DATE
+// ==========================================
+
+end.addEventListener("change",()=>{
+
+document.getElementById("endError").textContent="";
+
+if(start.value && end.value && end.value<start.value){
+
+document.getElementById("endError").textContent="End date must be after start date.";
+
+}
+
+});
+
+
+// ==========================================
+// STATUS
+// ==========================================
+
+status.addEventListener("change",()=>{
+
+document.getElementById("statusError").textContent="";
+
+if(status.value===""){
+
+document.getElementById("statusError").textContent="Please select status.";
+
+}
+
+});
+
+
+// ==========================================
+// DESCRIPTION
+// ==========================================
+
+description.addEventListener("input",()=>{
+
+document.getElementById("descriptionError").textContent="";
+
+if(description.value.length>500){
+
+document.getElementById("descriptionError").textContent="Maximum 500 characters allowed.";
+
+}
+
+});
+
+
+// ==========================================
+// FORM SUBMIT
+// ==========================================
+
+form.addEventListener("submit",function(e){
+
+let valid=true;
+
+if(client.value==="") valid=false;
+
+if(project.value.trim().length<3) valid=false;
+
+if(service.value==="") valid=false;
+
+if(amount.value==="" || parseFloat(amount.value)<=0) valid=false;
+
+const today=new Date().toISOString().split("T")[0];
+
+if(start.value>today) valid=false;
+
+if(start.value && end.value && end.value<start.value) valid=false;
+
+if(status.value==="") valid=false;
+
+if(description.value.length>500) valid=false;
+
+if(!valid){
+
+e.preventDefault();
+
+alert("Please correct the highlighted fields before submitting.");
+
+}
+
+});
+
+</script>
+
+{% endblock %}

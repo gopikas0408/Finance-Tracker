@@ -1,0 +1,693 @@
+{% extends 'base.html' %}
+
+{% block title %}Income Management{% endblock %}
+
+{% block content %}
+
+<!-- ======================================================
+                PAGE HEADER
+====================================================== -->
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        <h2>
+            <i class="bi bi-cash-stack"></i>
+            Income Management
+        </h2>
+
+        <p>
+            Manage, monitor and track all income records in real time.
+        </p>
+
+    </div>
+
+    <div class="page-actions">
+
+        <a href="{% url 'add_income' %}" class="btn btn-success">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add Income
+
+        </a>
+
+        <a href="{% url 'export_income_excel' %}" class="btn btn-primary">
+
+            <i class="bi bi-download"></i>
+
+            Export Excel
+
+        </a>
+
+        <a href="{% url 'export_income_pdf' %}" class="btn btn-danger">
+
+            <i class="bi bi-file-earmark-pdf"></i>
+
+            Export PDF
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+                KPI CARDS
+====================================================== -->
+
+<div class="dashboard-cards">
+
+    <!-- Total Income -->
+
+    <div class="dashboard-card income-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-cash-stack"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Total Income</span>
+
+            <h2>₹ {{ total_income }}</h2>
+
+            <small>All Income Records</small>
+
+        </div>
+
+    </div>
+
+    <!-- Month -->
+
+    <div class="dashboard-card profit-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-calendar-check"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>This Month</span>
+
+            <h2>₹ {{ this_month_income }}</h2>
+
+            <small>Current Month Income</small>
+
+        </div>
+
+    </div>
+
+    <!-- Today -->
+
+    <div class="dashboard-card target-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-wallet2"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Today's Income</span>
+
+            <h2>₹ {{ today_income }}</h2>
+
+            <small>Today's Collection</small>
+
+        </div>
+
+    </div>
+
+    <!-- Entries -->
+
+    <div class="dashboard-card transaction-card">
+
+        <div class="card-icon">
+
+            <i class="bi bi-list-check"></i>
+
+        </div>
+
+        <div class="card-details">
+
+            <span>Total Entries</span>
+
+            <h2>{{ total_transactions }}</h2>
+
+            <small>Income Transactions</small>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+                FILTER CARD
+====================================================== -->
+
+<div class="filter-card">
+
+    <div class="box-header">
+
+        <h3>
+
+            <i class="bi bi-funnel"></i>
+
+            Search & Filters
+
+        </h3>
+
+    </div>
+
+    <form method="GET">
+
+        <div class="filter-grid">
+
+            <!-- Search -->
+
+            <div class="filter-group">
+
+                <label>
+
+                    Search Income
+
+                </label>
+
+                <input type="text" name="search" value="{{ search }}" placeholder="Search by Income Source...">
+
+            </div>
+
+            <!-- Payment -->
+
+            <div class="filter-group">
+
+                <label>
+
+                    Payment Mode
+
+                </label>
+
+                <select name="payment_mode">
+
+                    <option value="">All</option>
+
+                    <option value="Cash"
+{% if payment_mode == "Cash" %}selected{% endif %}>
+Cash
+</option>
+
+<option value="UPI"
+{% if payment_mode == "UPI" %}selected{% endif %}>
+UPI
+</option>
+
+<option value="Bank"
+{% if payment_mode == "Bank" %}selected{% endif %}>
+Bank
+</option>
+
+<option value="Card"
+{% if payment_mode == "Card" %}selected{% endif %}>
+Card
+</option>
+
+<option value="Cheque"
+{% if payment_mode == "Cheque" %}selected{% endif %}>
+Cheque
+</option>
+
+                </select>
+
+            </div>
+
+            <!-- Date -->
+
+            <div class="filter-group">
+
+                <label>
+
+                    Received Date
+
+                </label>
+
+                <input type="date" name="received_date" value="{{ received_date }}">
+
+            </div>
+
+            <!-- Buttons -->
+
+            <div class="filter-buttons">
+
+                <button class="btn btn-success">
+
+                    <i class="bi bi-search"></i>
+
+                    Search
+
+                </button>
+
+                <a href="{% url 'income_list' %}" class="btn btn-secondary">
+
+                    <i class="bi bi-arrow-clockwise"></i>
+
+                    Reset
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<!-- ======================================================
+                    INCOME TABLE
+====================================================== -->
+
+<div class="dashboard-box income-table-card">
+
+    <div class="box-header">
+
+        <div>
+
+            <h3>
+
+                <i class="bi bi-table"></i>
+
+                Income Records
+
+            </h3>
+
+            <small>
+
+                Total Records :
+                <strong>{{ page_obj.paginator.count }}</strong>
+
+            </small>
+
+        </div>
+
+        <div>
+
+            <span class="badge bg-success">
+
+                {{ page_obj.paginator.count }} Entries
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table dashboard-table align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Income Source</th>
+
+                    <th>Amount</th>
+
+                    <th>Payment</th>
+
+                    <th>Received Date</th>
+
+                    <th class="text-center">
+
+                        Actions
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for income in incomes %}
+
+                <tr>
+
+                    <td>
+
+                        {{ forloop.counter }}
+
+                    </td>
+
+                    <td>
+
+                        <div class="fw-semibold">
+
+                            {{ income.income_source }}
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        <span class="text-success fw-bold">
+
+                            ₹ {{ income.amount }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {% if income.payment_mode == "Cash" %}
+
+                        <span class="badge bg-success">
+
+                            <i class="bi bi-cash"></i>
+
+                            Cash
+
+                        </span>
+
+                        {% elif income.payment_mode == "UPI" %}
+
+                        <span class="badge bg-primary">
+
+                            <i class="bi bi-phone"></i>
+
+                            UPI
+
+                        </span>
+
+                        {% elif income.payment_mode == "Bank" %}
+
+                        <span class="badge bg-info">
+
+                            <i class="bi bi-bank"></i>
+
+                            Bank
+
+                        </span>
+
+                        {% elif income.payment_mode == "Card" %}
+
+                        <span class="badge bg-warning text-dark">
+
+                            <i class="bi bi-credit-card"></i>
+
+                            Card
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-secondary">
+
+                            <i class="bi bi-receipt"></i>
+
+                            Cheque
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ income.received_date }}
+
+                    </td>
+
+                    <td>
+
+                        <div class="action-buttons justify-content-center">
+
+                            <a href="{% url 'view_income' income.id %}" class="view-btn" title="View">
+
+                                <i class="bi bi-eye-fill"></i>
+
+                            </a>
+
+                            <a href="{% url 'edit_income' income.id %}" class="edit-btn" title="Edit">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+
+                            <a href="#"
+           class="delete-btn"
+           data-url="{% url 'delete_income' income.id %}"
+           data-bs-toggle="modal"
+           data-bs-target="#deleteModal"
+           title="Delete">
+
+
+                                    <i class="bi bi-trash-fill"></i>
+
+                                </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6">
+
+                        <div class="text-center py-5">
+
+                            <i class="bi bi-cash-stack display-4 text-success"></i>
+
+                            <h5 class="mt-3">
+
+                                No Income Records Found
+
+                            </h5>
+
+                            <p class="text-muted">
+
+                                Click Add Income to create your first income entry.
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+                    PAGINATION
+====================================================== -->
+
+<div class="pagination-container">
+
+    {% if page_obj.has_previous %}
+
+    <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
+
+        <i class="bi bi-chevron-left"></i>
+
+    </a>
+
+    {% endif %}
+
+    {% for page in page_obj.paginator.page_range %}
+
+    {% if page == page_obj.number %}
+
+    <span class="page-btn active">
+
+        {{ page }}
+
+    </span>
+
+    {% else %}
+
+    <a href="?page={{ page }}" class="page-btn">
+
+        {{ page }}
+
+    </a>
+
+    {% endif %}
+
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+
+    <a href="?page={{ page_obj.next_page_number }}" class="page-btn">
+
+        <i class="bi bi-chevron-right"></i>
+
+    </a>
+
+    {% endif %}
+
+</div>
+<!-- ======================================================
+                    DELETE MODAL
+====================================================== -->
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <div class="modal-header border-0 pb-0">
+
+                <div>
+
+                    <h4 class="fw-bold text-danger mb-1">
+
+                        <i class="bi bi-trash3-fill"></i>
+
+                        Delete Income
+
+                    </h4>
+
+                    <small class="text-muted">
+
+                        This action cannot be undone.
+
+                    </small>
+
+                </div>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+
+                </button>
+
+            </div>
+
+            <div class="modal-body text-center py-4">
+
+                <div class="mb-4">
+
+                    <i class="bi bi-exclamation-triangle-fill" style="font-size:70px;color:#ef4444;">
+
+                    </i>
+
+                </div>
+
+                <h5 class="fw-bold">
+
+                    Are you sure?
+
+                </h5>
+
+                <p class="text-muted mb-0">
+
+                    You are about to permanently delete this income record.
+
+                </p>
+
+            </div>
+
+            <div class="modal-footer border-0 justify-content-center pb-4">
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+
+                    <i class="bi bi-x-circle"></i>
+
+                    Cancel
+
+                </button>
+
+                <a href="#" id="deleteLink" class="btn btn-danger">
+
+                    <i class="bi bi-trash-fill"></i>
+
+                    Delete
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+                DELETE SCRIPT
+====================================================== -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+    const deleteButtons = document.querySelectorAll(".delete-btn");
+    const deleteLink = document.getElementById("deleteLink");
+
+    deleteButtons.forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            deleteLink.href = this.dataset.url;
+
+        });
+
+    });
+
+});
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.querySelector(".filter-card form");
+    const search = document.getElementById("search");
+    const error = document.getElementById("searchError");
+
+    form.addEventListener("submit", function (e) {
+
+        if (search.value.trim() !== "" && search.value.trim().length < 2) {
+
+            e.preventDefault();
+
+            error.innerText = "Enter at least 2 characters.";
+
+            search.classList.add("is-invalid");
+
+        } else {
+
+            error.innerText = "";
+
+            search.classList.remove("is-invalid");
+
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

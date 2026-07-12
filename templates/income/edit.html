@@ -1,0 +1,586 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Income{% endblock %}
+
+{% block content %}
+
+<!-- ======================================================
+                    PAGE HEADER
+====================================================== -->
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        <h2>
+
+            <i class="bi bi-pencil-square text-primary"></i>
+
+            Edit Income
+
+        </h2>
+
+        <p>
+
+            Update the selected income record and keep your financial data accurate.
+
+        </p>
+
+    </div>
+
+    <div class="page-actions">
+
+        <a href="{% url 'income_list' %}" class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left-circle"></i>
+
+            Back to Income
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+                    FORM CARD
+====================================================== -->
+
+<div class="form-card">
+
+    <div class="box-header">
+
+        <h3>
+
+            <i class="bi bi-pencil-fill text-primary"></i>
+
+            Edit Income Details
+
+        </h3>
+
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="incomeForm" novalidate>
+
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+            <!-- Income Source -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Income Source
+
+                    <span class="required">*</span>
+
+                </label>
+
+                {{ form.income_source }}
+
+                <small class="text-muted">
+                    Select or update the income source.
+                </small>
+
+                <div class="invalid-feedback" id="income_source_error"></div>
+
+            </div>
+
+            <!-- Amount -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Amount (₹)
+
+                    <span class="required">*</span>
+
+                </label>
+
+                {{ form.amount }}
+
+                <small class="text-muted">
+                    Modify the received amount if necessary.
+                </small>
+
+                <div class="invalid-feedback" id="amount_error"></div>
+
+            </div>
+
+            <!-- Payment Mode -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Payment Mode
+
+                    <span class="required">*</span>
+
+                </label>
+
+                {{ form.payment_mode }}
+
+                <small class="text-muted">
+                    Choose the payment method.
+                </small>
+
+                <div class="invalid-feedback" id="payment_mode_error"></div>
+
+            </div>
+
+            <!-- Date -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Received Date
+
+                    <span class="required">*</span>
+
+                </label>
+
+                {{ form.received_date }}
+
+                <small class="text-muted">
+                    Update the received date if required.
+                </small>
+
+                <div class="invalid-feedback" id="received_date_error"></div>
+            </div>
+
+            <!-- Description -->
+
+            <div class="form-group full-width">
+
+                <label>
+
+                    Description
+
+                </label>
+
+                {{ form.description }}
+
+                <small class="text-muted">
+                    Add additional notes about this income.
+                </small>
+
+                <div class="invalid-feedback" id="description_error"></div>
+
+            </div>
+
+            <!-- Attachment -->
+
+            <div class="form-group full-width">
+
+                <label>
+
+                    Attachment
+
+                </label>
+
+                {{ form.attachment }}
+
+                <small class="text-muted">
+                    Upload a new receipt or invoice if needed.
+                </small>
+
+                <div class="invalid-feedback" id="attachment_error"></div>
+
+            </div>
+
+        </div>
+
+        <!-- Buttons -->
+
+        <div class="form-buttons">
+
+            <button type="submit" class="btn btn-success">
+
+                <i class="bi bi-check-circle-fill"></i>
+
+                Update Income
+
+            </button>
+
+            <button type="reset" class="btn btn-warning">
+
+                <i class="bi bi-arrow-clockwise"></i>
+
+                Reset
+
+            </button>
+
+            <a href="{% url 'income_list' %}" class="btn btn-danger">
+
+                <i class="bi bi-x-circle-fill"></i>
+
+                Cancel
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("incomeForm");
+
+    const incomeSource = document.getElementById("id_income_source");
+    const amount = document.getElementById("id_amount");
+    const paymentMode = document.getElementById("id_payment_mode");
+    const receivedDate = document.getElementById("id_received_date");
+    const description = document.getElementById("id_description");
+    const attachment = document.getElementById("id_attachment");
+
+    // Error Labels
+    const incomeSourceError = document.getElementById("income_source_error");
+    const amountError = document.getElementById("amount_error");
+    const paymentModeError = document.getElementById("payment_mode_error");
+    const receivedDateError = document.getElementById("received_date_error");
+    const descriptionError = document.getElementById("description_error");
+    const attachmentError = document.getElementById("attachment_error");
+
+
+    function setError(input, errorElement, message) {
+
+        input.classList.remove("is-valid");
+        input.classList.add("is-invalid");
+
+        errorElement.innerText = message;
+
+    }
+
+    function setSuccess(input, errorElement) {
+
+        input.classList.remove("is-invalid");
+        input.classList.add("is-valid");
+
+        errorElement.innerText = "";
+
+    }
+
+
+    // ===========================
+    // Income Source
+    // ===========================
+
+    function validateIncomeSource() {
+
+        if (incomeSource.value === "") {
+
+            setError(
+                incomeSource,
+                incomeSourceError,
+                "Please select Income Source."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            incomeSource,
+            incomeSourceError
+        );
+
+        return true;
+
+    }
+
+
+    // ===========================
+    // Amount
+    // ===========================
+
+    function validateAmount() {
+
+        const value = amount.value.trim();
+
+        if (value === "") {
+
+            setError(
+                amount,
+                amountError,
+                "Amount is required."
+            );
+
+            return false;
+
+        }
+
+        if (isNaN(value)) {
+
+            setError(
+                amount,
+                amountError,
+                "Amount must be numeric."
+            );
+
+            return false;
+
+        }
+
+        if (parseFloat(value) <= 0) {
+
+            setError(
+                amount,
+                amountError,
+                "Amount must be greater than 0."
+            );
+
+            return false;
+
+        }
+
+        if (parseFloat(value) > 999999999) {
+
+            setError(
+                amount,
+                amountError,
+                "Amount is too large."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            amount,
+            amountError
+        );
+
+        return true;
+
+    }
+
+
+    // ===========================
+    // Payment Mode
+    // ===========================
+
+    function validatePaymentMode() {
+
+        if (paymentMode.value === "") {
+
+            setError(
+                paymentMode,
+                paymentModeError,
+                "Please select Payment Mode."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            paymentMode,
+            paymentModeError
+        );
+
+        return true;
+
+    }
+
+
+    // ===========================
+    // Received Date
+    // ===========================
+
+    function validateDate() {
+
+        if (receivedDate.value === "") {
+
+            setError(
+                receivedDate,
+                receivedDateError,
+                "Received Date is required."
+            );
+
+            return false;
+
+        }
+
+        const selected = new Date(receivedDate.value);
+        const today = new Date();
+
+        today.setHours(0,0,0,0);
+
+        if (selected > today) {
+
+            setError(
+                receivedDate,
+                receivedDateError,
+                "Future date is not allowed."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            receivedDate,
+            receivedDateError
+        );
+
+        return true;
+
+    }
+
+
+    // ===========================
+    // Description
+    // ===========================
+
+    function validateDate() {
+
+    if (receivedDate.value === "") {
+
+        setError(
+            receivedDate,
+            receivedDateError,
+            "Received Date is required."
+        );
+
+        return false;
+
+    }
+
+    const today = new Date();
+
+    const todayString = today.toISOString().split("T")[0];
+
+    if (receivedDate.value > todayString) {
+
+        setError(
+            receivedDate,
+            receivedDateError,
+            "Future date is not allowed."
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+        receivedDate,
+        receivedDateError
+    );
+
+    return true;
+
+}
+
+    // ===========================
+    // Attachment
+    // ===========================
+
+    function validateAttachment() {
+
+        if (attachment.files.length === 0) {
+
+            attachmentError.innerText = "";
+            attachment.classList.remove("is-invalid");
+            attachment.classList.remove("is-valid");
+
+            return true;
+
+        }
+
+        const file = attachment.files[0];
+
+        const allowed = [
+            "pdf",
+            "jpg",
+            "jpeg",
+            "png"
+        ];
+
+        const extension = file.name.split(".").pop().toLowerCase();
+
+        if (!allowed.includes(extension)) {
+
+            setError(
+                attachment,
+                attachmentError,
+                "Only PDF, JPG, JPEG, PNG files allowed."
+            );
+
+            return false;
+
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+
+            setError(
+                attachment,
+                attachmentError,
+                "Maximum file size is 5MB."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            attachment,
+            attachmentError
+        );
+
+        return true;
+
+    }
+
+
+    // ===========================
+    // Live Validation
+    // ===========================
+
+    incomeSource.addEventListener("change", validateIncomeSource);
+
+    amount.addEventListener("input", validateAmount);
+
+    paymentMode.addEventListener("change", validatePaymentMode);
+
+    receivedDate.addEventListener("change", validateDate);
+
+    description.addEventListener("input", validateDescription);
+
+    attachment.addEventListener("change", validateAttachment);
+
+
+    // ===========================
+    // Submit Validation
+    // ===========================
+
+    form.addEventListener("submit", function (e) {
+
+        const valid =
+
+            validateIncomeSource() &&
+            validateAmount() &&
+            validatePaymentMode() &&
+            validateDate() &&
+            validateDescription() &&
+            validateAttachment();
+
+        if (!valid) {
+
+            e.preventDefault();
+
+        }
+
+    });
+
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Payment{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================
+PAGE HEADER
+========================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Edit Payment</h2>
+
+        <p>Update the student payment details.</p>
+
+    </div>
+
+    <a href="{% url 'payment_list' %}" class="btn btn-secondary">
+
+        <i class="bi bi-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<!-- ==========================================
+EDIT PAYMENT FORM
+========================================== -->
+
+<div class="dashboard-box">
+
+<form method="POST" id="paymentForm" novalidate>
+
+{% csrf_token %}
+
+<div class="row">
+
+    <div class="col-md-6 mb-3">
+
+    <label>Student</label>
+
+    {{ form.student }}
+
+    <small class="text-danger">
+        {{ form.student.errors|striptags }}
+    </small>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+    <label>Total Fee</label>
+
+    {{ form.course_fee }}
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+    <label>Already Paid</label>
+
+    {{ form.paid_amount }}
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+    <label>Balance Amount</label>
+
+    {{ form.balance_amount }}
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+    <label>Payment Amount</label>
+
+    {{ form.amount }}
+
+    <small class="text-danger">
+        {{ form.amount.errors|striptags }}
+    </small>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+    <label>Payment Mode</label>
+
+    {{ form.payment_mode }}
+
+    <small class="text-danger">
+        {{ form.payment_mode.errors|striptags }}
+    </small>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+    <label>Payment Date</label>
+
+    {{ form.payment_date }}
+
+    <small class="text-danger">
+        {{ form.payment_date.errors|striptags }}
+    </small>
+
+</div>
+
+<div class="col-md-12 mb-3">
+
+    <label>Remarks</label>
+
+    {{ form.remarks }}
+
+    <small class="text-danger">
+        {{ form.remarks.errors|striptags }}
+    </small>
+
+</div>
+
+</div>
+
+<div class="form-buttons">
+
+    <button type="submit" class="btn btn-warning">
+
+        <i class="bi bi-pencil-square"></i>
+
+        Update Payment
+
+    </button>
+
+    <a href="{% url 'payment_list' %}" class="btn btn-secondary">
+
+        Cancel
+
+    </a>
+
+</div>
+
+</form>
+
+</div>
+
+<!-- ==========================================
+JAVASCRIPT VALIDATION
+========================================== -->
+
+<script>
+
+
+
+document.getElementById("paymentForm").addEventListener("submit", function(e){
+
+    let student = document.getElementById("id_student");
+    let amount = document.getElementById("id_amount");
+    let paymentDate = document.getElementById("id_payment_date");
+    let remarks = document.getElementById("id_remarks");
+    let balance = document.getElementById("id_balance_amount");
+
+    // Student
+
+    if(student.value===""){
+
+        alert("Please select a student.");
+
+        student.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Payment Amount
+
+    if(amount.value==="" || Number(amount.value)<=0){
+
+        alert("Amount must be greater than zero.");
+
+        amount.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Cannot Pay More Than Balance
+
+    if(balance && Number(amount.value)>Number(balance.value)){
+
+        alert("Payment amount cannot exceed the remaining balance.");
+
+        amount.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Future Date
+
+    const today=new Date().toISOString().split("T")[0];
+
+    if(paymentDate.value>today){
+
+        alert("Future Payment Date is not allowed.");
+
+        paymentDate.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+    // Remarks
+
+    if(remarks && remarks.value.trim().length>500){
+
+        alert("Remarks cannot exceed 500 characters.");
+
+        remarks.focus();
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+});
+
+
+document.addEventListener("DOMContentLoaded",function(){
+
+    const student=document.getElementById("id_student");
+
+    const totalFee=document.getElementById("id_course_fee");
+
+    const paidAmount=document.getElementById("id_paid_amount");
+
+    const balanceAmount=document.getElementById("id_balance_amount");
+
+    const paymentAmount=document.getElementById("id_amount");
+
+
+    // Load Student Fee Details
+
+    function loadStudentDetails(){
+
+        if(student.value===""){
+
+            totalFee.value="";
+            paidAmount.value="";
+            balanceAmount.value="";
+
+            return;
+        }
+
+        fetch("/training/student-fee/"+student.value+"/")
+
+        .then(response=>response.json())
+
+        .then(data=>{
+
+            totalFee.value=data.course_fee;
+
+            paidAmount.value=data.paid_amount;
+
+            balanceAmount.value=data.balance_amount;
+
+        });
+
+    }
+
+    // Calculate Balance
+
+    function calculateBalance(){
+
+        let total=parseFloat(totalFee.value)||0;
+
+        let paid=parseFloat(paidAmount.value)||0;
+
+        let current=parseFloat(paymentAmount.value)||0;
+
+        let remaining=total-(paid+current);
+
+        if(remaining<0){
+
+            alert("Payment exceeds remaining balance.");
+
+            paymentAmount.value="";
+
+            remaining=total-paid;
+
+        }
+
+        balanceAmount.value=remaining.toFixed(2);
+
+    }
+
+    student.addEventListener("change",loadStudentDetails);
+
+    paymentAmount.addEventListener("input",calculateBalance);
+
+    // Load values when edit page opens
+
+    loadStudentDetails();
+
+});
+
+
+</script>
+
+{% endblock %}

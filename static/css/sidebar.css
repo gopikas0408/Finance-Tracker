@@ -1,0 +1,216 @@
+.sidebar{
+
+    width:280px;
+    height:100vh;
+
+    background:#0f172a;
+
+    position:fixed;
+
+    left:0;
+    top:0;
+
+    display:flex;
+    flex-direction:column;
+
+    color:white;
+    z-index:2000;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+    transition:.3s ease;
+
+}
+
+.sidebar-header{
+
+    height:80px;
+
+    padding:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+.toggle-btn{
+
+    width:42px;
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#1e293b;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:22px;
+
+}
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+.brand-logo{
+
+    width:45px;
+    height:45px;
+
+    background:#22c55e;
+
+    border-radius:12px;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    font-size:24px;
+
+}
+
+.brand h2{
+
+    font-size:18px;
+
+}
+
+.brand span{
+
+    color:#94a3b8;
+
+    font-size:13px;
+
+}
+
+.menu-title{
+
+    padding:20px;
+
+    color:#94a3b8;
+
+    font-size:12px;
+
+    letter-spacing:1px;
+
+}
+
+.sidebar-menu{
+
+    list-style:none;
+
+    padding:0 15px;
+
+    flex:1;
+
+}
+
+.sidebar-menu li{
+
+    margin-bottom:8px;
+
+}
+
+.sidebar-menu a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    text-decoration:none;
+
+    color:white;
+
+    padding:14px 16px;
+
+    border-radius:14px;
+
+    transition:.3s;
+
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active{
+
+    background:#16a34a;
+
+}
+
+.sidebar-menu i{
+
+    font-size:20px;
+
+}
+
+.sidebar-footer{
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+    padding:20px 15px;
+
+}
+
+.sidebar-footer a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    text-decoration:none;
+
+    color:white;
+
+    padding:12px;
+
+    border-radius:12px;
+
+}
+
+.sidebar-footer a:hover{
+
+    background:#1e293b;
+
+}
+.sidebar.collapsed{
+    width:90px;
+}
+
+.sidebar.collapsed .brand-text{
+    display:none;
+}
+
+.sidebar.collapsed .menu-title{
+    display:none;
+}
+
+.sidebar.collapsed .sidebar-menu span{
+    display:none;
+}
+
+.sidebar.collapsed .sidebar-footer span{
+    display:none;
+}
+
+.sidebar.collapsed + .main{
+    margin-left:90px;
+    width:calc(100% - 90px);
+}

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Details{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+<h2>Payment Details</h2>
+
+<a href="{% url 'payment_list' %}" class="btn btn-secondary">
+
+Back
+
+</a>
+
+</div>
+
+<div class="dashboard-box">
+
+<table class="table table-bordered">
+
+<tr>
+
+<th>Student</th>
+
+<td>{{ payment.student.student_name }}</td>
+
+</tr>
+
+<tr>
+
+<th>Course</th>
+
+<td>{{ payment.student.course.course_name }}</td>
+
+</tr>
+
+<tr>
+
+<th>Amount</th>
+
+<td>₹ {{ payment.amount }}</td>
+
+</tr>
+
+<tr>
+
+<th>Payment Mode</th>
+
+<td>{{ payment.payment_mode }}</td>
+
+</tr>
+
+<tr>
+
+<th>Payment Date</th>
+
+<td>{{ payment.payment_date }}</td>
+
+</tr>
+
+<tr>
+
+<th>Remarks</th>
+
+<td>{{ payment.remarks }}</td>
+
+</tr>
+
+</table>
+
+<a href="{% url 'edit_payment' payment.id %}"
+
+class="btn btn-warning">
+
+Edit
+
+</a>
+
+<a href="{% url 'payment_list' %}"
+
+class="btn btn-secondary">
+
+Back
+
+</a>
+
+</div>
+
+{% endblock %}

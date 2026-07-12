@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Activity Center{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Activity Center</h2>
+
+        <p>
+            Monitor notifications, reminders, monthly targets and system activities.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- SUMMARY CARDS -->
+<!-- ===================================== -->
+
+<div class="dashboard-cards">
+
+    <div class="dashboard-card revenue">
+
+        <div class="card-icon">
+            🔔
+        </div>
+
+        <div class="card-content">
+
+            <h5>Notifications</h5>
+
+            <h2>{{ notification_count }}</h2>
+
+            <p>Total Notifications</p>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card profit">
+
+        <div class="card-icon">
+            📜
+        </div>
+
+        <div class="card-content">
+
+            <h5>Activity Logs</h5>
+
+            <h2>{{ activity_count }}</h2>
+
+            <p>System History</p>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card target">
+
+        <div class="card-icon">
+            ⏰
+        </div>
+
+        <div class="card-content">
+
+            <h5>Reminders</h5>
+
+            <h2>{{ reminder_count }}</h2>
+
+            <p>Pending Tasks</p>
+
+        </div>
+
+    </div>
+
+    <div class="dashboard-card expense">
+
+        <div class="card-icon">
+            🎯
+        </div>
+
+        <div class="card-content">
+
+            <h5>Targets</h5>
+
+            <h2>{{ target_count }}</h2>
+
+            <p>Monthly Goals</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- NAVIGATION -->
+<!-- ===================================== -->
+
+<div class="service-nav">
+
+    <a href="{% url 'notification_list' %}"
+        class="service-link {% if active_activity == 'notifications' %}active{% endif %}">
+
+        🔔 Notifications
+
+        </a>
+
+        <a href="{% url 'activity_history' %}"
+            class="service-link {% if active_activity == 'history' %}active{% endif %}">
+
+            📜 Activity History
+
+        </a>
+
+        <a href="{% url 'reminder_list' %}"
+            class="service-link {% if active_activity == 'reminders' %}active{% endif %}">
+
+            ⏰ Reminders
+
+        </a>
+
+        <a href="{% url 'target_list' %}" class="service-link {% if active_activity == 'targets' %}active{% endif %}">
+
+            🎯 Targets
+
+        </a>
+
+        <a href="{% url 'achievement_list' %}"
+            class="service-link {% if active_activity == 'achievements' %}active{% endif %}">
+
+            🏆 Achievements
+
+        </a>
+
+</div>
+
+<!-- ===================================== -->
+<!-- QUICK ACTIONS -->
+<!-- ===================================== -->
+
+<div class="dashboard-box">
+
+    <h3>Quick Access</h3>
+
+    <div class="row">
+
+        <div class="col-md-3">
+
+            <a href="{% url 'notification_list' %}" class="btn btn-primary w-100">
+
+                View Notifications
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <a href="{% url 'activity_history' %}" class="btn btn-success w-100">
+
+                View History
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <a href="{% url 'reminder_list' %}" class="btn btn-warning w-100">
+
+                View Reminders
+
+            </a>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <a href="{% url 'target_list' %}" class="btn btn-danger w-100">
+
+                View Targets
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- ABOUT -->
+<!-- ===================================== -->
+
+<div class="dashboard-box">
+
+    <h3>ERP Activity Engine</h3>
+
+    <p>
+
+        This module automatically manages:
+
+    </p>
+
+    <ul>
+
+        <li>🔔 Live Notifications</li>
+
+        <li>📜 Activity History</li>
+
+        <li>⏰ Smart Reminders</li>
+
+        <li>🎯 Monthly Targets</li>
+
+        <li>🏆 Achievement Notifications</li>
+
+        <li>📊 Dashboard Activities</li>
+
+    </ul>
+
+</div>
+
+{% endblock %}

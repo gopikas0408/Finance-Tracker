@@ -1,0 +1,362 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Expense{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div class="page-title">
+
+        <h2>
+
+            <i class="bi bi-pencil-square"></i>
+
+            Edit Expense
+
+        </h2>
+
+        <p>Update expense details.</p>
+
+    </div>
+
+    <div class="page-actions">
+
+        <a href="{% url 'expenses:expense_list' %}" class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <h3>
+
+            <i class="bi bi-wallet2 text-warning"></i>
+
+            Edit Expense
+
+        </h3>
+
+    </div>
+
+    <form method="POST"
+          enctype="multipart/form-data"
+          id="expenseForm">
+
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Expense Name</label>
+
+                {{ form.expense_name }}
+
+                {{ form.expense_name.errors }}
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Category</label>
+
+                {{ form.category }}
+
+                {{ form.category.errors }}
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Amount</label>
+
+                {{ form.amount }}
+
+                {{ form.amount.errors }}
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Payment Mode</label>
+
+                {{ form.payment_mode }}
+
+                {{ form.payment_mode.errors }}
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Expense Date</label>
+
+                {{ form.expense_date }}
+
+                {{ form.expense_date.errors }}
+
+            </div>
+
+            <div class="form-group full-width">
+
+                <label>Description</label>
+
+                {{ form.description }}
+
+                {{ form.description.errors }}
+
+            </div>
+
+            <div class="form-group full-width">
+
+                <label>Attachment</label>
+
+                {{ form.attachment }}
+
+                {{ form.attachment.errors }}
+
+            </div>
+
+        </div>
+
+        <div class="form-buttons">
+
+            <button type="submit" class="btn btn-warning">
+
+                <i class="bi bi-check-circle"></i>
+
+                Update Expense
+
+            </button>
+
+            <a href="{% url 'expenses:expense_list' %}"
+               class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+<script>
+
+// ========================================
+// ELEMENTS
+// ========================================
+
+const expenseForm = document.getElementById("expenseForm");
+
+const expenseName = document.getElementById("id_expense_name");
+const category = document.getElementById("id_category");
+const amount = document.getElementById("id_amount");
+const paymentMode = document.getElementById("id_payment_mode");
+const expenseDate = document.getElementById("id_expense_date");
+const description = document.getElementById("id_description");
+const attachment = document.getElementById("id_attachment");
+
+// ========================================
+// VALIDATION FUNCTIONS
+// ========================================
+
+function validateExpenseName(){
+
+    if(expenseName.value.trim() === ""){
+
+        alert("Expense Name is required.");
+
+        expenseName.focus();
+
+        return false;
+
+    }
+
+    if(expenseName.value.trim().length < 3){
+
+        alert("Expense Name must contain at least 3 characters.");
+
+        expenseName.focus();
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+function validateCategory(){
+
+    if(category.value === ""){
+
+        alert("Please select Expense Category.");
+
+        category.focus();
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+function validateAmount(){
+
+    if(amount.value === ""){
+
+        alert("Amount is required.");
+
+        amount.focus();
+
+        return false;
+
+    }
+
+    if(parseFloat(amount.value) <= 0){
+
+        alert("Amount must be greater than zero.");
+
+        amount.focus();
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+function validatePaymentMode(){
+
+    if(paymentMode.value === ""){
+
+        alert("Please select Payment Mode.");
+
+        paymentMode.focus();
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+function validateExpenseDate(){
+
+    if(expenseDate.value === ""){
+
+        alert("Expense Date is required.");
+
+        expenseDate.focus();
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+function validateDescription(){
+
+    if(description.value.trim() !== ""){
+
+        if(description.value.trim().length < 5){
+
+            alert("Description must contain at least 5 characters.");
+
+            description.focus();
+
+            return false;
+
+        }
+
+    }
+
+    return true;
+
+}
+
+function validateAttachment(){
+
+    if(attachment.files.length > 0){
+
+        const file = attachment.files[0];
+
+        const allowed = [
+
+            "application/pdf",
+
+            "image/jpeg",
+
+            "image/png"
+
+        ];
+
+        if(!allowed.includes(file.type)){
+
+            alert("Only PDF, JPG, JPEG and PNG files are allowed.");
+
+            return false;
+
+        }
+
+        if(file.size > 5 * 1024 * 1024){
+
+            alert("Maximum file size is 5 MB.");
+
+            return false;
+
+        }
+
+    }
+
+    return true;
+
+}
+
+// ========================================
+// FORM SUBMIT
+// ========================================
+
+expenseForm.addEventListener("submit",function(e){
+
+    if(
+
+        !validateExpenseName() ||
+
+        !validateCategory() ||
+
+        !validateAmount() ||
+
+        !validatePaymentMode() ||
+
+        !validateExpenseDate() ||
+
+        !validateDescription() ||
+
+        !validateAttachment()
+
+    ){
+
+        e.preventDefault();
+
+    }
+
+});
+
+</script>
+{% endblock %}

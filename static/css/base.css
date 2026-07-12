@@ -1,0 +1,83 @@
+/* ===============================
+   SETTINGS NAVIGATION
+================================ */
+
+.settings-nav{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin:20px 0 30px;
+
+    overflow-x:auto;
+
+    white-space:nowrap;
+
+    padding-bottom:5px;
+
+}
+
+.settings-nav::-webkit-scrollbar{
+
+    display:none;
+
+}
+
+.settings-link{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:12px 18px;
+
+    background:#ffffff;
+
+    color:#374151;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:10px;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+    flex-shrink:0;
+
+}
+
+.settings-link i{
+
+    font-size:16px;
+
+}
+
+.settings-link:hover{
+
+    background:#16a34a;
+
+    color:#fff;
+
+    border-color:#16a34a;
+
+}
+
+.settings-link.active{
+
+    background:#16a34a;
+
+    color:#fff;
+
+    border-color:#16a34a;
+
+}
