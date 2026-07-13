@@ -1,3 +1,5 @@
+from xml.parsers.expat import errors
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -46,6 +48,52 @@ class Expense(models.Model):
     payment_mode = models.CharField(
         max_length=20,
         choices=PAYMENT_CHOICES
+    )
+    
+    # ===========================
+    # CASH DETAILS
+    # ===========================
+
+    denomination = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    notes_count = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    custom_denomination = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    # ===========================
+    # ONLINE PAYMENT
+    # ===========================
+
+    transaction_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    # ===========================
+    # CHEQUE DETAILS
+    # ===========================
+
+    cheque_number = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    bank_name = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
     )
 
     expense_date = models.DateField()
@@ -148,6 +196,9 @@ class Expense(models.Model):
 
         if errors:
             raise ValidationError(errors)
+        
+        
+        
 
     # ======================================
     # Save Validation
@@ -158,3 +209,7 @@ class Expense(models.Model):
         self.full_clean()
 
         super().save(*args, **kwargs)
+        
+    
+        
+    

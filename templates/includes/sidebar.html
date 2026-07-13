@@ -4,17 +4,16 @@
 
     <div class="sidebar-header">
 
-        <button
-    class="toggle-btn"
-    id="menu-btn"
-    style="display:none;">
-    <i class="bi bi-list"></i>
-</button>
+        <button class="toggle-btn" id="menu-btn" style="display:none;">
+            <i class="bi bi-list"></i>
+        </button>
 
         <div class="brand">
 
             <div class="brand-logo">
-                💰
+
+
+                <img src="{% static 'images/E2E-logo.jpeg' %}" alt="E2E Logo">
             </div>
 
             <div class="brand-text">
@@ -70,12 +69,12 @@
             </a>
         </li>
 
-       <li>
+        <li>
             <a href="/transactions/" class="{% if '/transactions/' in request.path %}active{% endif %}">
                 <i class="bi bi-arrow-left-right"></i>
                 <span>Transactions</span>
             </a>
-        </li> 
+        </li>
 
         <!-- Activity Center -->
         <li>
@@ -85,7 +84,7 @@
             </a>
         </li>
 
-      <!--  <li>
+        <!--  <li>
             <a href="/reports/" class="{% if '/reports/' in request.path %}active{% endif %}">
                 <i class="bi bi-bar-chart-line"></i>
                 <span>Reports</span>

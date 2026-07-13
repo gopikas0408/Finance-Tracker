@@ -10,6 +10,8 @@ import openpyxl
 from transactions.services import TransactionService
 
 from django.http import HttpResponse
+from django.db.models import Q, Sum
+from django.utils import timezone
 
 from reportlab.pdfgen import canvas
 
@@ -42,42 +44,66 @@ def expense_list(request):
 
     if search:
         expenses = expenses.filter(
-            Q(expense_name__icontains=search)
-            |
-            Q(description__icontains=search)
-            |
+            Q(expense_name__icontains=search) |
+            Q(description__icontains=search) |
             Q(payment_mode__icontains=search)
         )
 
     if payment_mode:
-
         expenses = expenses.filter(
             payment_mode=payment_mode
         )
 
     if expense_date:
-
         expenses = expenses.filter(
             expense_date=expense_date
         )
+
+    # -----------------------------
+    # Dashboard Cards
+    # -----------------------------
+
+    today = timezone.localdate()
+
+    total_expense = expenses.aggregate(
+        total=Sum("amount")
+    )["total"] or 0
+
+    this_month_expense = expenses.filter(
+        expense_date__year=today.year,
+        expense_date__month=today.month
+    ).aggregate(
+        total=Sum("amount")
+    )["total"] or 0
+
+    today_expense = expenses.filter(
+        expense_date=today
+    ).aggregate(
+        total=Sum("amount")
+    )["total"] or 0
+
+    total_entries = expenses.count()
 
     paginator = Paginator(expenses, 5)
 
     page_number = request.GET.get("page")
 
-    expenses = paginator.get_page(page_number)
+    page_obj = paginator.get_page(page_number)
 
     context = {
 
-        "expenses": expenses,
-
-        "page_obj": expenses,
+        "expenses": page_obj,
+        "page_obj": page_obj,
 
         "search": search,
-
         "payment_mode": payment_mode,
-
         "expense_date": expense_date,
+
+        # Dashboard Cards
+        "total_expense": total_expense,
+        "this_month_expense": this_month_expense,
+        "today_expense": today_expense,
+        "total_entries": total_entries,
 
     }
 

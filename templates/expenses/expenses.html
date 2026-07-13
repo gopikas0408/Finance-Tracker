@@ -72,7 +72,7 @@ SUMMARY CARDS
 
             <span>Total Expenses</span>
 
-            ₹ {{ total_expense|floatformat:2|default:"0.00" }}
+           ₹ {{ total_expense }}
 
             <small>All Expense Records</small>
 
@@ -94,7 +94,7 @@ SUMMARY CARDS
 
             <span>This Month</span>
 
-            <h2>₹ {{ monthly_expense|floatformat:2|default:"0.00" }}</h2>
+            <h2>₹ {{ this_month_expense }}</h2>
 
             <small>Current Month Expense</small>
 
@@ -116,7 +116,7 @@ SUMMARY CARDS
 
             <span>Today's Expense</span>
 
-            <h2>₹ {{ today_expense|floatformat:2|default:"0.00" }}</h2>
+            <h2>₹ {{ today_expense }}</h2>
 
             <small>Today's Spending</small>
 
@@ -138,7 +138,7 @@ SUMMARY CARDS
 
             <span>Total Entries</span>
 
-            <h2>{{ page_obj.paginator.count }}</h2>
+            <h2>{{ total_entries }}</h2>
 
             <small>Expense Transactions</small>
 

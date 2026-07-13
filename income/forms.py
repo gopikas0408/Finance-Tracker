@@ -24,6 +24,50 @@ class IncomeForm(forms.ModelForm):
                     "class": "form-select"
                 }
             ),
+             "denomination": forms.Select(
+
+                attrs={
+                    "class":"form-select"
+                }
+
+            ),
+             
+            "custom_denomination": forms.NumberInput(
+
+                attrs={
+                    "class":"form-control"
+                }
+
+            ),
+            "notes_count": forms.NumberInput(
+
+                attrs={
+                    "class":"form-control"
+                }
+
+            ),
+             "transaction_id": forms.TextInput(
+
+                attrs={
+                    "class":"form-control"
+                }
+
+            ),
+
+            "cheque_number": forms.TextInput(
+
+                attrs={
+                    "class":"form-control"
+                }
+
+            ),
+             "bank_name": forms.TextInput(
+
+                attrs={
+                    "class":"form-control"
+                }
+
+            ),
 
             "amount": forms.NumberInput(
                 attrs={

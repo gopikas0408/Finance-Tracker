@@ -8,6 +8,63 @@ from .models import Expense
 
 class ExpenseForm(forms.ModelForm):
 
+    DENOMINATION_CHOICES = [
+        ("", "Select"),
+        ("100", "₹100"),
+        ("200", "₹200"),
+        ("500", "₹500"),
+        ("Others", "Others"),
+    ]
+
+    denomination = forms.ChoiceField(
+        choices=DENOMINATION_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            "class": "form-select",
+            "id": "denomination"
+        })
+    )
+
+    notes_count = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "id": "notes_count"
+        })
+    )
+
+    custom_denomination = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "id": "custom_denomination"
+        })
+    )
+
+    transaction_id = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "transaction_id"
+        })
+    )
+
+    cheque_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "cheque_number"
+        })
+    )
+
+    bank_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "bank_name"
+        })
+    )
+
     class Meta:
 
         model = Expense
@@ -26,6 +83,48 @@ class ExpenseForm(forms.ModelForm):
             "category": forms.Select(
                 attrs={
                     "class": "form-select"
+                }
+            ),
+            
+            "denomination": forms.Select(
+                attrs={
+                    "class": "form-select"
+                }
+            ),
+
+            "notes_count": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "min": "1",
+                    "placeholder": "Enter No. of Notes"
+                }
+            ),
+
+            "custom_denomination": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Custom Denomination"
+                }
+            ),
+
+            "transaction_id": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Transaction ID"
+                }
+            ),
+
+            "cheque_number": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Cheque Number"
+                }
+            ),
+
+            "bank_name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter Bank Name"
                 }
             ),
 
@@ -144,30 +243,102 @@ class ExpenseForm(forms.ModelForm):
             )
 
         return payment_mode
+    
+    
+    # ==========================================
+    # Overall Form Validation
+    # ==========================================
 
-    # ==========================================
-    # Expense Date Validation
-    # ==========================================
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        payment_mode = cleaned_data.get("payment_mode")
+
+        denomination = cleaned_data.get("denomination")
+
+        notes_count = cleaned_data.get("notes_count")
+
+        custom_denomination = cleaned_data.get("custom_denomination")
+
+        transaction_id = cleaned_data.get("transaction_id")
+
+        cheque_number = cleaned_data.get("cheque_number")
+
+        bank_name = cleaned_data.get("bank_name")
+
+        # Cash
+        if payment_mode == "Cash":
+
+            if not denomination:
+                self.add_error(
+                    "denomination",
+                    "Please select denomination."
+                )
+
+            if notes_count in [None, ""]:
+                self.add_error(
+                    "notes_count",
+                    "Enter number of notes."
+                )
+
+            if denomination == "Others" and not custom_denomination:
+                self.add_error(
+                    "custom_denomination",
+                    "Enter custom denomination."
+            )
+
+        # UPI / Bank / Card
+
+        elif payment_mode in ["UPI", "Bank", "Card"]:
+
+            if not transaction_id:
+                self.add_error(
+                    "transaction_id",
+                    "Transaction ID is required."
+                )
+
+        # Cheque
+
+        elif payment_mode == "Cheque":
+
+            if not cheque_number:
+                self.add_error(
+                    "cheque_number",
+                    "Cheque Number is required."
+                )
+
+            if not bank_name:
+                self.add_error(
+                    "bank_name",
+                    "Bank Name is required."
+                )
+
+        return cleaned_data
+
+        # ==========================================
+        # Expense Date Validation
+        # ==========================================
 
     def clean_expense_date(self):
 
-        expense_date = self.cleaned_data.get("expense_date")
+            expense_date = self.cleaned_data.get("expense_date")
 
-        if not expense_date:
-            raise ValidationError(
-                "Expense Date is required."
-            )
+            if not expense_date:
+                raise ValidationError(
+                    "Expense Date is required."
+                )
 
-        if expense_date > timezone.localdate():
-            raise ValidationError(
-                "Future dates are not allowed."
-            )
+            if expense_date > timezone.localdate():
+                raise ValidationError(
+                    "Future dates are not allowed."
+                )
 
-        return expense_date
+            return expense_date
 
-    # ==========================================
-    # Description Validation
-    # ==========================================
+        # ==========================================
+        # Description Validation
+        # ==========================================
 
     def clean_description(self):
 
@@ -183,15 +354,15 @@ class ExpenseForm(forms.ModelForm):
                 )
 
             if len(description) > 500:
-                raise ValidationError(
+                 raise ValidationError(
                     "Description cannot exceed 500 characters."
                 )
 
         return description
 
-    # ==========================================
-    # Attachment Validation
-    # ==========================================
+        # ==========================================
+        # Attachment Validation
+        # ==========================================
 
     def clean_attachment(self):
 

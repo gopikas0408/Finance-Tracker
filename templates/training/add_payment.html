@@ -26,236 +26,710 @@
 
 <div class="dashboard-box">
 
-    <form method="POST" id="paymentForm" novalidate>
+   <form method="POST" id="paymentForm" novalidate>
 
-        {% csrf_token %}
+    {% csrf_token %}
 
-        <div class="row">
+    <div class="row">
 
-            <div class="col-md-6 mb-3">
+        <!-- Student -->
 
-                <label>Student</label>
+        <div class="col-md-6 mb-3">
 
-                {{ form.student }}
+            <label>
+                Student
+                <span class="text-danger">*</span>
+            </label>
 
-                <small class="text-danger">
-                    {{ form.student.errors|striptags }}
-                </small>
+            {{ form.student }}
+
+            <small class="text-muted">
+                Select Student
+            </small>
+
+            <div id="studentError" class="text-danger mt-1"></div>
+
+            {% if form.student.errors %}
+            <div class="text-danger">
+                {{ form.student.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Total Fee -->
+
+        <div class="col-md-6 mb-3">
+
+            <label>Total Fee</label>
+
+            {{ form.course_fee }}
+
+        </div>
+
+        <!-- Already Paid -->
+
+        <div class="col-md-6 mb-3">
+
+            <label>Already Paid</label>
+
+            {{ form.paid_amount }}
+
+        </div>
+
+        <!-- Balance -->
+
+        <div class="col-md-6 mb-3">
+
+            <label>Balance Amount</label>
+
+            {{ form.balance_amount }}
+
+        </div>
+
+        <!-- Amount -->
+
+        <div class="col-md-6 mb-3">
+
+            <label>
+                Amount
+                <span class="text-danger">*</span>
+            </label>
+
+            {{ form.amount }}
+
+            <small class="text-muted">
+                Enter Payment Amount
+            </small>
+
+            <div id="amountError" class="text-danger mt-1"></div>
+
+            {% if form.amount.errors %}
+            <div class="text-danger">
+                {{ form.amount.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Payment Mode -->
+
+        <div class="col-md-6 mb-3">
+
+            <label>
+                Payment Mode
+                <span class="text-danger">*</span>
+            </label>
+
+            {{ form.payment_mode }}
+
+            <small class="text-muted">
+                Select Payment Mode
+            </small>
+
+            <div id="paymentModeError" class="text-danger mt-1"></div>
+
+            {% if form.payment_mode.errors %}
+            <div class="text-danger">
+                {{ form.payment_mode.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- CASH DETAILS -->
+
+        <div
+            id="cashFields"
+            class="col-12"
+            style="display:none;"
+        >
+
+            <hr>
+
+            <h5>Cash Details</h5>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Denomination</label>
+
+                    {{ form.denomination }}
+
+                    <div id="denominationError" class="text-danger mt-1"></div>
+
+                    {% if form.denomination.errors %}
+                    <div class="text-danger">
+                        {{ form.denomination.errors }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>No of Notes</label>
+
+                    {{ form.notes_count }}
+
+                    <div id="notesError" class="text-danger mt-1"></div>
+
+                    {% if form.notes_count.errors %}
+                    <div class="text-danger">
+                        {{ form.notes_count.errors }}
+                    </div>
+                    {% endif %}
+
+                </div>
 
             </div>
-            <div class="col-md-6 mb-3">
 
-                <label>Total Fee</label>
+            <div
+                id="customDenominationDiv"
+                style="display:none;"
+            >
 
-                {{ form.course_fee }}
+                <label>Custom Denomination</label>
 
-            </div>
+                {{ form.custom_denomination }}
 
-            <div class="col-md-6 mb-3">
+                <div id="customDenominationError" class="text-danger mt-1"></div>
 
-                <label>Already Paid</label>
-
-                {{ form.paid_amount }}
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label>Balance Amount</label>
-
-                {{ form.balance_amount }}
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label>Amount</label>
-
-                {{ form.amount }}
-
-                <small class="text-danger">
-                    {{ form.amount.errors|striptags }}
-                </small>
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label>Payment Mode</label>
-
-                {{ form.payment_mode }}
-
-                <small class="text-danger">
-                    {{ form.payment_mode.errors|striptags }}
-                </small>
-
-            </div>
-
-            <div class="col-md-6 mb-3">
-
-                <label>Payment Date</label>
-
-                {{ form.payment_date }}
-
-                <small class="text-danger">
-                    {{ form.payment_date.errors|striptags }}
-                </small>
-
-            </div>
-
-            <div class="col-md-12 mb-3">
-
-                <label>Remarks</label>
-
-                {{ form.remarks }}
-
-                <small class="text-danger">
-                    {{ form.remarks.errors|striptags }}
-                </small>
+                {% if form.custom_denomination.errors %}
+                <div class="text-danger">
+                    {{ form.custom_denomination.errors }}
+                </div>
+                {% endif %}
 
             </div>
 
         </div>
 
-        <div class="form-buttons">
+        <!-- Transaction -->
 
-            <button type="submit" class="btn btn-success">
+        <div
+            id="transactionSection"
+            class="col-12"
+            style="display:none;"
+        >
 
-                <i class="bi bi-check-circle"></i>
+            <hr>
 
-                Receive Payment
+            <h5>Transaction Details</h5>
 
-            </button>
+            <label>Transaction ID</label>
 
-            <a href="{% url 'payment_list' %}" class="btn btn-secondary">
+            {{ form.transaction_id }}
 
-                Cancel
+            <div id="transactionError" class="text-danger mt-1"></div>
 
-            </a>
+            {% if form.transaction_id.errors %}
+            <div class="text-danger">
+                {{ form.transaction_id.errors }}
+            </div>
+            {% endif %}
 
         </div>
 
-    </form>
+        <!-- Cheque -->
+
+        <div
+            id="chequeSection"
+            class="col-12"
+            style="display:none;"
+        >
+
+            <hr>
+
+            <h5>Cheque Details</h5>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Cheque Number</label>
+
+                    {{ form.cheque_number }}
+
+                    <div id="chequeError" class="text-danger mt-1"></div>
+
+                    {% if form.cheque_number.errors %}
+                    <div class="text-danger">
+                        {{ form.cheque_number.errors }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label>Bank Name</label>
+
+                    {{ form.bank_name }}
+
+                    <div id="bankError" class="text-danger mt-1"></div>
+
+                    {% if form.bank_name.errors %}
+                    <div class="text-danger">
+                        {{ form.bank_name.errors }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Payment Date -->
+
+        <div class="col-md-6 mb-3">
+
+            <label>
+                Payment Date
+                <span class="text-danger">*</span>
+            </label>
+
+            {{ form.payment_date }}
+
+            <small class="text-muted">
+                Select Payment Date
+            </small>
+
+            <div id="paymentDateError" class="text-danger mt-1"></div>
+
+            {% if form.payment_date.errors %}
+            <div class="text-danger">
+                {{ form.payment_date.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Remarks -->
+
+        <div class="col-12 mb-3">
+
+            <label>Remarks</label>
+
+            {{ form.remarks }}
+
+            <small class="text-muted">
+                Optional Remarks
+            </small>
+
+            <div id="remarksError" class="text-danger mt-1"></div>
+
+            {% if form.remarks.errors %}
+            <div class="text-danger">
+                {{ form.remarks.errors }}
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <div class="form-buttons">
+
+        <button type="submit" class="btn btn-success">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            Receive Payment
+
+        </button>
+
+        <button type="reset" class="btn btn-warning">
+
+            <i class="bi bi-arrow-clockwise"></i>
+
+            Reset
+
+        </button>
+
+        <a href="{% url 'payment_list' %}" class="btn btn-danger">
+
+            Cancel
+
+        </a>
+
+    </div>
+
+</form>
 
 </div>
 <script>
 
-document.getElementById("paymentForm").addEventListener("submit", function (e) {
+// ==========================================
+// DOM ELEMENTS
+// ==========================================
 
-    let student = document.getElementById("id_student");
-    let amount = document.getElementById("id_amount");
-    let paymentDate = document.getElementById("id_payment_date");
-    let remarks = document.getElementById("id_remarks");
-    let balance = document.getElementById("id_balance_amount");
+const form = document.getElementById("paymentForm");
 
-    // Student
+const student = document.getElementById("id_student");
+const amount = document.getElementById("id_amount");
+const paymentMode = document.getElementById("id_payment_mode");
+const paymentDate = document.getElementById("id_payment_date");
+const remarks = document.getElementById("id_remarks");
+
+const courseFee = document.getElementById("id_course_fee");
+const paidAmount = document.getElementById("id_paid_amount");
+const balanceAmount = document.getElementById("id_balance_amount");
+
+const studentError = document.getElementById("studentError");
+const amountError = document.getElementById("amountError");
+const paymentModeError = document.getElementById("paymentModeError");
+const paymentDateError = document.getElementById("paymentDateError");
+const remarksError = document.getElementById("remarksError");
+
+
+// ==========================================
+// COMMON FUNCTIONS
+// ==========================================
+
+function setError(input, errorDiv, message) {
+
+    input.classList.remove("is-valid");
+    input.classList.add("is-invalid");
+
+    errorDiv.innerHTML = message;
+
+}
+
+function setSuccess(input, errorDiv) {
+
+    input.classList.remove("is-invalid");
+    input.classList.add("is-valid");
+
+    errorDiv.innerHTML = "";
+
+}
+
+
+// ==========================================
+// STUDENT VALIDATION
+// ==========================================
+
+function validateStudent() {
 
     if (student.value === "") {
 
-        alert("Please select a student.");
-        student.focus();
-        e.preventDefault();
-        return;
+        setError(
+            student,
+            studentError,
+            "Please select a Student."
+        );
+
+        return false;
 
     }
 
-    // Amount
+    setSuccess(
+        student,
+        studentError
+    );
 
-    if (amount.value === "" || Number(amount.value) <= 0) {
+    return true;
 
-        alert("Amount must be greater than zero.");
-        amount.focus();
-        e.preventDefault();
-        return;
+}
 
-    }
 
-    // Don't allow payment more than balance
+// ==========================================
+// AMOUNT VALIDATION
+// ==========================================
 
-    if (balance && Number(amount.value) > Number(balance.value)) {
+function validateAmount() {
 
-        alert("Payment amount cannot exceed the remaining balance.");
-        amount.focus();
-        e.preventDefault();
-        return;
+    const value = amount.value.trim();
 
-    }
+    if (value === "") {
 
-    // Payment Date
+        setError(
+            amount,
+            amountError,
+            "Amount is required."
+        );
 
-    const today = new Date().toISOString().split("T")[0];
-
-    if (paymentDate.value > today) {
-
-        alert("Future Date is not allowed.");
-        paymentDate.focus();
-        e.preventDefault();
-        return;
+        return false;
 
     }
 
-    // Remarks
+    if (isNaN(value)) {
 
-    if (remarks.value.trim().length > 500) {
+        setError(
+            amount,
+            amountError,
+            "Amount must be numeric."
+        );
 
-        alert("Remarks cannot exceed 500 characters.");
-        remarks.focus();
-        e.preventDefault();
-        return;
+        return false;
 
     }
+
+    if (parseFloat(value) <= 0) {
+
+        setError(
+            amount,
+            amountError,
+            "Amount must be greater than zero."
+        );
+
+        return false;
+
+    }
+
+    if (
+        balanceAmount.value &&
+        parseFloat(value) > parseFloat(balanceAmount.value)
+    ) {
+
+        setError(
+            amount,
+            amountError,
+            "Payment exceeds remaining balance."
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+        amount,
+        amountError
+    );
+
+    return true;
+
+}
+
+
+// ==========================================
+// PAYMENT MODE VALIDATION
+// ==========================================
+
+function validatePaymentMode() {
+
+    if (paymentMode.value === "") {
+
+        setError(
+            paymentMode,
+            paymentModeError,
+            "Please select Payment Mode."
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+        paymentMode,
+        paymentModeError
+    );
+
+    return true;
+
+}
+// ==========================================
+// PAYMENT MODE UI
+// ==========================================
+
+const cashFields = document.getElementById("cashFields");
+
+const transactionSection = document.getElementById("transactionSection");
+
+const chequeSection = document.getElementById("chequeSection");
+
+const denomination = document.getElementById("denomination");
+
+const notesCount = document.getElementById("notes_count");
+
+const customDiv = document.getElementById("customDenominationDiv");
+
+const customDenomination = document.getElementById("custom_denomination");
+
+const transactionId = document.getElementById("transaction_id");
+
+const chequeNumber = document.getElementById("cheque_number");
+
+const bankName = document.getElementById("bank_name");
+
+const denominationError = document.getElementById("denominationError");
+
+const notesError = document.getElementById("notesError");
+
+const customDenominationError = document.getElementById("customDenominationError");
+
+const transactionError = document.getElementById("transactionError");
+
+const chequeError = document.getElementById("chequeError");
+
+const bankError = document.getElementById("bankError");
+
+
+// ==========================================
+// SHOW / HIDE PAYMENT FIELDS
+// ==========================================
+
+function paymentModeUI() {
+
+    cashFields.style.display = "none";
+
+    transactionSection.style.display = "none";
+
+    chequeSection.style.display = "none";
+
+    amount.readOnly = false;
+
+    if (paymentMode.value === "Cash") {
+
+        cashFields.style.display = "block";
+
+        amount.readOnly = true;
+
+        calculateCashAmount();
+
+    }
+
+    else if (
+
+        paymentMode.value === "UPI" ||
+
+        paymentMode.value === "Bank" ||
+
+        paymentMode.value === "Card"
+
+    ) {
+
+        transactionSection.style.display = "block";
+
+    }
+
+    else if (paymentMode.value === "Cheque") {
+
+        chequeSection.style.display = "block";
+
+    }
+
+}
+
+
+// ==========================================
+// CUSTOM DENOMINATION
+// ==========================================
+
+denomination.addEventListener("change", function () {
+
+    if (this.value === "Others") {
+
+        customDiv.style.display = "block";
+
+    }
+
+    else {
+
+        customDiv.style.display = "none";
+
+        customDenomination.value = "";
+
+    }
+
+    calculateCashAmount();
 
 });
 
 
-document.addEventListener("DOMContentLoaded", function () {
+// ==========================================
+// CASH AMOUNT CALCULATION
+// ==========================================
 
-    const totalFee = document.getElementById("id_course_fee");
-    const paidAmount = document.getElementById("id_paid_amount");
-    const balanceAmount = document.getElementById("id_balance_amount");
-    const paymentAmount = document.getElementById("id_amount");
+function calculateCashAmount() {
 
-    if (!totalFee || !paidAmount || !balanceAmount || !paymentAmount) {
+    if (paymentMode.value !== "Cash") {
+
         return;
-    }
-
-    function calculateBalance() {
-
-        let total = parseFloat(totalFee.value) || 0;
-        let paid = parseFloat(paidAmount.value) || 0;
-        let current = parseFloat(paymentAmount.value) || 0;
-
-        let remaining = total - paid - current;
-
-        if (remaining < 0) {
-
-            alert("Payment exceeds remaining balance.");
-
-            paymentAmount.value = "";
-
-            remaining = total - paid;
-
-        }
-
-        balanceAmount.value = remaining.toFixed(2);
 
     }
 
-    paymentAmount.addEventListener("input", calculateBalance);
+    let denominationValue = 0;
+
+    if (denomination.value === "Others") {
+
+        denominationValue = parseFloat(customDenomination.value) || 0;
+
+    }
+
+    else {
+
+        denominationValue = parseFloat(denomination.value) || 0;
+
+    }
+
+    let notes = parseInt(notesCount.value) || 0;
+
+    amount.value = denominationValue * notes;
+
+}
+
+
+// ==========================================
+// AUTO CALCULATE
+// ==========================================
+
+notesCount.addEventListener(
+
+    "input",
+
+    calculateCashAmount
+
+);
+
+customDenomination.addEventListener(
+
+    "input",
+
+    calculateCashAmount
+
+);
+
+
+// ==========================================
+// PAYMENT MODE CHANGE
+// ==========================================
+
+paymentMode.addEventListener("change", function () {
+
+    validatePaymentMode();
+
+    paymentModeUI();
 
 });
 
-const student = document.getElementById("id_student");
+
+// ==========================================
+// INITIAL LOAD
+// ==========================================
+
+paymentModeUI();
+// ==========================================
+// STUDENT CHANGE - LOAD FEE DETAILS
+// ==========================================
 
 student.addEventListener("change", function () {
 
+    validateStudent();
+
     if (!this.value) {
 
-        document.getElementById("id_course_fee").value = "";
-        document.getElementById("id_paid_amount").value = "";
-        document.getElementById("id_balance_amount").value = "";
+        courseFee.value = "";
+
+        paidAmount.value = "";
+
+        balanceAmount.value = "";
 
         return;
+
     }
 
     fetch("/training/student-fee/" + this.value + "/")
@@ -264,15 +738,226 @@ student.addEventListener("change", function () {
 
         .then(data => {
 
-            document.getElementById("id_course_fee").value = data.course_fee;
+            courseFee.value = data.course_fee;
 
-            document.getElementById("id_paid_amount").value = data.paid_amount;
+            paidAmount.value = data.paid_amount;
 
-            document.getElementById("id_balance_amount").value = data.balance_amount;
+            balanceAmount.value = data.balance_amount;
 
         });
 
 });
 
+
+// ==========================================
+// BALANCE CALCULATION
+// ==========================================
+
+function calculateBalance() {
+
+    let total = parseFloat(courseFee.value) || 0;
+
+    let paid = parseFloat(paidAmount.value) || 0;
+
+    let current = parseFloat(amount.value) || 0;
+
+    let remaining = total - paid - current;
+
+    if (remaining < 0) {
+
+        remaining = total - paid;
+
+    }
+
+    balanceAmount.value = remaining.toFixed(2);
+
+}
+
+amount.addEventListener("input", function () {
+
+    if (!amount.readOnly) {
+
+        validateAmount();
+
+    }
+
+    calculateBalance();
+
+});
+
+
+// ==========================================
+// PAYMENT DATE VALIDATION
+// ==========================================
+
+function validatePaymentDate() {
+
+    if (paymentDate.value === "") {
+
+        setError(
+
+            paymentDate,
+
+            paymentDateError,
+
+            "Payment Date is required."
+
+        );
+
+        return false;
+
+    }
+
+    const today = new Date().toISOString().split("T")[0];
+
+    if (paymentDate.value > today) {
+
+        setError(
+
+            paymentDate,
+
+            paymentDateError,
+
+            "Future Date is not allowed."
+
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+
+        paymentDate,
+
+        paymentDateError
+
+    );
+
+    return true;
+
+}
+
+paymentDate.addEventListener(
+
+    "change",
+
+    validatePaymentDate
+
+);
+
+
+// ==========================================
+// REMARKS VALIDATION
+// ==========================================
+
+function validateRemarks() {
+
+    const value = remarks.value.trim();
+
+    if (value.length > 500) {
+
+        setError(
+
+            remarks,
+
+            remarksError,
+
+            "Maximum 500 characters allowed."
+
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+
+        remarks,
+
+        remarksError
+
+    );
+
+    return true;
+
+}
+
+remarks.addEventListener(
+
+    "input",
+
+    validateRemarks
+
+);
+
+
+// ==========================================
+// LIVE VALIDATION
+// ==========================================
+
+student.addEventListener(
+
+    "change",
+
+    validateStudent
+
+);
+
+paymentMode.addEventListener(
+
+    "change",
+
+    validatePaymentMode
+
+);
+
+
+// ==========================================
+// OPEN DATE PICKER
+// ==========================================
+
+if (paymentDate.showPicker) {
+
+    paymentDate.addEventListener("click", function () {
+
+        this.showPicker();
+
+    });
+
+}
+
+
+// ==========================================
+// FORM SUBMIT
+// ==========================================
+
+form.addEventListener("submit", function (e) {
+
+    let valid = true;
+
+    valid &= validateStudent();
+
+    valid &= validateAmount();
+
+    valid &= validatePaymentMode();
+
+    valid &= validatePaymentDate();
+
+    valid &= validateRemarks();
+
+    if (!amount.readOnly) {
+
+        calculateBalance();
+
+    }
+
+    if (!valid) {
+
+        e.preventDefault();
+
+    }
+
+});
 </script>
 {% endblock %}

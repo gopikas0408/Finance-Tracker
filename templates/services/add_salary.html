@@ -43,199 +43,504 @@ SALARY FORM
 
         <div class="form-grid">
 
-            <div class="form-group">
-
-                <label>
-
-                    Employee ID <span class="text-danger">*</span>
-
-                </label>
-
-                {{ form.employee_id }}
-
-                <small id="employeeIdError" class="text-danger"></small>
-
-            </div>
+            <!-- Employee Name -->
 
             <div class="form-group">
 
                 <label>
-
-                    Employee Name <span class="text-danger">*</span>
-
+                    Employee Name
+                    <span class="text-danger">*</span>
                 </label>
 
                 {{ form.employee_name }}
 
-                <small id="employeeNameError" class="text-danger"></small>
+                <small class="text-muted">
+                    Enter employee full name.
+                </small>
+
+                <div id="employeeNameError" class="text-danger mt-1"></div>
+
+                {% if form.employee_name.errors %}
+                <div class="text-danger">
+                    {{ form.employee_name.errors }}
+                </div>
+                {% endif %}
 
             </div>
+
+            <!-- Employee ID -->
 
             <div class="form-group">
 
                 <label>
-
-                    Project <span class="text-danger">*</span>
-
+                    Employee ID
+                    <span class="text-danger">*</span>
                 </label>
 
-                {{ form.project }}
+                {{ form.employee_id }}
 
-                <small id="projectError" class="text-danger"></small>
+                <small class="text-muted">
+                    Enter employee ID.
+                </small>
+
+                <div id="employeeIdError" class="text-danger mt-1"></div>
+
+                {% if form.employee_id.errors %}
+                <div class="text-danger">
+                    {{ form.employee_id.errors }}
+                </div>
+                {% endif %}
 
             </div>
+
+            <!-- Department -->
+
             <div class="form-group">
 
                 <label>
-                    Department <span class="text-danger">*</span>
+                    Department
+                    <span class="text-danger">*</span>
                 </label>
 
                 {{ form.department }}
 
-                {{ form.department.errors }}
+                <small class="text-muted">
+                    Enter department.
+                </small>
+
+                <div id="departmentError" class="text-danger mt-1"></div>
+
+                {% if form.department.errors %}
+                <div class="text-danger">
+                    {{ form.department.errors }}
+                </div>
+                {% endif %}
 
             </div>
+
+            <!-- Designation -->
+
             <div class="form-group">
 
                 <label>
-                    Designation <span class="text-danger">*</span>
+                    Designation
+                    <span class="text-danger">*</span>
                 </label>
 
                 {{ form.designation }}
 
-                {{ form.designation.errors }}
+                <small class="text-muted">
+                    Enter designation.
+                </small>
+
+                <div id="designationError" class="text-danger mt-1"></div>
+
+                {% if form.designation.errors %}
+                <div class="text-danger">
+                    {{ form.designation.errors }}
+                </div>
+                {% endif %}
 
             </div>
+
+            <!-- Project -->
 
             <div class="form-group">
 
                 <label>
-                    Payment Mode <span class="text-danger">*</span>
+                    Project
+                    <span class="text-danger">*</span>
                 </label>
 
-                {{ form.payment_mode }}
+                {{ form.project }}
 
-                {{ form.payment_mode.errors }}
+                <small class="text-muted">
+                    Select employee project.
+                </small>
+
+                <div id="projectError" class="text-danger mt-1"></div>
+
+                {% if form.project.errors %}
+                <div class="text-danger">
+                    {{ form.project.errors }}
+                </div>
+                {% endif %}
 
             </div>
 
+            <!-- Salary Month -->
 
             <div class="form-group">
 
                 <label>
-
-                    Salary Month <span class="text-danger">*</span>
-
+                    Salary Month
+                    <span class="text-danger">*</span>
                 </label>
 
                 {{ form.salary_month }}
 
-                <small id="salaryMonthError" class="text-danger"></small>
+                <small class="text-muted">
+                    Select salary month.
+                </small>
+
+                <div id="salaryMonthError" class="text-danger mt-1"></div>
+
+                {% if form.salary_month.errors %}
+                <div class="text-danger">
+                    {{ form.salary_month.errors }}
+                </div>
+                {% endif %}
 
             </div>
+
+            <!-- Basic Salary -->
 
             <div class="form-group">
 
                 <label>
-
-                    Basic Salary <span class="text-danger">*</span>
-
+                    Basic Salary
+                    <span class="text-danger">*</span>
                 </label>
 
                 {{ form.basic_salary }}
 
-                <small id="basicSalaryError" class="text-danger"></small>
+                <small class="text-muted">
+                    Enter employee basic salary.
+                </small>
+
+                <div id="basicSalaryError" class="text-danger mt-1"></div>
+
+                {% if form.basic_salary.errors %}
+                <div class="text-danger">
+                    {{ form.basic_salary.errors }}
+                </div>
+                {% endif %}
 
             </div>
+
+
+            <!-- Bonus -->
 
             <div class="form-group">
 
                 <label>
-
                     Bonus
-
                 </label>
 
                 {{ form.bonus }}
 
-                <small id="bonusError" class="text-danger"></small>
+                <small class="text-muted">
+                    Optional bonus amount.
+                </small>
+
+                <div id="bonusError" class="text-danger mt-1"></div>
+
+                {% if form.bonus.errors %}
+                <div class="text-danger">
+                    {{ form.bonus.errors }}
+                </div>
+                {% endif %}
 
             </div>
+
+
+            <!-- Deduction -->
+
             <div class="form-group">
 
                 <label>
-
                     Deduction
-
                 </label>
 
                 {{ form.deduction }}
 
-                <small id="deductionError" class="text-danger"></small>
+                <small class="text-muted">
+                    Enter deduction amount.
+                </small>
+
+                <div id="deductionError" class="text-danger mt-1"></div>
+
+                {% if form.deduction.errors %}
+                <div class="text-danger">
+                    {{ form.deduction.errors }}
+                </div>
+                {% endif %}
 
             </div>
+
+
+            <!-- Net Salary -->
 
             <div class="form-group">
 
                 <label>
-
                     Net Salary
-
                 </label>
 
                 {{ form.net_salary }}
 
                 <small class="text-muted">
-
-                    Automatically calculated.
-
+                    Calculated automatically.
                 </small>
 
+                <div id="netSalaryError" class="text-danger mt-1"></div>
+
+                {% if form.net_salary.errors %}
+                <div class="text-danger">
+                    {{ form.net_salary.errors }}
+                </div>
+                {% endif %}
+
             </div>
+
+
+            <!-- Payment Mode -->
 
             <div class="form-group">
 
                 <label>
-
-                    Payment Status <span class="text-danger">*</span>
-
+                    Payment Mode
+                    <span class="text-danger">*</span>
                 </label>
 
-                {{ form.payment_status }}
+                {{ form.payment_mode }}
 
-                <small id="statusError" class="text-danger"></small>
+                <small class="text-muted">
+                    Select payment mode.
+                </small>
+
+                <div id="paymentModeError" class="text-danger mt-1"></div>
+
+                {% if form.payment_mode.errors %}
+                <div class="text-danger">
+                    {{ form.payment_mode.errors }}
+                </div>
+                {% endif %}
 
             </div>
+
+
+            <!-- Cash Details -->
+
+            <div id="cashFields" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Cash Details</h4>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Denomination</label>
+
+                        {{ form.denomination }}
+
+                        {% if form.denomination.errors %}
+                        <div class="text-danger">
+                            {{ form.denomination.errors }}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>No of Notes</label>
+
+                        {{ form.notes_count }}
+
+                        {% if form.notes_count.errors %}
+                        <div class="text-danger">
+                            {{ form.notes_count.errors }}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <div id="customDenomination" style="display:none;">
+
+                    <label>Custom Denomination</label>
+
+                    {{ form.custom_denomination }}
+
+                    {% if form.custom_denomination.errors %}
+                    <div class="text-danger">
+                        {{ form.custom_denomination.errors }}
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Transaction Details -->
+
+            <div id="transactionSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Transaction Details</h4>
+
+                <label>Transaction ID</label>
+
+                {{ form.transaction_id }}
+
+                {% if form.transaction_id.errors %}
+                <div class="text-danger">
+                    {{ form.transaction_id.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- Cheque Details -->
+
+            <div id="chequeSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Cheque Details</h4>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Cheque Number</label>
+
+                        {{ form.cheque_number }}
+
+                        {% if form.cheque_number.errors %}
+                        <div class="text-danger">
+                            {{ form.cheque_number.errors }}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Bank Name</label>
+
+                        {{ form.bank_name }}
+
+                        {% if form.bank_name.errors %}
+                        <div class="text-danger">
+                            {{ form.bank_name.errors }}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- Payment Date -->
 
             <div class="form-group">
 
                 <label>
-
-                    Payment Date <span class="text-danger">*</span>
-
+                    Payment Date
+                    <span class="text-danger">*</span>
                 </label>
 
                 {{ form.payment_date }}
 
-                <small id="paymentDateError" class="text-danger"></small>
+                <small class="text-muted">
+                    Select payment date.
+                </small>
+
+                <div id="paymentDateError" class="text-danger mt-1"></div>
+
+                {% if form.payment_date.errors %}
+                <div class="text-danger">
+                    {{ form.payment_date.errors }}
+                </div>
+                {% endif %}
 
             </div>
 
-        </div>
+
+            <!-- Payment Status -->
+
+            <div class="form-group">
+
+                <label>
+                    Payment Status
+                    <span class="text-danger">*</span>
+                </label>
+
+                {{ form.payment_status }}
+
+                <small class="text-muted">
+                    Select payment status.
+                </small>
+
+                <div id="paymentStatusError" class="text-danger mt-1"></div>
+
+                {% if form.payment_status.errors %}
+                <div class="text-danger">
+                    {{ form.payment_status.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- Remarks -->
+
+            <div class="form-group full-width">
+
+                <label>
+                    Remarks
+                </label>
+
+                {{ form.remarks }}
+
+                <small class="text-muted">
+                    Optional remarks (Maximum 500 characters).
+                </small>
+
+                <div id="remarksError" class="text-danger mt-1"></div>
+
+                {% if form.remarks.errors %}
+                <div class="text-danger">
+                    {{ form.remarks.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div> <!-- End form-grid -->
+
+
+        <!-- Buttons -->
+
         <div class="form-buttons">
 
             <button type="submit" class="btn btn-success">
 
-                <i class="bi bi-check-circle"></i>
+                <i class="bi bi-check-circle-fill"></i>
 
                 Save Salary
 
             </button>
 
+            <button type="reset" class="btn btn-warning">
+
+                <i class="bi bi-arrow-clockwise"></i>
+
+                Reset
+
+            </button>
+
             <a href="{% url 'services:salary_list' %}" class="btn btn-danger">
-
+                <i class="bi bi-x-circle-fill"></i>
                 Cancel
-
             </a>
 
         </div>
@@ -243,228 +548,883 @@ SALARY FORM
     </form>
 
 </div>
+
+
+
 <script>
+
+    // ==========================================
+    // FORM ELEMENTS
+    // ==========================================
 
     const form = document.getElementById("salaryForm");
 
-    const employeeId = document.getElementById("id_employee_id");
     const employeeName = document.getElementById("id_employee_name");
+    const employeeId = document.getElementById("id_employee_id");
+    const department = document.getElementById("id_department");
+    const designation = document.getElementById("id_designation");
     const project = document.getElementById("id_project");
     const salaryMonth = document.getElementById("id_salary_month");
     const basicSalary = document.getElementById("id_basic_salary");
     const bonus = document.getElementById("id_bonus");
     const deduction = document.getElementById("id_deduction");
     const netSalary = document.getElementById("id_net_salary");
+    const paymentMode = document.getElementById("id_payment_mode");
     const paymentStatus = document.getElementById("id_payment_status");
     const paymentDate = document.getElementById("id_payment_date");
+    const remarks = document.getElementById("id_remarks");
+
+    // Cash Fields
+
+    const cashFields = document.getElementById("cashFields");
+    const denomination = document.getElementById("denomination");
+    const notesCount = document.getElementById("notes_count");
+    const customDiv = document.getElementById("customDenomination");
+    const customDenomination = document.getElementById("custom_denomination");
+
+    // Transaction
+
+    const transactionSection = document.getElementById("transactionSection");
+    const transactionId = document.getElementById("transaction_id");
+
+    // Cheque
+
+    const chequeSection = document.getElementById("chequeSection");
+    const chequeNumber = document.getElementById("cheque_number");
+    const bankName = document.getElementById("bank_name");
 
 
-    // =====================================
-    // AUTO CALCULATE NET SALARY
-    // =====================================
+    // ==========================================
+    // ERROR DIVS
+    // ==========================================
 
-    function calculateSalary() {
+    const employeeNameError = document.getElementById("employeeNameError");
+    const employeeIdError = document.getElementById("employeeIdError");
+    const departmentError = document.getElementById("departmentError");
+    const designationError = document.getElementById("designationError");
+    const projectError = document.getElementById("projectError");
+    const salaryMonthError = document.getElementById("salaryMonthError");
+    const basicSalaryError = document.getElementById("basicSalaryError");
+    const bonusError = document.getElementById("bonusError");
+    const deductionError = document.getElementById("deductionError");
+    const paymentModeError = document.getElementById("paymentModeError");
+    const paymentStatusError = document.getElementById("paymentStatusError");
+    const paymentDateError = document.getElementById("paymentDateError");
+    const remarksError = document.getElementById("remarksError");
 
-        let basic = parseFloat(basicSalary.value) || 0;
 
-        let bonusAmt = parseFloat(bonus.value) || 0;
+    // ==========================================
+    // HELPER FUNCTIONS
+    // ==========================================
 
-        let deductionAmt = parseFloat(deduction.value) || 0;
+    function setError(input, errorDiv, message) {
 
-        netSalary.value = (basic + bonusAmt - deductionAmt).toFixed(2);
+        input.classList.remove("is-valid");
+
+        input.classList.add("is-invalid");
+
+        errorDiv.innerHTML = message;
 
     }
 
-    basicSalary.addEventListener("input", calculateSalary);
+    function setSuccess(input, errorDiv) {
 
-    bonus.addEventListener("input", calculateSalary);
+        input.classList.remove("is-invalid");
 
-    deduction.addEventListener("input", calculateSalary);
+        input.classList.add("is-valid");
 
+        errorDiv.innerHTML = "";
 
-    // =====================================
-    // EMPLOYEE ID
-    // =====================================
+    }
+    // ==========================================
+    // EMPLOYEE NAME VALIDATION
+    // ==========================================
 
-    employeeId.addEventListener("input", function () {
+    function validateEmployeeName() {
 
-        document.getElementById("employeeIdError").textContent = "";
+        const value = employeeName.value.trim();
 
-        if (this.value.trim() === "") {
+        if (value === "") {
 
-            document.getElementById("employeeIdError").textContent =
-                "Employee ID is required.";
+            setError(
+                employeeName,
+                employeeNameError,
+                "Employee Name is required."
+            );
 
-        }
-
-    });
-
-
-    // =====================================
-    // EMPLOYEE NAME
-    // =====================================
-
-    employeeName.addEventListener("input", function () {
-
-        this.value = this.value.replace(/[^A-Za-z ]/g, "");
-
-        document.getElementById("employeeNameError").textContent = "";
-
-        if (this.value.trim().length < 3) {
-
-            document.getElementById("employeeNameError").textContent =
-                "Minimum 3 characters required.";
+            return false;
 
         }
 
-    });
+        if (value.length < 3) {
 
+            setError(
+                employeeName,
+                employeeNameError,
+                "Minimum 3 characters required."
+            );
 
-    // =====================================
-    // PROJECT
-    // =====================================
-
-    project.addEventListener("change", function () {
-
-        document.getElementById("projectError").textContent = "";
-
-        if (this.value === "") {
-
-            document.getElementById("projectError").textContent =
-                "Please select a project.";
+            return false;
 
         }
 
-    });
+        const regex = /^[A-Za-z ]+$/;
 
+        if (!regex.test(value)) {
 
-    // =====================================
-    // BASIC SALARY
-    // =====================================
+            setError(
+                employeeName,
+                employeeNameError,
+                "Only alphabets are allowed."
+            );
 
-    basicSalary.addEventListener("input", function () {
-
-        document.getElementById("basicSalaryError").textContent = "";
-
-        if (parseFloat(this.value) <= 0 || this.value === "") {
-
-            document.getElementById("basicSalaryError").textContent =
-                "Enter a valid salary.";
+            return false;
 
         }
 
-    });
+        setSuccess(
+            employeeName,
+            employeeNameError
+        );
+
+        return true;
+
+    }
 
 
-    // =====================================
-    // BONUS
-    // =====================================
+    // ==========================================
+    // EMPLOYEE ID VALIDATION
+    // ==========================================
 
-    bonus.addEventListener("input", function () {
+    function validateEmployeeId() {
 
-        document.getElementById("bonusError").textContent = "";
+        const value = employeeId.value.trim();
 
-        if (parseFloat(this.value) < 0) {
+        if (value === "") {
 
-            document.getElementById("bonusError").textContent =
-                "Bonus cannot be negative.";
+            setError(
+                employeeId,
+                employeeIdError,
+                "Employee ID is required."
+            );
 
-        }
-
-    });
-
-
-    // =====================================
-    // DEDUCTION
-    // =====================================
-
-    deduction.addEventListener("input", function () {
-
-        document.getElementById("deductionError").textContent = "";
-
-        if (parseFloat(this.value) < 0) {
-
-            document.getElementById("deductionError").textContent =
-                "Deduction cannot be negative.";
+            return false;
 
         }
 
-    });
+        if (value.length < 3) {
+
+            setError(
+                employeeId,
+                employeeIdError,
+                "Minimum 3 characters required."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            employeeId,
+            employeeIdError
+        );
+
+        return true;
+
+    }
 
 
-    // =====================================
-    // PAYMENT DATE
-    // =====================================
+    // ==========================================
+    // DEPARTMENT VALIDATION
+    // ==========================================
 
-    paymentDate.addEventListener("change", function () {
+    function validateDepartment() {
 
-        document.getElementById("paymentDateError").textContent = "";
+        const value = department.value.trim();
+
+        if (value === "") {
+
+            setError(
+                department,
+                departmentError,
+                "Department is required."
+            );
+
+            return false;
+
+        }
+
+        const regex = /^[A-Za-z ]+$/;
+
+        if (!regex.test(value)) {
+
+            setError(
+                department,
+                departmentError,
+                "Only alphabets are allowed."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            department,
+            departmentError
+        );
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // DESIGNATION VALIDATION
+    // ==========================================
+
+    function validateDesignation() {
+
+        const value = designation.value.trim();
+
+        if (value === "") {
+
+            setError(
+                designation,
+                designationError,
+                "Designation is required."
+            );
+
+            return false;
+
+        }
+
+        const regex = /^[A-Za-z ]+$/;
+
+        if (!regex.test(value)) {
+
+            setError(
+                designation,
+                designationError,
+                "Only alphabets are allowed."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            designation,
+            designationError
+        );
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // PROJECT VALIDATION
+    // ==========================================
+
+    function validateProject() {
+
+        if (project.value === "") {
+
+            setError(
+                project,
+                projectError,
+                "Please select Project."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            project,
+            projectError
+        );
+
+        return true;
+
+    }
+    // ==========================================
+    // SALARY MONTH VALIDATION
+    // ==========================================
+
+    function validateSalaryMonth() {
+
+        if (salaryMonth.value === "") {
+
+            setError(
+                salaryMonth,
+                salaryMonthError,
+                "Salary Month is required."
+            );
+
+            return false;
+
+        }
 
         const today = new Date().toISOString().split("T")[0];
 
-        if (this.value > today) {
+        if (salaryMonth.value > today) {
 
-            document.getElementById("paymentDateError").textContent =
-                "Future date is not allowed.";
+            setError(
+                salaryMonth,
+                salaryMonthError,
+                "Future month is not allowed."
+            );
+
+            return false;
 
         }
+
+        setSuccess(
+            salaryMonth,
+            salaryMonthError
+        );
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // BASIC SALARY VALIDATION
+    // ==========================================
+
+    function validateBasicSalary() {
+
+        const value = parseFloat(basicSalary.value);
+
+        if (basicSalary.value === "") {
+
+            setError(
+                basicSalary,
+                basicSalaryError,
+                "Basic Salary is required."
+            );
+
+            return false;
+
+        }
+
+        if (isNaN(value) || value <= 0) {
+
+            setError(
+                basicSalary,
+                basicSalaryError,
+                "Salary must be greater than zero."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            basicSalary,
+            basicSalaryError
+        );
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // BONUS VALIDATION
+    // ==========================================
+
+    function validateBonus() {
+
+        const value = parseFloat(bonus.value || 0);
+
+        if (value < 0) {
+
+            setError(
+                bonus,
+                bonusError,
+                "Bonus cannot be negative."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            bonus,
+            bonusError
+        );
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // DEDUCTION VALIDATION
+    // ==========================================
+
+    function validateDeduction() {
+
+        const value = parseFloat(deduction.value || 0);
+
+        if (value < 0) {
+
+            setError(
+                deduction,
+                deductionError,
+                "Deduction cannot be negative."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            deduction,
+            deductionError
+        );
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // PAYMENT STATUS VALIDATION
+    // ==========================================
+
+    function validatePaymentStatus() {
+
+        if (paymentStatus.value === "") {
+
+            setError(
+                paymentStatus,
+                paymentStatusError,
+                "Please select Payment Status."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            paymentStatus,
+            paymentStatusError
+        );
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // PAYMENT DATE VALIDATION
+    // ==========================================
+
+    function validatePaymentDate() {
+
+        if (paymentDate.value === "") {
+
+            setError(
+                paymentDate,
+                paymentDateError,
+                "Payment Date is required."
+            );
+
+            return false;
+
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+
+        if (paymentDate.value > today) {
+
+            setError(
+                paymentDate,
+                paymentDateError,
+                "Future date is not allowed."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            paymentDate,
+            paymentDateError
+        );
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // REMARKS VALIDATION
+    // ==========================================
+
+    function validateRemarks() {
+
+        const value = remarks.value.trim();
+
+        if (value.length > 500) {
+
+            setError(
+                remarks,
+                remarksError,
+                "Maximum 500 characters allowed."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+            remarks,
+            remarksError
+        );
+
+        return true;
+
+    }
+    // ==========================================
+    // AUTO NET SALARY CALCULATION
+    // ==========================================
+
+    function calculateNetSalary() {
+
+        const basic = parseFloat(basicSalary.value) || 0;
+
+        const bonusAmount = parseFloat(bonus.value) || 0;
+
+        const deductionAmount = parseFloat(deduction.value) || 0;
+
+        let total = basic + bonusAmount - deductionAmount;
+
+        if (total < 0) {
+
+            total = 0;
+
+        }
+
+        netSalary.value = total.toFixed(2);
+
+    }
+
+    basicSalary.addEventListener("input", calculateNetSalary);
+
+    bonus.addEventListener("input", calculateNetSalary);
+
+    deduction.addEventListener("input", calculateNetSalary);
+
+
+    // ==========================================
+    // PAYMENT MODE UI
+    // ==========================================
+
+    function paymentModeUI() {
+
+        cashFields.style.display = "none";
+
+        transactionSection.style.display = "none";
+
+        chequeSection.style.display = "none";
+
+        if (paymentMode.value === "Cash") {
+
+            cashFields.style.display = "block";
+
+            calculateCashAmount();
+
+        }
+
+        else if (
+
+            paymentMode.value === "UPI" ||
+
+            paymentMode.value === "Bank"
+
+        ) {
+
+            transactionSection.style.display = "block";
+
+        }
+
+        else if (paymentMode.value === "Cheque") {
+
+            chequeSection.style.display = "block";
+
+        }
+
+    }
+
+
+    // ==========================================
+    // CUSTOM DENOMINATION
+    // ==========================================
+
+    denomination.addEventListener("change", function () {
+
+        if (this.value === "Others") {
+
+            customDiv.style.display = "block";
+
+        }
+
+        else {
+
+            customDiv.style.display = "none";
+
+            customDenomination.value = "";
+
+        }
+
+        calculateCashAmount();
 
     });
 
 
-    // =====================================
-    // PAYMENT STATUS
-    // =====================================
+    // ==========================================
+    // CASH AMOUNT CALCULATION
+    // ==========================================
 
-    paymentStatus.addEventListener("change", function () {
+    function calculateCashAmount() {
 
-        document.getElementById("statusError").textContent = "";
+        if (paymentMode.value !== "Cash") {
 
-        if (this.value === "") {
-
-            document.getElementById("statusError").textContent =
-                "Please select payment status.";
+            return;
 
         }
 
+        let denominationValue = 0;
+
+        if (denomination.value === "Others") {
+
+            denominationValue = parseFloat(customDenomination.value) || 0;
+
+        }
+
+        else {
+
+            denominationValue = parseFloat(denomination.value) || 0;
+
+        }
+
+        let notes = parseInt(notesCount.value) || 0;
+
+        basicSalary.value = denominationValue * notes;
+
+        calculateNetSalary();
+
+    }
+
+    notesCount.addEventListener("input", calculateCashAmount);
+
+    customDenomination.addEventListener("input", calculateCashAmount);
+
+
+    // ==========================================
+    // PAYMENT MODE EVENT
+    // ==========================================
+
+    paymentMode.addEventListener("change", paymentModeUI);
+
+    paymentModeUI();
+
+
+    // ==========================================
+    // OPEN DATE PICKER
+    // ==========================================
+
+    if (salaryMonth.showPicker) {
+
+        salaryMonth.addEventListener("click", function () {
+
+            this.showPicker();
+
+        });
+
+    }
+
+    if (paymentDate.showPicker) {
+
+        paymentDate.addEventListener("click", function () {
+
+            this.showPicker();
+
+        });
+
+    }
+
+    // ==========================================
+    // TRANSACTION ID VALIDATION
+    // ==========================================
+
+    function validateTransactionId() {
+
+        if (
+            paymentMode.value === "UPI" ||
+            paymentMode.value === "Bank"
+        ) {
+
+            if (transactionId.value.trim() === "") {
+
+                transactionId.classList.add("is-invalid");
+
+                return false;
+
+            }
+
+            transactionId.classList.remove("is-invalid");
+
+        }
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // CHEQUE VALIDATION
+    // ==========================================
+
+    function validateCheque() {
+
+        if (paymentMode.value === "Cheque") {
+
+            let valid = true;
+
+            if (chequeNumber.value.trim() === "") {
+
+                chequeNumber.classList.add("is-invalid");
+
+                valid = false;
+
+            }
+
+            else {
+
+                chequeNumber.classList.remove("is-invalid");
+
+            }
+
+            if (bankName.value.trim() === "") {
+
+                bankName.classList.add("is-invalid");
+
+                valid = false;
+
+            }
+
+            else {
+
+                bankName.classList.remove("is-invalid");
+
+            }
+
+            return valid;
+
+        }
+
+        return true;
+
+    }
+
+
+    // ==========================================
+    // LIVE VALIDATION EVENTS
+    // ==========================================
+
+    employeeName.addEventListener("input", validateEmployeeName);
+
+    employeeId.addEventListener("input", validateEmployeeId);
+
+    department.addEventListener("input", validateDepartment);
+
+    designation.addEventListener("input", validateDesignation);
+
+    project.addEventListener("change", validateProject);
+
+    salaryMonth.addEventListener("change", validateSalaryMonth);
+
+    basicSalary.addEventListener("input", validateBasicSalary);
+
+    bonus.addEventListener("input", validateBonus);
+
+    deduction.addEventListener("input", validateDeduction);
+
+    paymentMode.addEventListener("change", function () {
+
+        validatePaymentMode();
+
+        paymentModeUI();
+
     });
 
+    paymentStatus.addEventListener("change", validatePaymentStatus);
 
-    // =====================================
-    // SAVE VALIDATION
-    // =====================================
+    paymentDate.addEventListener("change", validatePaymentDate);
+
+    remarks.addEventListener("input", validateRemarks);
+
+
+    // ==========================================
+    // FORM SUBMIT
+    // ==========================================
 
     form.addEventListener("submit", function (e) {
 
         let valid = true;
 
-        if (employeeId.value.trim() === "") valid = false;
+        valid = validateEmployeeName() && valid;
 
-        if (employeeName.value.trim().length < 3) valid = false;
+        valid = validateEmployeeId() && valid;
 
-        if (project.value === "") valid = false;
+        valid = validateDepartment() && valid;
 
-        if (salaryMonth.value === "") valid = false;
+        valid = validateDesignation() && valid;
 
-        if (basicSalary.value === "" || parseFloat(basicSalary.value) <= 0)
-            valid = false;
+        valid = validateProject() && valid;
 
-        if (paymentStatus.value === "") valid = false;
+        valid = validateSalaryMonth() && valid;
 
-        const today = new Date().toISOString().split("T")[0];
+        valid = validateBasicSalary() && valid;
 
-        if (paymentDate.value > today)
-            valid = false;
+        valid = validateBonus() && valid;
+
+        valid = validateDeduction() && valid;
+
+        valid = validatePaymentMode() && valid;
+
+        valid = validatePaymentStatus() && valid;
+
+        valid = validatePaymentDate() && valid;
+
+        valid = validateRemarks() && valid;
+
+        valid = validateTransactionId() && valid;
+
+        valid = validateCheque() && valid;
 
         if (!valid) {
 
             e.preventDefault();
 
-            alert("Please correct the highlighted fields before saving.");
-
         }
 
     });
+
+
+    // ==========================================
+    // INITIAL LOAD
+    // ==========================================
+
+    paymentModeUI();
+
+    calculateNetSalary();
 
 </script>
 {% endblock %}

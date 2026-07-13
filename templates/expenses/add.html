@@ -63,356 +63,919 @@ FORM CARD
         {% csrf_token %}
 
         <div class="form-grid">
-
             <div class="form-group">
 
                 <label>
-
-                    Expense Name 
-
+                    Expense Name
                     <span class="text-danger">*</span>
-
                 </label>
 
                 {{ form.expense_name }}
 
                 <small class="text-muted">
-
                     Enter expense name.
-
                 </small>
 
-                <div class="text-danger mt-1" id="expenseNameError">
-                </div>
+                <div id="expenseNameError" class="text-danger mt-1"></div>
 
                 {% if form.expense_name.errors %}
-
                 <div class="text-danger">
-
                     {{ form.expense_name.errors }}
-
                 </div>
-
                 {% endif %}
 
             </div>
+
             <div class="form-group">
 
                 <label>
-
-                    Category 
-
+                    Category
                     <span class="text-danger">*</span>
-
                 </label>
 
                 {{ form.category }}
 
                 <small class="text-muted">
-
                     Select expense category.
-
                 </small>
 
-                <div class="text-danger mt-1" id="categoryError">
-                </div>
+                <div id="categoryError" class="text-danger mt-1"></div>
 
                 {% if form.category.errors %}
-
                 <div class="text-danger">
-
                     {{ form.category.errors }}
-
                 </div>
-
                 {% endif %}
 
             </div>
-
             <div class="form-group">
 
                 <label>
-
-                    Amount 
-
+                    Payment Mode
                     <span class="text-danger">*</span>
-
-                </label>
-
-                {{ form.amount }}
-
-                <small class="text-muted">
-
-                    Enter amount greater than 0.
-
-                </small>
-
-                <div class="text-danger mt-1" id="amountError">
-                </div>
-
-                {% if form.amount.errors %}
-
-                <div class="text-danger">
-
-                    {{ form.amount.errors }}
-
-                </div>
-
-                {% endif %}
-
-            </div>
-
-            <div class="form-group">
-
-                <label>
-
-                    Payment Mode 
-
-                    <span class="text-danger">*</span>
-
                 </label>
 
                 {{ form.payment_mode }}
 
                 <small class="text-muted">
-
                     Select payment mode.
-
                 </small>
 
-                <div class="text-danger mt-1" id="paymentError">
-                </div>
+                <div id="paymentError" class="text-danger mt-1"></div>
 
                 {% if form.payment_mode.errors %}
-
                 <div class="text-danger">
-
                     {{ form.payment_mode.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="form-group">
+
+                <label>
+                    Amount
+                    <span class="text-danger">*</span>
+                </label>
+
+                {{ form.amount }}
+
+                <small class="text-muted">
+                    Cash amount is calculated automatically.
+                </small>
+
+                <div id="amountError" class="text-danger mt-1"></div>
+
+                {% if form.amount.errors %}
+                <div class="text-danger">
+                    {{ form.amount.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+            <div id="cashFields" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Cash Details</h4>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Denomination</label>
+
+                        {{ form.denomination }}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>No of Notes</label>
+
+                        {{ form.notes_count }}
+
+                    </div>
 
                 </div>
 
+                <div id="customDenomination" style="display:none;">
+
+                    <label>Custom Denomination</label>
+
+                    {{ form.custom_denomination }}
+
+                </div>
+
+            </div>
+            <div id="transactionSection" class="full-width" style="display:none;">
+
+    <hr>
+
+    <h4>Transaction Details</h4>
+
+    <label>Transaction ID</label>
+
+    {{ form.transaction_id }}
+
+</div>
+<div id="chequeSection" class="full-width" style="display:none;">
+
+    <hr>
+
+    <h4>Cheque Details</h4>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label>Cheque Number</label>
+
+            {{ form.cheque_number }}
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Bank Name</label>
+
+            {{ form.bank_name }}
+
+        </div>
+
+    </div>
+
+</div>
+            <div class="form-group">
+
+                <label>
+                    Expense Date
+                    <span class="text-danger">*</span>
+                </label>
+
+                {{ form.expense_date }}
+
+                <small class="text-muted">
+                    Select expense date.
+                </small>
+
+                <div id="expenseDateError" class="text-danger mt-1"></div>
+
+                {% if form.expense_date.errors %}
+                <div class="text-danger">
+                    {{ form.expense_date.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="form-group full-width">
+
+                <label>Description</label>
+
+                {{ form.description }}
+
+                <small class="text-muted">
+                    Optional notes.
+                </small>
+
+                <div id="descriptionError" class="text-danger mt-1"></div>
+
+                {% if form.description.errors %}
+                <div class="text-danger">
+                    {{ form.description.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="form-group full-width">
+
+                <label>Attachment</label>
+
+                {{ form.attachment }}
+
+                <small class="text-muted">
+                    PDF / JPG / PNG
+                </small>
+
+                <div id="attachmentError" class="text-danger mt-1"></div>
+
+                {% if form.attachment.errors %}
+                <div class="text-danger">
+                    {{ form.attachment.errors }}
+                </div>
                 {% endif %}
 
             </div>
 
-            <div class="form-group">
+            <div class="form-buttons">
 
-    <label>
+                <button type="submit" class="btn btn-success">
 
-        Expense Date 
+                    <i class="bi bi-check-circle-fill"></i>
 
-        <span class="text-danger">*</span>
+                    Save Expense
 
-    </label>
+                </button>
 
-    {{ form.expense_date }}
+                <button type="reset" class="btn btn-warning">
 
-    <small class="text-muted">
+                    <i class="bi bi-arrow-clockwise"></i>
 
-        Select the expense date. Future dates are not allowed.
+                    Reset
 
-    </small>
+                </button>
 
-    <div
-        class="text-danger mt-1"
-        id="expenseDateError">
-    </div>
+                <a href="{% url 'expenses:expense_list' %}" class="btn btn-danger">
 
-    {% if form.expense_date.errors %}
+                    <i class="bi bi-x-circle"></i>
 
-        <div class="text-danger">
+                    Cancel
 
-            {{ form.expense_date.errors }}
+                </a>
 
-        </div>
-
-    {% endif %}
-
-</div>
-
-            <div class="form-group full-width">
-
-    <label>
-
-        Description
-
-    </label>
-
-    {{ form.description }}
-
-    <small class="text-muted">
-
-        Optional notes about this expense.
-
-    </small>
-
-    <div id="descriptionError" class="text-danger mt-1"></div>
-
-    {% if form.description.errors %}
-
-        <div class="text-danger">
-
-            {{ form.description.errors }}
-
-        </div>
-
-    {% endif %}
-
-</div>
-
-        </div>
-
-        <div class="form-buttons">
-
-            <button type="submit" class="btn btn-success">
-
-                <i class="bi bi-check-circle-fill"></i>
-
-                Save Expense
-
-            </button>
-
-            <button type="reset" class="btn btn-warning">
-
-                <i class="bi bi-arrow-clockwise"></i>
-
-                Reset
-
-            </button>
-
-            <a href="{% url 'expenses:expense_list' %}" class="btn btn-danger">
-
-                <i class="bi bi-x-circle"></i>
-
-                Cancel
-
-            </a>
-
-        </div>
+            </div>
 
     </form>
 
 </div>
 
 <script>
-// ========================================
-// EXPENSE DATE VALIDATION
-// ========================================
+    document.addEventListener("DOMContentLoaded", function () {
 
-const expenseDate = document.getElementById("id_expense_date");
-const expenseDateError = document.getElementById("expenseDateError");
+        const form = document.getElementById("expenseForm");
 
-if (expenseDate) {
+        const expenseName = document.getElementById("id_expense_name");
+        const category = document.getElementById("id_category");
+        const amount = document.getElementById("id_amount");
+        const paymentMode = document.getElementById("id_payment_mode");
+        const expenseDate = document.getElementById("id_expense_date");
+        const description = document.getElementById("id_description");
+        const attachment = document.getElementById("id_attachment");
 
-    expenseDate.addEventListener("change", validateExpenseDate);
+        const expenseNameError = document.getElementById("expenseNameError");
+        const categoryError = document.getElementById("categoryError");
+        const amountError = document.getElementById("amountError");
+        const paymentError = document.getElementById("paymentError");
+        const expenseDateError = document.getElementById("expenseDateError");
+        const descriptionError = document.getElementById("descriptionError");
+        const attachmentError = document.getElementById("attachmentError");
 
-    expenseDate.addEventListener("blur", validateExpenseDate);
+        function setError(input, errorDiv, message) {
+
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
+
+            errorDiv.innerHTML = message;
+
+        }
+
+        function setSuccess(input, errorDiv) {
+
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
+
+            errorDiv.innerHTML = "";
+
+        }
+
+        // ==========================
+        // Expense Name
+        // ==========================
+
+        function validateExpenseName() {
+
+            const value = expenseName.value.trim();
+
+            if (value === "") {
+
+                setError(
+                    expenseName,
+                    expenseNameError,
+                    "Expense Name is required."
+                );
+
+                return false;
+
+            }
+
+            if (value.length < 3) {
+
+                setError(
+                    expenseName,
+                    expenseNameError,
+                    "Minimum 3 characters required."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                expenseName,
+                expenseNameError
+            );
+
+            return true;
+
+        }
+
+        // ==========================
+        // Category
+        // ==========================
+
+        function validateCategory() {
+
+            if (category.value === "") {
+
+                setError(
+                    category,
+                    categoryError,
+                    "Please select Category."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                category,
+                categoryError
+            );
+
+            return true;
+
+        }
+
+        // ==========================
+        // Amount
+        // ==========================
+
+        function validateAmount() {
+
+            const value = amount.value.trim();
+
+            if (value === "") {
+
+                setError(
+                    amount,
+                    amountError,
+                    "Amount is required."
+                );
+
+                return false;
+
+            }
+
+            if (isNaN(value)) {
+
+                setError(
+                    amount,
+                    amountError,
+                    "Amount must be numeric."
+                );
+
+                return false;
+
+            }
+
+            if (parseFloat(value) <= 0) {
+
+                setError(
+                    amount,
+                    amountError,
+                    "Amount must be greater than zero."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                amount,
+                amountError
+            );
+
+            return true;
+
+        }
+
+        // ==========================
+        // Payment Mode
+        // ==========================
+
+        function validatePaymentMode() {
+
+            if (paymentMode.value === "") {
+
+                setError(
+                    paymentMode,
+                    paymentError,
+                    "Please select Payment Mode."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                paymentMode,
+                paymentError
+            );
+
+            return true;
+
+        }
+
+        // ==========================
+        // Expense Date
+        // ==========================
+
+        function validateExpenseDate() {
+
+            if (expenseDate.value === "") {
+
+                setError(
+                    expenseDate,
+                    expenseDateError,
+                    "Expense Date is required."
+                );
+
+                return false;
+
+            }
+
+            const today = new Date().toISOString().split("T")[0];
+
+            if (expenseDate.value > today) {
+
+                setError(
+                    expenseDate,
+                    expenseDateError,
+                    "Future dates are not allowed."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                expenseDate,
+                expenseDateError
+            );
+
+            return true;
+
+        }
+
+        // ==========================
+        // Description
+        // ==========================
+
+        function validateDescription() {
+
+            const value = description.value.trim();
+
+            if (value !== "" && value.length < 5) {
+
+                setError(
+                    description,
+                    descriptionError,
+                    "Minimum 5 characters."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                description,
+                descriptionError
+            );
+
+            return true;
+
+        }
+
+        // ==========================
+        // Attachment
+        // ==========================
+
+        function validateAttachment() {
+
+            if (attachment.files.length === 0) {
+
+                attachment.classList.remove("is-invalid");
+                attachment.classList.remove("is-valid");
+                attachmentError.innerHTML = "";
+
+                return true;
+
+            }
+
+            const file = attachment.files[0];
+
+            const allowed = [
+                "pdf",
+                "jpg",
+                "jpeg",
+                "png"
+            ];
+
+            const extension = file.name.split(".").pop().toLowerCase();
+
+            if (!allowed.includes(extension)) {
+
+                setError(
+                    attachment,
+                    attachmentError,
+                    "Only PDF, JPG, JPEG, PNG files allowed."
+                );
+
+                return false;
+
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+
+                setError(
+                    attachment,
+                    attachmentError,
+                    "Maximum file size is 5 MB."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                attachment,
+                attachmentError
+            );
+
+            return true;
+
+        }
+        // ==========================================
+        // PAYMENT MODE UI
+        // ==========================================
+
+        const cashFields = document.getElementById("cashFields");
+
+        const transactionSection = document.getElementById("transactionSection");
+
+        const chequeSection = document.getElementById("chequeSection");
+
+        const denomination = document.getElementById("denomination");
+
+        const notesCount = document.getElementById("notes_count");
+
+        const customDiv = document.getElementById("customDenomination");
+
+        const customDenomination = document.getElementById("custom_denomination");
+
+        const transactionId = document.getElementById("transaction_id");
+
+        const chequeNumber = document.getElementById("cheque_number");
+
+        const bankName = document.getElementById("bank_name");
+
+
+        // ==========================================
+        // SHOW / HIDE FIELDS
+        // ==========================================
+
+        function paymentModeUI() {
+
+            cashFields.style.display = "none";
+
+            transactionSection.style.display = "none";
+
+            chequeSection.style.display = "none";
+
+            amount.readOnly = false;
+
+            amount.value = "";
+
+            if (paymentMode.value === "Cash") {
+
+                cashFields.style.display = "block";
+
+                amount.readOnly = true;
+
+                calculateCashAmount();
+
+            }
+
+            else if (
+
+                paymentMode.value === "UPI" ||
+
+                paymentMode.value === "Bank" ||
+
+                paymentMode.value === "Card"
+
+            ) {
+
+                transactionSection.style.display = "block";
+
+            }
+
+            else if (paymentMode.value === "Cheque") {
+
+                chequeSection.style.display = "block";
+
+            }
+
+        }
+
+
+        // ==========================================
+        // CUSTOM DENOMINATION
+        // ==========================================
+
+        denomination.addEventListener("change", function () {
+
+            if (this.value === "Others") {
+
+                customDiv.style.display = "block";
+
+            }
+
+            else {
+
+                customDiv.style.display = "none";
+
+                customDenomination.value = "";
+
+            }
+
+            calculateCashAmount();
+
+        });
+
+
+        // ==========================================
+        // CASH AMOUNT CALCULATION
+        // ==========================================
+
+        function calculateCashAmount() {
+
+            if (paymentMode.value !== "Cash") {
+
+                return;
+
+            }
+
+            let denominationValue = 0;
+
+            if (denomination.value === "Others") {
+
+                denominationValue = parseFloat(customDenomination.value) || 0;
+
+            }
+
+            else {
+
+                denominationValue = parseFloat(denomination.value) || 0;
+
+            }
+
+            let notes = parseInt(notesCount.value) || 0;
+
+            amount.value = denominationValue * notes;
+
+        }
+
+
+        // ==========================================
+        // AUTO CALCULATE EVENTS
+        // ==========================================
+
+        notesCount.addEventListener("input", calculateCashAmount);
+
+        customDenomination.addEventListener("input", calculateCashAmount);
+
+
+
+
+        // ==========================================
+        // OPEN DATE PICKER
+        // ==========================================
+
+        if (expenseDate) {
+
+    expenseDate.addEventListener("click", function () {
+
+        if (this.showPicker) {
+            this.showPicker();
+        }
+
+    });
+
+    expenseDate.addEventListener("focus", function () {
+
+        if (this.showPicker) {
+            this.showPicker();
+        }
+
+    });
 
 }
 
-function validateExpenseDate() {
+        paymentModeUI();
 
-    expenseDateError.innerHTML = "";
+        // ==========================================
+        // LIVE VALIDATION EVENTS
+        // ==========================================
 
-    expenseDate.classList.remove("is-invalid");
+        expenseName.addEventListener("input", validateExpenseName);
 
-    if (expenseDate.value.trim() === "") {
+        category.addEventListener("change", validateCategory);
 
-        expenseDateError.innerHTML =
-            "Expense Date is required.";
+        amount.addEventListener("input", function () {
 
-        expenseDate.classList.add("is-invalid");
+            if (!amount.readOnly) {
 
-        return false;
+                validateAmount();
 
-    }
+            }
 
-    return true;
+        });
 
-}
-document.getElementById("expenseForm").addEventListener("submit", function(e){
+        paymentMode.addEventListener("change", function () {
+
+            validatePaymentMode();
+
+            paymentModeUI();
+
+        });
+
+        expenseDate.addEventListener("change", validateExpenseDate);
+
+        description.addEventListener("input", validateDescription);
+
+        attachment.addEventListener("change", validateAttachment);
+
+
+        // ==========================================
+        // TRANSACTION VALIDATION
+        // ==========================================
+
+        function validateTransactionId() {
+
+            if (
+
+                paymentMode.value === "UPI" ||
+
+                paymentMode.value === "Bank" ||
+
+                paymentMode.value === "Card"
+
+            ) {
+
+                if (transactionId.value.trim() === "") {
+
+                    transactionId.classList.add("is-invalid");
+
+                    return false;
+
+                }
+
+                transactionId.classList.remove("is-invalid");
+
+            }
+
+            return true;
+
+        }
+
+
+        // ==========================================
+        // CHEQUE VALIDATION
+        // ==========================================
+
+        function validateCheque() {
+
+            if (paymentMode.value === "Cheque") {
+
+                let valid = true;
+
+                if (chequeNumber.value.trim() === "") {
+
+                    chequeNumber.classList.add("is-invalid");
+
+                    valid = false;
+
+                }
+
+                else {
+
+                    chequeNumber.classList.remove("is-invalid");
+
+                }
+
+                if (bankName.value.trim() === "") {
+
+                    bankName.classList.add("is-invalid");
+
+                    valid = false;
+
+                }
+
+                else {
+
+                    bankName.classList.remove("is-invalid");
+
+                }
+
+                return valid;
+
+            }
+
+            return true;
+
+        }
+
+
+        // ==========================================
+// SUBMIT VALIDATION
+// ==========================================
+
+form.addEventListener("submit", function (e) {
 
     let valid = true;
 
-    if(!validateExpenseDate()){
-
+    if (!validateExpenseName()) {
         valid = false;
-
     }
 
-    if(!valid){
+    if (!validateCategory()) {
+        valid = false;
+    }
 
+    if (!validatePaymentMode()) {
+        valid = false;
+    }
+
+    if (!amount.readOnly) {
+        if (!validateAmount()) {
+            valid = false;
+        }
+    }
+
+    if (!validateExpenseDate()) {
+        valid = false;
+    }
+
+    if (!validateDescription()) {
+        valid = false;
+    }
+
+    if (!validateAttachment()) {
+        valid = false;
+    }
+
+    if (!validateTransactionId()) {
+        valid = false;
+    }
+
+    if (!validateCheque()) {
+        valid = false;
+    }
+
+    if (!valid) {
         e.preventDefault();
-
     }
 
 });
 
-// ========================================
-// ATTACHMENT VALIDATION (OPTIONAL)
-// ========================================
+        // ==========================================
+        // INITIAL LOAD
+        // ==========================================
 
-const attachment = document.getElementById("id_attachment");
-const attachmentError = document.getElementById("attachmentError");
+        paymentModeUI();
 
-if (attachment) {
+    });
 
-    attachment.addEventListener("change", validateAttachment);
-
-}
-
-function validateAttachment() {
-
-    attachmentError.innerHTML = "";
-
-    attachment.classList.remove("is-invalid");
-
-    // Optional field
-    if (attachment.files.length === 0) {
-
-        return true;
-
-    }
-
-    const file = attachment.files[0];
-
-    const allowedTypes = [
-
-        "application/pdf",
-
-        "image/jpeg",
-
-        "image/jpg",
-
-        "image/png"
-
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-
-        attachmentError.innerHTML =
-        "Only PDF, JPG, JPEG and PNG files are allowed.";
-
-        attachment.classList.add("is-invalid");
-
-        return false;
-
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-
-        attachmentError.innerHTML =
-        "File size must be less than 5 MB.";
-
-        attachment.classList.add("is-invalid");
-
-        return false;
-
-    }
-
-    return true;
-
-}
 </script>
 
 {% endblock %}

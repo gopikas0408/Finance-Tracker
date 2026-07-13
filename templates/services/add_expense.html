@@ -60,84 +60,268 @@
 
             </div>
 
+            <!-- ===========================
+Amount
+=========================== -->
+
             <div class="form-group">
 
                 <label>
 
-                    Amount <span class="text-danger">*</span>
+                    Amount
+
+                    <span class="text-danger">*</span>
 
                 </label>
 
                 {{ form.amount }}
 
-                <small id="amountError" class="text-danger"></small>
+                <small class="text-muted">
+
+                    Cash amount will be calculated automatically.
+
+                </small>
+
+                <div id="amountError" class="text-danger mt-1"></div>
+
+                {% if form.amount.errors %}
+
+                <div class="text-danger">
+
+                    {{ form.amount.errors }}
+
+                </div>
+
+                {% endif %}
 
             </div>
+
+
+            <!-- ===========================
+Payment Mode
+=========================== -->
+
             <div class="form-group">
 
                 <label>
+
                     Payment Mode
+
                     <span class="text-danger">*</span>
+
                 </label>
 
                 {{ form.payment_mode }}
 
-                {{ form.payment_mode.errors }}
+                <small class="text-muted">
+
+                    Select payment mode.
+
+                </small>
+
+                <div id="paymentModeError" class="text-danger mt-1"></div>
+
+                {% if form.payment_mode.errors %}
+
+                <div class="text-danger">
+
+                    {{ form.payment_mode.errors }}
+
+                </div>
+
+                {% endif %}
 
             </div>
 
+
+            <!-- ===========================
+Cash Details
+=========================== -->
+
+            <div id="cashFields" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h5>Cash Details</h5>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Denomination
+
+                        </label>
+
+                        {{ form.denomination }}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            No of Notes
+
+                        </label>
+
+                        {{ form.notes_count }}
+
+                    </div>
+
+                </div>
+
+                <div id="customDenomination" style="display:none;">
+
+                    <label>
+
+                        Custom Denomination
+
+                    </label>
+
+                    {{ form.custom_denomination }}
+
+                </div>
+
+            </div>
+
+
+            <!-- ===========================
+Transaction Details
+=========================== -->
+
+            <div id="transactionSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h5>Transaction Details</h5>
+
+                <label>
+
+                    Transaction ID
+
+                </label>
+
+                {{ form.transaction_id }}
+
+            </div>
+
+
+            <!-- ===========================
+Cheque Details
+=========================== -->
+
+            <div id="chequeSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h5>Cheque Details</h5>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Cheque Number
+
+                        </label>
+
+                        {{ form.cheque_number }}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Bank Name
+
+                        </label>
+
+                        {{ form.bank_name }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ===========================
+Expense Date
+=========================== -->
 
             <div class="form-group">
 
                 <label>
 
-                    Expense Date <span class="text-danger">*</span>
+                    Expense Date
+
+                    <span class="text-danger">*</span>
 
                 </label>
 
                 {{ form.expense_date }}
 
-                <small id="dateError" class="text-danger"></small>
+                <small class="text-muted">
+
+                    Select expense date.
+
+                </small>
+
+                <div id="dateError" class="text-danger mt-1"></div>
+
+                {% if form.expense_date.errors %}
+
+                <div class="text-danger">
+
+                    {{ form.expense_date.errors }}
+
+                </div>
+
+                {% endif %}
 
             </div>
 
-        </div>
+            <div class="form-group">
 
-        <div class="form-group">
+                <label>
 
-            <label>
+                    Remarks
 
-                Remarks
+                </label>
 
-            </label>
+                {{ form.remarks }}
 
-            {{ form.remarks }}
+                <small id="remarksError" class="text-danger"></small>
 
-            <small id="remarksError" class="text-danger"></small>
+            </div>
+            <div class="form-buttons">
 
-        </div>
-        <div class="form-buttons">
+                <button type="submit" class="btn btn-success">
 
-            <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i>
 
-                <i class="bi bi-check-circle"></i>
+                    Save Expense
 
-                Save Expense
+                </button>
 
-            </button>
+                <a href="{% url 'services:expense_list' %}" class="btn btn-danger">
 
-            <a href="{% url 'services:expense_list' %}" class="btn btn-danger">
+                    Cancel
 
-                Cancel
+                </a>
 
-            </a>
-
-        </div>
+            </div>
 
     </form>
 
 </div>
 <script>
+
+   document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.getElementById("expenseForm");
 
@@ -147,128 +331,599 @@
 
     const amount = document.getElementById("id_amount");
 
-    const date = document.getElementById("id_expense_date");
+    const paymentMode = document.getElementById("id_payment_mode");
+
+    const expenseDate = document.getElementById("id_expense_date");
 
     const remarks = document.getElementById("id_remarks");
 
 
+    // ==========================
+    // CASH FIELDS
+    // ==========================
+
+    const cashFields = document.getElementById("cashFields");
+
+    const denomination = document.getElementById("denomination");
+
+    const notesCount = document.getElementById("notes_count");
+
+    const customDiv = document.getElementById("customDenomination");
+
+    const customDenomination = document.getElementById("custom_denomination");
+
+
+    // ==========================
+    // TRANSACTION
+    // ==========================
+
+    const transactionSection = document.getElementById("transactionSection");
+
+    const transactionId = document.getElementById("transaction_id");
+
+
+    // ==========================
+    // CHEQUE
+    // ==========================
+
+    const chequeSection = document.getElementById("chequeSection");
+
+    const chequeNumber = document.getElementById("cheque_number");
+
+    const bankName = document.getElementById("bank_name");
+
+
+    // ==========================
+    // ERROR LABELS
+    // ==========================
+
+    const projectError = document.getElementById("projectError");
+
+    const expenseError = document.getElementById("expenseError");
+
+    const amountError = document.getElementById("amountError");
+
+    const paymentModeError = document.getElementById("paymentModeError");
+
+    const dateError = document.getElementById("dateError");
+
+    const remarksError = document.getElementById("remarksError");
+
+
+    // ==========================
+    // COMMON FUNCTIONS
+    // ==========================
+
+    function setError(input, errorDiv, message) {
+
+        input.classList.remove("is-valid");
+
+        input.classList.add("is-invalid");
+
+        errorDiv.innerHTML = message;
+
+    }
+
+    function setSuccess(input, errorDiv) {
+
+        input.classList.remove("is-invalid");
+
+        input.classList.add("is-valid");
+
+        errorDiv.innerHTML = "";
+
+    }
     // ==========================================
-    // PROJECT
-    // ==========================================
+// PROJECT VALIDATION
+// ==========================================
 
-    project.addEventListener("change", () => {
+function validateProject() {
 
-        document.getElementById("projectError").textContent = "";
+    if (project.value === "") {
 
-        if (project.value === "") {
+        setError(
+            project,
+            projectError,
+            "Please select a project."
+        );
 
-            document.getElementById("projectError").textContent = "Please select a project.";
+        return false;
 
-        }
+    }
+
+    setSuccess(
+        project,
+        projectError
+    );
+
+    return true;
+
+}
+
+
+// ==========================================
+// EXPENSE NAME VALIDATION
+// ==========================================
+
+function validateExpenseName() {
+
+    const value = expense.value.trim();
+
+    if (value === "") {
+
+        setError(
+            expense,
+            expenseError,
+            "Expense Name is required."
+        );
+
+        return false;
+
+    }
+
+    if (value.length < 3) {
+
+        setError(
+            expense,
+            expenseError,
+            "Minimum 3 characters required."
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+        expense,
+        expenseError
+    );
+
+    return true;
+
+}
+
+
+// ==========================================
+// AMOUNT VALIDATION
+// ==========================================
+
+function validateAmount() {
+
+    const value = amount.value.trim();
+
+    if (value === "") {
+
+        setError(
+            amount,
+            amountError,
+            "Amount is required."
+        );
+
+        return false;
+
+    }
+
+    if (isNaN(value)) {
+
+        setError(
+            amount,
+            amountError,
+            "Amount must be numeric."
+        );
+
+        return false;
+
+    }
+
+    if (parseFloat(value) <= 0) {
+
+        setError(
+            amount,
+            amountError,
+            "Amount must be greater than zero."
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+        amount,
+        amountError
+    );
+
+    return true;
+
+}
+
+
+// ==========================================
+// PAYMENT MODE VALIDATION
+// ==========================================
+
+function validatePaymentMode() {
+
+    if (paymentMode.value === "") {
+
+        setError(
+            paymentMode,
+            paymentModeError,
+            "Please select Payment Mode."
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+        paymentMode,
+        paymentModeError
+    );
+
+    return true;
+
+}
+
+
+// ==========================================
+// EXPENSE DATE VALIDATION
+// ==========================================
+
+function validateExpenseDate() {
+
+    if (expenseDate.value === "") {
+
+        setError(
+            expenseDate,
+            dateError,
+            "Expense Date is required."
+        );
+
+        return false;
+
+    }
+
+    const today = new Date().toISOString().split("T")[0];
+
+    if (expenseDate.value > today) {
+
+        setError(
+            expenseDate,
+            dateError,
+            "Future dates are not allowed."
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+        expenseDate,
+        dateError
+    );
+
+    return true;
+
+}
+
+
+// ==========================================
+// REMARKS VALIDATION
+// ==========================================
+
+function validateRemarks() {
+
+    const value = remarks.value.trim();
+
+    if (value.length > 500) {
+
+        setError(
+            remarks,
+            remarksError,
+            "Maximum 500 characters allowed."
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+        remarks,
+        remarksError
+    );
+
+    return true;
+
+}
+// ==========================================
+// PAYMENT MODE UI
+// ==========================================
+
+function paymentModeUI() {
+
+    cashFields.style.display = "none";
+
+    transactionSection.style.display = "none";
+
+    chequeSection.style.display = "none";
+
+    amount.readOnly = false;
+
+    amount.value = "";
+
+    if (paymentMode.value === "Cash") {
+
+        cashFields.style.display = "block";
+
+        amount.readOnly = true;
+
+        calculateCashAmount();
+
+    }
+
+    else if (
+
+        paymentMode.value === "UPI" ||
+
+        paymentMode.value === "Bank" ||
+
+        paymentMode.value === "Card"
+
+    ) {
+
+        transactionSection.style.display = "block";
+
+    }
+
+    else if (paymentMode.value === "Cheque") {
+
+        chequeSection.style.display = "block";
+
+    }
+
+}
+
+
+// ==========================================
+// CUSTOM DENOMINATION
+// ==========================================
+
+denomination.addEventListener("change", function () {
+
+    if (this.value === "Others") {
+
+        customDiv.style.display = "block";
+
+    }
+
+    else {
+
+        customDiv.style.display = "none";
+
+        customDenomination.value = "";
+
+    }
+
+    calculateCashAmount();
+
+});
+
+
+// ==========================================
+// CASH AMOUNT CALCULATION
+// ==========================================
+
+function calculateCashAmount() {
+
+    if (paymentMode.value !== "Cash") {
+
+        return;
+
+    }
+
+    let denominationValue = 0;
+
+    if (denomination.value === "Others") {
+
+        denominationValue = parseFloat(customDenomination.value) || 0;
+
+    }
+
+    else {
+
+        denominationValue = parseFloat(denomination.value) || 0;
+
+    }
+
+    let notes = parseInt(notesCount.value) || 0;
+
+    amount.value = denominationValue * notes;
+
+}
+
+
+// ==========================================
+// AUTO CALCULATE EVENTS
+// ==========================================
+
+notesCount.addEventListener("input", calculateCashAmount);
+
+customDenomination.addEventListener("input", calculateCashAmount);
+
+
+// ==========================================
+// PAYMENT MODE CHANGE
+// ==========================================
+
+paymentMode.addEventListener("change", function () {
+
+    validatePaymentMode();
+
+    paymentModeUI();
+
+});
+
+
+// ==========================================
+// OPEN DATE PICKER
+// ==========================================
+
+if (expenseDate.showPicker) {
+
+    expenseDate.addEventListener("click", function () {
+
+        this.showPicker();
 
     });
 
-
-    // ==========================================
-    // EXPENSE NAME
-    // ==========================================
-
-    expense.addEventListener("input", () => {
-
-        expense.value = expense.value.replace(/[^A-Za-z0-9&().,_\- ]/g, "");
-
-        document.getElementById("expenseError").textContent = "";
-
-        if (expense.value.trim().length < 3) {
-
-            document.getElementById("expenseError").textContent = "Minimum 3 characters required.";
-
-        }
-
-    });
+}
 
 
-    // ==========================================
-    // AMOUNT
-    // ==========================================
+// ==========================================
+// INITIAL LOAD
+// ==========================================
 
-    amount.addEventListener("input", () => {
+paymentModeUI();
+// ==========================================
+// TRANSACTION ID VALIDATION
+// ==========================================
 
-        document.getElementById("amountError").textContent = "";
+function validateTransactionId() {
 
-        if (Number(amount.value) <= 0) {
+    if (
 
-            document.getElementById("amountError").textContent = "Amount must be greater than zero.";
+        paymentMode.value === "UPI" ||
+
+        paymentMode.value === "Bank" ||
+
+        paymentMode.value === "Card"
+
+    ) {
+
+        if (transactionId.value.trim() === "") {
+
+            transactionId.classList.add("is-invalid");
+
+            return false;
 
         }
 
-    });
+        transactionId.classList.remove("is-invalid");
+
+    }
+
+    return true;
+
+}
 
 
-    // ==========================================
-    // DATE
-    // ==========================================
+// ==========================================
+// CHEQUE VALIDATION
+// ==========================================
 
-    date.addEventListener("change", () => {
+function validateCheque() {
 
-        document.getElementById("dateError").textContent = "";
-
-        const today = new Date().toISOString().split("T")[0];
-
-        if (date.value > today) {
-
-            document.getElementById("dateError").textContent = "Future date is not allowed.";
-
-        }
-
-    });
-
-
-    // ==========================================
-    // REMARKS
-    // ==========================================
-
-    remarks.addEventListener("input", () => {
-
-        document.getElementById("remarksError").textContent = "";
-
-        if (remarks.value.length > 500) {
-
-            document.getElementById("remarksError").textContent = "Maximum 500 characters allowed.";
-
-        }
-
-    });
-
-
-    // ==========================================
-    // FORM SUBMIT
-    // ==========================================
-
-    form.addEventListener("submit", function (e) {
+    if (paymentMode.value === "Cheque") {
 
         let valid = true;
 
-        if (project.value === "") valid = false;
+        if (chequeNumber.value.trim() === "") {
 
-        if (expense.value.trim().length < 3) valid = false;
+            chequeNumber.classList.add("is-invalid");
 
-        if (Number(amount.value) <= 0) valid = false;
-
-        const today = new Date().toISOString().split("T")[0];
-
-        if (date.value > today) valid = false;
-
-        if (!valid) {
-
-            e.preventDefault();
-
-            alert("Please correct the highlighted fields before submitting.");
+            valid = false;
 
         }
 
-    });
+        else {
 
+            chequeNumber.classList.remove("is-invalid");
+
+        }
+
+        if (bankName.value.trim() === "") {
+
+            bankName.classList.add("is-invalid");
+
+            valid = false;
+
+        }
+
+        else {
+
+            bankName.classList.remove("is-invalid");
+
+        }
+
+        return valid;
+
+    }
+
+    return true;
+
+}
+
+
+// ==========================================
+// LIVE VALIDATION EVENTS
+// ==========================================
+
+project.addEventListener("change", validateProject);
+
+expense.addEventListener("input", validateExpenseName);
+
+amount.addEventListener("input", function () {
+
+    if (!amount.readOnly) {
+
+        validateAmount();
+
+    }
+
+});
+
+expenseDate.addEventListener("change", validateExpenseDate);
+
+remarks.addEventListener("input", validateRemarks);
+
+
+// ==========================================
+// FORM SUBMIT
+// ==========================================
+
+form.addEventListener("submit", function (e) {
+
+    let valid = true;
+
+    valid = validateProject() && valid;
+
+    valid = validateExpenseName() && valid;
+
+    valid = validatePaymentMode() && valid;
+
+    valid = validateExpenseDate() && valid;
+
+    valid = validateRemarks() && valid;
+
+    if (!amount.readOnly) {
+
+        valid = validateAmount() && valid;
+
+    }
+
+    valid = validateTransactionId() && valid;
+
+    valid = validateCheque() && valid;
+
+    if (!valid) {
+
+        e.preventDefault();
+
+    }
+
+});
+
+});
 </script>
 
 {% endblock %}

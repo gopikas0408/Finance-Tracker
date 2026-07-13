@@ -457,12 +457,162 @@ class ProjectForm(forms.ModelForm):
 # ======================================================
 
 class ProjectPaymentForm(forms.ModelForm):
+    
+    DENOMINATION_CHOICES = [
+
+        ("", "Select"),
+
+        ("100", "₹100"),
+
+        ("200", "₹200"),
+
+        ("500", "₹500"),
+
+        ("Others", "Others"),
+
+    ]
+
+    denomination = forms.ChoiceField(
+
+        choices=DENOMINATION_CHOICES,
+
+        required=False,
+
+        widget=forms.Select(
+
+            attrs={
+
+                "class": "form-select",
+
+                "id": "denomination"
+
+            }
+
+        )
+
+    )
+
+    notes_count = forms.IntegerField(
+
+        required=False,
+
+        widget=forms.NumberInput(
+
+            attrs={
+
+                "class": "form-control",
+
+                "id": "notes_count",
+
+                "min": "1"
+
+            }
+
+        )
+
+    )
+
+    custom_denomination = forms.DecimalField(
+
+        required=False,
+
+        widget=forms.NumberInput(
+
+            attrs={
+
+                "class": "form-control",
+
+                "id": "custom_denomination"
+
+            }
+
+        )
+
+    )
+
+    transaction_id = forms.CharField(
+
+        required=False,
+
+        widget=forms.TextInput(
+
+            attrs={
+
+                "class": "form-control",
+
+                "id": "transaction_id"
+
+            }
+
+        )
+
+    )
+
+    cheque_number = forms.CharField(
+
+        required=False,
+
+        widget=forms.TextInput(
+
+            attrs={
+
+                "class": "form-control",
+
+                "id": "cheque_number"
+
+            }
+
+        )
+
+    )
+
+    bank_name = forms.CharField(
+
+        required=False,
+
+        widget=forms.TextInput(
+
+            attrs={
+
+                "class": "form-control",
+
+                "id": "bank_name"
+
+            }
+
+        )
+
+    )
 
     class Meta:
 
         model = ProjectPayment
 
-        fields = "__all__"
+        fields = [
+
+            "project",
+
+            "payment_mode",
+
+            "amount",
+
+            "payment_date",
+
+            "remarks",
+
+            "denomination",
+
+            "notes_count",
+
+            "custom_denomination",
+
+            "transaction_id",
+
+            "cheque_number",
+
+            "bank_name",
+
+        ]
 
         widgets = {
 
@@ -557,6 +707,79 @@ class ProjectPaymentForm(forms.ModelForm):
             )
 
         return payment_date
+    
+    
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        payment_mode = cleaned_data.get("payment_mode")
+
+        denomination = cleaned_data.get("denomination")
+
+        notes_count = cleaned_data.get("notes_count")
+
+        custom = cleaned_data.get("custom_denomination")
+
+        transaction = cleaned_data.get("transaction_id")
+
+        cheque = cleaned_data.get("cheque_number")
+
+        bank = cleaned_data.get("bank_name")
+
+        if payment_mode == "Cash":
+
+            if not denomination:
+
+                self.add_error(
+
+                    "denomination",
+
+                    "Please select denomination."
+
+                )
+
+            if not notes_count:
+
+                self.add_error(
+
+                    "notes_count",
+
+                    "Enter number of notes."
+
+                )
+
+            if denomination == "Others" and not custom:
+
+                self.add_error(
+
+                    "custom_denomination",
+
+                    "Enter custom denomination."
+
+                )
+
+        elif payment_mode in [
+
+            "UPI",
+
+            "Bank",
+
+            "Card"
+
+        ]:
+
+            if not transaction:
+
+                self.add_error(
+
+                    "transaction_id",
+
+                    "Transaction ID is required."
+
+                )
+
+        return cleaned_data
 
     # ==========================================
     # REMARKS
@@ -586,6 +809,70 @@ class ProjectPaymentForm(forms.ModelForm):
 
 class ProjectExpenseForm(forms.ModelForm):
 
+    DENOMINATION_CHOICES = [
+        ("", "Select"),
+        ("100", "₹100"),
+        ("200", "₹200"),
+        ("500", "₹500"),
+        ("Others", "Others"),
+    ]
+
+    denomination = forms.ChoiceField(
+        choices=DENOMINATION_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            "class": "form-select",
+            "id": "denomination"
+        })
+    )
+
+    notes_count = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "id": "notes_count",
+            "placeholder": "Enter No. of Notes"
+        })
+    )
+
+    custom_denomination = forms.DecimalField(
+        required=False,
+        decimal_places=2,
+        max_digits=10,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "id": "custom_denomination",
+            "placeholder": "Enter Custom Denomination"
+        })
+    )
+
+    transaction_id = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "transaction_id",
+            "placeholder": "Enter Transaction ID"
+        })
+    )
+
+    cheque_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "cheque_number",
+            "placeholder": "Enter Cheque Number"
+        })
+    )
+
+    bank_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "bank_name",
+            "placeholder": "Enter Bank Name"
+        })
+    )
+
     class Meta:
 
         model = ProjectExpense
@@ -607,7 +894,7 @@ class ProjectExpenseForm(forms.ModelForm):
                 "class": "form-control",
                 "placeholder": "Enter Expense Amount"
             }),
-            
+
             "payment_mode": forms.Select(attrs={
                 "class": "form-select"
             }),
@@ -624,7 +911,6 @@ class ProjectExpenseForm(forms.ModelForm):
             }),
 
         }
-
     # ==========================================
     # PROJECT
     # ==========================================
@@ -728,6 +1014,51 @@ class ProjectExpenseForm(forms.ModelForm):
             )
 
         return expense_date
+    
+    
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        payment_mode = cleaned_data.get("payment_mode")
+
+        denomination = cleaned_data.get("denomination")
+
+        notes_count = cleaned_data.get("notes_count")
+
+        custom_denomination = cleaned_data.get("custom_denomination")
+
+        transaction_id = cleaned_data.get("transaction_id")
+
+        cheque_number = cleaned_data.get("cheque_number")
+
+        bank_name = cleaned_data.get("bank_name")
+
+        if payment_mode == "Cash":
+
+            if not denomination:
+                self.add_error("denomination", "Please select denomination.")
+
+            if not notes_count:
+                self.add_error("notes_count", "Enter number of notes.")
+
+            if denomination == "Others" and not custom_denomination:
+                self.add_error("custom_denomination", "Enter custom denomination.")
+
+        elif payment_mode in ["UPI", "Bank", "Card"]:
+
+            if not transaction_id:
+                self.add_error("transaction_id", "Transaction ID is required.")
+
+        elif payment_mode == "Cheque":
+
+            if not cheque_number:
+                self.add_error("cheque_number", "Cheque Number is required.")
+
+            if not bank_name:
+                self.add_error("bank_name", "Bank Name is required.")
+
+        return cleaned_data
 
     # ==========================================
     # REMARKS
@@ -756,6 +1087,82 @@ class ProjectExpenseForm(forms.ModelForm):
 # ======================================================
 
 class EmployeeSalaryForm(forms.ModelForm):
+    
+    DENOMINATION_CHOICES = [
+        ("", "Select"),
+        ("100", "₹100"),
+        ("200", "₹200"),
+        ("500", "₹500"),
+        ("Others", "Others"),
+    ]
+
+    denomination = forms.ChoiceField(
+        choices=DENOMINATION_CHOICES,
+        required=False,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+                "id": "denomination",
+            }
+        ),
+    )
+
+    notes_count = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "id": "notes_count",
+                "placeholder": "Enter No. of Notes",
+            }
+        ),
+    )
+
+    custom_denomination = forms.DecimalField(
+        required=False,
+        decimal_places=2,
+        max_digits=10,
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "id": "custom_denomination",
+                "placeholder": "Enter Custom Denomination",
+            }
+        ),
+    )
+
+    transaction_id = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "id": "transaction_id",
+                "placeholder": "Enter Transaction ID",
+            }
+        ),
+    )
+
+    cheque_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "id": "cheque_number",
+                "placeholder": "Enter Cheque Number",
+            }
+        ),
+    )
+
+    bank_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "id": "bank_name",
+                "placeholder": "Enter Bank Name",
+            }
+        ),
+    )
 
     class Meta:
 
@@ -975,6 +1382,93 @@ class EmployeeSalaryForm(forms.ModelForm):
             )
 
         return payment_date
+    
+    # =====================================
+    # PAYMENT MODE VALIDATION
+    # =====================================
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        payment_mode = cleaned_data.get("payment_mode")
+
+        denomination = cleaned_data.get("denomination")
+
+        notes_count = cleaned_data.get("notes_count")
+
+        custom_denomination = cleaned_data.get("custom_denomination")
+
+        transaction_id = cleaned_data.get("transaction_id")
+
+        cheque_number = cleaned_data.get("cheque_number")
+
+        bank_name = cleaned_data.get("bank_name")
+
+
+        # =====================================
+        # CASH
+        # =====================================
+
+        if payment_mode == "Cash":
+
+            if not denomination:
+
+                self.add_error(
+                    "denomination",
+                    "Please select denomination."
+                )
+
+            if not notes_count:
+
+                self.add_error(
+                    "notes_count",
+                    "Enter number of notes."
+                )
+
+            if denomination == "Others" and not custom_denomination:
+
+                self.add_error(
+                    "custom_denomination",
+                    "Enter custom denomination."
+                )
+
+
+        # =====================================
+        # UPI / BANK TRANSFER
+        # =====================================
+
+        elif payment_mode in ["UPI", "Bank Transfer"]:
+
+            if not transaction_id:
+
+                self.add_error(
+                    "transaction_id",
+                    "Transaction ID is required."
+                )
+
+
+        # =====================================
+        # CHEQUE
+        # =====================================
+
+        elif payment_mode == "Cheque":
+
+            if not cheque_number:
+
+                self.add_error(
+                    "cheque_number",
+                    "Cheque Number is required."
+                )
+
+            if not bank_name:
+
+                self.add_error(
+                    "bank_name",
+                    "Bank Name is required."
+                )
+
+        return cleaned_data
 
     # =====================================
     # REMARKS

@@ -397,6 +397,87 @@ class StudentForm(forms.ModelForm):
 
 class StudentPaymentForm(forms.ModelForm):
     
+    DENOMINATION_CHOICES = [
+        ("", "Select"),
+        ("100", "₹100"),
+        ("200", "₹200"),
+        ("500", "₹500"),
+        ("Others", "Others"),
+    ]
+
+    course_fee = forms.DecimalField(
+        required=False,
+        disabled=True,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control"
+        })
+    )
+
+    paid_amount = forms.DecimalField(
+        required=False,
+        disabled=True,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control"
+        })
+    )
+
+    balance_amount = forms.DecimalField(
+        required=False,
+        disabled=True,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control"
+        })
+    )
+
+    denomination = forms.ChoiceField(
+        choices=DENOMINATION_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            "class": "form-select",
+            "id": "denomination"
+        })
+    )
+
+    notes_count = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "id": "notes_count"
+        })
+    )
+
+    custom_denomination = forms.IntegerField(
+        required=False,
+        widget=forms.NumberInput(attrs={
+            "class": "form-control",
+            "id": "custom_denomination"
+        })
+    )
+
+    transaction_id = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "transaction_id"
+        })
+    )
+
+    cheque_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "cheque_number"
+        })
+    )
+
+    bank_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "id": "bank_name"
+        })
+    )
+        
     
     course_fee = forms.DecimalField(
         required=False,
@@ -443,7 +524,8 @@ class StudentPaymentForm(forms.ModelForm):
 
             "payment_mode": forms.Select(
                 attrs={
-                    "class": "form-select"
+                    "class": "form-select",
+                    "id": "id_payment_mode"
                 }
             ),
             
@@ -451,7 +533,8 @@ class StudentPaymentForm(forms.ModelForm):
             "payment_date": forms.DateInput(
                 attrs={
                     "class": "form-control",
-                    "type": "date"
+                    "type": "date",
+                     "id": "id_payment_date"
                 }
             ),
 
@@ -493,9 +576,13 @@ class StudentPaymentForm(forms.ModelForm):
 
     def clean_amount(self):
 
-        amount = self.cleaned_data["amount"]
+        amount = self.cleaned_data.get("amount")
 
         student = self.cleaned_data.get("student")
+
+        if amount is None:
+
+            raise ValidationError("Amount is required.")
 
         if amount <= 0:
 
@@ -510,22 +597,6 @@ class StudentPaymentForm(forms.ModelForm):
                 raise ValidationError(
                     f"Remaining Balance is only ₹{student.balance_amount}."
                 )
-
-        return amount
-
-    # ==========================================
-    # AMOUNT
-    # ==========================================
-
-    def clean_amount(self):
-
-        amount = self.cleaned_data["amount"]
-
-        if amount <= 0:
-
-            raise ValidationError(
-                "Amount must be greater than zero."
-            )
 
         return amount
 
@@ -574,13 +645,29 @@ def clean(self):
 
     cleaned_data = super().clean()
 
+    payment_mode = cleaned_data.get("payment_mode")
+
+    denomination = cleaned_data.get("denomination")
+
+    notes_count = cleaned_data.get("notes_count")
+
+    custom_denomination = cleaned_data.get("custom_denomination")
+
+    transaction_id = cleaned_data.get("transaction_id")
+
+    cheque_number = cleaned_data.get("cheque_number")
+
+    bank_name = cleaned_data.get("bank_name")
+
     student = cleaned_data.get("student")
+
     amount = cleaned_data.get("amount")
 
     if student and amount:
 
         total_paid = (
             StudentPayment.objects.filter(student=student)
+            .exclude(pk=self.instance.pk)
             .aggregate(total=Sum("amount"))["total"] or 0
         )
 
@@ -588,8 +675,63 @@ def clean(self):
 
         if amount > balance:
 
-            raise ValidationError(
+            self.add_error(
+                "amount",
                 f"Remaining Balance is only ₹{balance}."
+            )
+
+    # Cash
+
+    if payment_mode == "Cash":
+
+        if not denomination:
+
+            self.add_error(
+                "denomination",
+                "Please select denomination."
+            )
+
+        if not notes_count:
+
+            self.add_error(
+                "notes_count",
+                "Enter number of notes."
+            )
+
+        if denomination == "Others" and not custom_denomination:
+
+            self.add_error(
+                "custom_denomination",
+                "Enter custom denomination."
+            )
+
+    # UPI / Bank / Card
+
+    elif payment_mode in ["UPI", "Bank", "Card"]:
+
+        if not transaction_id:
+
+            self.add_error(
+                "transaction_id",
+                "Transaction ID is required."
+            )
+
+    # Cheque
+
+    elif payment_mode == "Cheque":
+
+        if not cheque_number:
+
+            self.add_error(
+                "cheque_number",
+                "Cheque Number is required."
+            )
+
+        if not bank_name:
+
+            self.add_error(
+                "bank_name",
+                "Bank Name is required."
             )
 
     return cleaned_data

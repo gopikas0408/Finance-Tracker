@@ -379,6 +379,42 @@ class ProjectPayment(models.Model):
         choices=PAYMENT_MODE
 
     )
+    
+    denomination = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    notes_count = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    custom_denomination = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    transaction_id = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True
+    )
+
+    cheque_number = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    bank_name = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True
+    )
 
     payment_date = models.DateField()
 
@@ -441,6 +477,35 @@ class ProjectPayment(models.Model):
                 "Future payment date is not allowed."
 
             })
+            
+            
+        # ==========================================
+        # Payment Mode Validation
+        # ==========================================
+
+        if self.payment_mode == "Cash":
+
+            if not self.denomination:
+                raise ValidationError({
+                    "denomination": "Please select denomination."
+                })
+
+            if not self.notes_count:
+                raise ValidationError({
+                    "notes_count": "Enter number of notes."
+                })
+
+            if self.denomination == "Others" and not self.custom_denomination:
+                raise ValidationError({
+                    "custom_denomination": "Enter custom denomination."
+                })
+
+        elif self.payment_mode in ["UPI", "Bank", "Card"]:
+
+            if not self.transaction_id:
+                raise ValidationError({
+                    "transaction_id": "Transaction ID is required."
+                })
 
         # Remarks
 
@@ -483,6 +548,42 @@ class ProjectExpense(models.Model):
     payment_mode = models.CharField(
         max_length=20,
         choices=PAYMENT_CHOICES,
+    )
+    
+    denomination = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    notes_count = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    custom_denomination = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    transaction_id = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True
+    )
+
+    cheque_number = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    bank_name = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True
     )
 
     project = models.ForeignKey(
@@ -608,6 +709,43 @@ class ProjectExpense(models.Model):
                 "Future expense date is not allowed."
 
             })
+            
+            
+        if self.payment_mode == "Cash":
+
+            if not self.denomination:
+                raise ValidationError({
+                    "denomination": "Please select denomination."
+                })
+
+            if not self.notes_count:
+                raise ValidationError({
+                    "notes_count": "Enter number of notes."
+                })
+
+            if self.denomination == "Others" and not self.custom_denomination:
+                raise ValidationError({
+                    "custom_denomination": "Enter custom denomination."
+                })
+
+        elif self.payment_mode in ["UPI", "Bank", "Card"]:
+
+            if not self.transaction_id:
+                raise ValidationError({
+                    "transaction_id": "Transaction ID is required."
+                })
+
+        elif self.payment_mode == "Cheque":
+
+            if not self.cheque_number:
+                raise ValidationError({
+                    "cheque_number": "Cheque Number is required."
+                })
+
+            if not self.bank_name:
+                raise ValidationError({
+                    "bank_name": "Bank Name is required."
+                })
 
         # Remarks
 
@@ -713,6 +851,64 @@ class EmployeeSalary(models.Model):
         max_length=20,
         choices=PAYMENT_MODE
     )
+    
+    # ==========================================
+    # CASH DETAILS
+    # ==========================================
+
+    DENOMINATION_CHOICES = [
+
+        ("100", "₹100"),
+        ("200", "₹200"),
+        ("500", "₹500"),
+        ("Others", "Others"),
+
+    ]
+
+    denomination = models.CharField(
+        max_length=20,
+        choices=DENOMINATION_CHOICES,
+        blank=True,
+        null=True
+    )
+
+    notes_count = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    custom_denomination = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    # ==========================================
+    # ONLINE PAYMENT
+    # ==========================================
+
+    transaction_id = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True
+    )
+
+    # ==========================================
+    # CHEQUE
+    # ==========================================
+
+    cheque_number = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    bank_name = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True
+    )
 
     payment_status = models.CharField(
         max_length=20,
@@ -784,66 +980,95 @@ class EmployeeSalary(models.Model):
             raise ValidationError({
                 "employee_id": "Employee ID must contain at least 3 characters."
             })
+            
+            
+        # ==========================================
+        # PAYMENT MODE VALIDATION
+        # ==========================================
 
-        # Department
+        if self.payment_mode == "Cash":
 
-        if not re.match(
+            if not self.denomination:
+                raise ValidationError({
+                    "denomination": "Please select denomination."
+                })
 
-            r'^[A-Za-z ]+$',
+            if not self.notes_count:
+                raise ValidationError({
+                    "notes_count": "Enter number of notes."
+                })
 
-            self.department
+            if self.denomination == "Others" and not self.custom_denomination:
+                raise ValidationError({
+                    "custom_denomination": "Enter custom denomination."
+                })
 
-        ):
+        elif self.payment_mode in ["UPI", "Bank Transfer"]:
 
-            raise ValidationError({
+            if not self.transaction_id:
+                raise ValidationError({
+                    "transaction_id": "Transaction ID is required."
+                })
 
-                "department":
+                # Department
 
-                "Department must contain only alphabets."
+                if not re.match(
 
-            })
+                    r'^[A-Za-z ]+$',
 
-        # Designation
+                    self.department
 
-        if not re.match(
+                ):
 
-            r'^[A-Za-z ]+$',
+                    raise ValidationError({
 
-            self.designation
+                        "department":
 
-        ):
+                        "Department must contain only alphabets."
 
-            raise ValidationError({
+                    })
 
-                "designation":
+                # Designation
 
-                "Designation must contain only alphabets."
+                if not re.match(
 
-            })
+                    r'^[A-Za-z ]+$',
 
-        # Basic Salary
+                    self.designation
 
-        if self.basic_salary <= 0:
+                ):
 
-            raise ValidationError({
+                    raise ValidationError({
 
-                "basic_salary":
+                        "designation":
 
-                "Basic salary must be greater than zero."
+                        "Designation must contain only alphabets."
 
-            })
+                    })
 
-        # Bonus
+                # Basic Salary
 
-        if self.bonus < 0:
+                if self.basic_salary <= 0:
 
-            raise ValidationError({
+                    raise ValidationError({
 
-                "bonus":
+                        "basic_salary":
 
-                "Bonus cannot be negative."
+                        "Basic salary must be greater than zero."
 
-            })
+                    })
+
+                # Bonus
+
+                if self.bonus < 0:
+
+                    raise ValidationError({
+
+                        "bonus":
+
+                        "Bonus cannot be negative."
+
+                    })
 
         # Deduction
 

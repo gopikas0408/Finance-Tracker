@@ -361,6 +361,39 @@ class StudentPayment(models.Model):
         ("Bank", "Bank"),
         ("Card", "Card"),
     )
+    denomination = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    notes_count = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    custom_denomination = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    transaction_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    cheque_number = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    bank_name = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True
+    )
 
     student = models.ForeignKey(
         Student,
@@ -429,6 +462,60 @@ class StudentPayment(models.Model):
             raise ValidationError({
                 "payment_date": "Future Date is not allowed."
             })
+            
+        # ==========================================
+        # Payment Mode Validation
+        # ==========================================
+
+        if self.payment_mode == "Cash":
+
+            if not self.denomination:
+
+                raise ValidationError({
+                    "denomination":
+                    "Please select denomination."
+                })
+
+            if not self.notes_count:
+
+                raise ValidationError({
+                    "notes_count":
+                    "Enter number of notes."
+                })
+
+            if self.denomination == "Others" and not self.custom_denomination:
+
+                raise ValidationError({
+                    "custom_denomination":
+                    "Enter custom denomination."
+                })
+
+
+        elif self.payment_mode in ["UPI", "Bank", "Card"]:
+
+            if not self.transaction_id:
+
+                raise ValidationError({
+                    "transaction_id":
+                    "Transaction ID is required."
+                })
+
+
+        elif self.payment_mode == "Cheque":
+
+            if not self.cheque_number:
+
+                raise ValidationError({
+                    "cheque_number":
+                    "Cheque Number is required."
+                })
+
+            if not self.bank_name:
+
+                raise ValidationError({
+                    "bank_name":
+                    "Bank Name is required."
+                })
 
         # Remarks
 

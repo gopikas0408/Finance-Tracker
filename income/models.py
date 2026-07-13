@@ -44,6 +44,46 @@ class Income(BaseModel):
         on_delete=models.CASCADE,
         related_name="incomes"
     )
+    
+    # Cash Details
+
+    denomination = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    custom_denomination = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    notes_count = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    # Online Payment
+
+    transaction_id = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True
+    )
+
+    # Cheque
+
+    cheque_number = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    bank_name = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
 
     amount = models.DecimalField(
         max_digits=12,
