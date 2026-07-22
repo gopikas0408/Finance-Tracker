@@ -9,6 +9,10 @@ from activity.services import (
     create_notification,
     log_activity,
 )
+from .forms import (
+    StudentPaymentForm,
+    StudentPaymentCashDenominationFormSet,
+)
 from transactions.services import TransactionService
 
 from activity.models import Achievement
@@ -657,9 +661,20 @@ def add_payment(request):
 
     form = StudentPaymentForm(request.POST or None)
 
-    if form.is_valid():
+    formset = AddStudentPaymentCashDenominationFormSet(
+        request.POST or None
+    )
 
+    if form.is_valid() and formset.is_valid():
         payment = form.save()
+        
+        denominations = formset.save(commit=False)
+
+        for denomination in denominations:
+
+            denomination.payment = payment
+
+            denomination.save()
 
         student = payment.student
 
@@ -751,6 +766,8 @@ def add_payment(request):
         {
 
             "form": form,
+            
+            "formset": formset,
 
             "active_page": "payments",
 
@@ -780,10 +797,17 @@ def edit_payment(request, id):
         instance=payment
 
     )
+    formset = StudentPaymentCashDenominationFormSet(
+        request.POST or None,
+        instance=payment
+    )
 
-    if form.is_valid():
+    if form.is_valid() and formset.is_valid():
 
         payment = form.save()
+        formset.instance = payment
+
+        formset.save()
 
         student = payment.student
 
@@ -841,6 +865,8 @@ def edit_payment(request, id):
         {
 
             "form": form,
+            
+            "formset": formset,
 
             "payment": payment,
 
@@ -888,6 +914,8 @@ def view_payment(request, id):
         {
 
             "payment": payment,
+            
+            "cash_denominations": payment.cash_denominations.all(),
 
             "active_page": "payments",
 

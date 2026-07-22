@@ -7,8 +7,14 @@ from django.core.paginator import Paginator
 
 from transactions.services import TransactionService
 
-from .models import Income
-from .forms import IncomeForm
+from .models import (
+    Income,
+    CashDenomination,
+)
+from .forms import (
+    IncomeForm,
+    CashDenominationFormSet,
+)
 from django.db.models import Sum
 from django.utils import timezone
 
@@ -140,9 +146,38 @@ def add_income(request):
 
     )
 
-    if form.is_valid():
+    formset = CashDenominationFormSet(
+        request.POST or None,
+    )
 
-        income = form.save()
+    if form.is_valid() and formset.is_valid():
+
+        income = form.save(commit=False)
+
+        income.amount = 0
+
+        income.save()
+
+        total_amount = 0
+
+        for denomination_form in formset:
+
+            if (
+                denomination_form.cleaned_data
+                and not denomination_form.cleaned_data.get("DELETE", False)
+            ):
+
+                cash = denomination_form.save(commit=False)
+
+                cash.income = income
+
+                cash.save()
+
+                total_amount += cash.amount
+
+        income.amount = total_amount
+
+        income.save()
 
         # ==========================================
         # CREATE TRANSACTION
@@ -271,6 +306,7 @@ def add_income(request):
         {
 
             "form": form,
+            "formset": formset,
 
         }
 
@@ -299,10 +335,28 @@ def edit_income(request, id):
         instance=income,
 
     )
+    formset = CashDenominationFormSet(
+        request.POST or None,
+        instance=income
+    )
 
-    if form.is_valid():
+    if form.is_valid() and formset.is_valid():
 
-        income = form.save()
+        income = form.save(commit=False)
+
+        income.save()
+
+        formset.instance = income
+
+        formset.save()
+
+        total = income.cash_denominations.aggregate(
+            total=Sum("amount")
+        )["total"] or 0
+
+        income.amount = total
+
+        income.save()
 
         TransactionService.update_transaction(
 
@@ -338,8 +392,10 @@ def edit_income(request, id):
         {
 
             "form": form,
+            "formset": formset,
 
             "income": income,
+            "payment_locked": True,
 
         }
 

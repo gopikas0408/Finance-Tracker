@@ -2,8 +2,17 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 import re
-from .models import Client, Project, ProjectPayment, ProjectExpense, EmployeeSalary
-
+from .models import (
+    Client,
+    Project,
+    ProjectPayment,
+    ProjectPaymentCashDenomination,
+    ProjectExpense,
+    ProjectExpenseCashDenomination,
+    EmployeeSalary,
+    EmployeeSalaryCashDenomination,
+)
+from django.forms import inlineformset_factory
 
 # ======================================================
 # CLIENT FORM
@@ -451,6 +460,8 @@ class ProjectForm(forms.ModelForm):
                 )
 
         return description
+    
+
         
 # ======================================================
 # PROJECT PAYMENT FORM
@@ -458,77 +469,9 @@ class ProjectForm(forms.ModelForm):
 
 class ProjectPaymentForm(forms.ModelForm):
     
-    DENOMINATION_CHOICES = [
+    
 
-        ("", "Select"),
-
-        ("100", "₹100"),
-
-        ("200", "₹200"),
-
-        ("500", "₹500"),
-
-        ("Others", "Others"),
-
-    ]
-
-    denomination = forms.ChoiceField(
-
-        choices=DENOMINATION_CHOICES,
-
-        required=False,
-
-        widget=forms.Select(
-
-            attrs={
-
-                "class": "form-select",
-
-                "id": "denomination"
-
-            }
-
-        )
-
-    )
-
-    notes_count = forms.IntegerField(
-
-        required=False,
-
-        widget=forms.NumberInput(
-
-            attrs={
-
-                "class": "form-control",
-
-                "id": "notes_count",
-
-                "min": "1"
-
-            }
-
-        )
-
-    )
-
-    custom_denomination = forms.DecimalField(
-
-        required=False,
-
-        widget=forms.NumberInput(
-
-            attrs={
-
-                "class": "form-control",
-
-                "id": "custom_denomination"
-
-            }
-
-        )
-
-    )
+    
 
     transaction_id = forms.CharField(
 
@@ -585,6 +528,7 @@ class ProjectPaymentForm(forms.ModelForm):
     )
 
     class Meta:
+        
 
         model = ProjectPayment
 
@@ -599,12 +543,6 @@ class ProjectPaymentForm(forms.ModelForm):
             "payment_date",
 
             "remarks",
-
-            "denomination",
-
-            "notes_count",
-
-            "custom_denomination",
 
             "transaction_id",
 
@@ -643,6 +581,18 @@ class ProjectPaymentForm(forms.ModelForm):
             }),
 
         }
+    
+    def __init__(self, *args, **kwargs):
+    
+        super().__init__(*args, **kwargs)
+    
+        if self.instance and self.instance.pk:
+    
+            self.fields["denomination"].disabled = True
+            self.fields["notes_count"].disabled = True
+            self.fields["amount"].disabled = True
+        
+            
 
     # ==========================================
     # PROJECT
@@ -714,69 +664,30 @@ class ProjectPaymentForm(forms.ModelForm):
         cleaned_data = super().clean()
 
         payment_mode = cleaned_data.get("payment_mode")
-
-        denomination = cleaned_data.get("denomination")
-
-        notes_count = cleaned_data.get("notes_count")
-
-        custom = cleaned_data.get("custom_denomination")
-
         transaction = cleaned_data.get("transaction_id")
-
         cheque = cleaned_data.get("cheque_number")
-
         bank = cleaned_data.get("bank_name")
 
-        if payment_mode == "Cash":
-
-            if not denomination:
-
-                self.add_error(
-
-                    "denomination",
-
-                    "Please select denomination."
-
-                )
-
-            if not notes_count:
-
-                self.add_error(
-
-                    "notes_count",
-
-                    "Enter number of notes."
-
-                )
-
-            if denomination == "Others" and not custom:
-
-                self.add_error(
-
-                    "custom_denomination",
-
-                    "Enter custom denomination."
-
-                )
-
-        elif payment_mode in [
-
-            "UPI",
-
-            "Bank",
-
-            "Card"
-
-        ]:
+        if payment_mode in ["UPI", "Bank", "Card"]:
 
             if not transaction:
-
                 self.add_error(
-
                     "transaction_id",
-
                     "Transaction ID is required."
+                )
 
+        elif payment_mode == "Cheque":
+
+            if not cheque:
+                self.add_error(
+                    "cheque_number",
+                    "Cheque Number is required."
+                )
+
+            if not bank:
+                self.add_error(
+                    "bank_name",
+                    "Bank Name is required."
                 )
 
         return cleaned_data
@@ -802,49 +713,70 @@ class ProjectPaymentForm(forms.ModelForm):
                 )
 
         return remarks
-        
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        if self.instance and self.instance.pk:
+
+            self.fields["project"].disabled = True
+            self.fields["payment_mode"].disabled = True
+            self.fields["amount"].disabled = True
+            self.fields["payment_date"].disabled = True
+            self.fields["transaction_id"].disabled = True
+            self.fields["cheque_number"].disabled = True
+            self.fields["bank_name"].disabled = True
+    
+class ProjectPaymentCashDenominationForm(forms.ModelForm):
+
+    class Meta:
+        model = ProjectPaymentCashDenomination
+        fields = [
+            "denomination",
+            "notes_count",
+            "amount",
+        ]
+
+        widgets = {
+            "denomination": forms.Select(attrs={"class": "form-select"}),
+            "notes_count": forms.NumberInput(attrs={"class": "form-control"}),
+            "amount": forms.NumberInput(attrs={
+                "class": "form-control",
+                "readonly": True
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        if self.instance and self.instance.pk:
+
+            self.fields["denomination"].disabled = True
+            self.fields["notes_count"].disabled = True
+            self.fields["amount"].disabled = True
+ProjectPaymentCashDenominationFormSet = inlineformset_factory(
+    ProjectPayment,
+    ProjectPaymentCashDenomination,
+    form=ProjectPaymentCashDenominationForm,
+    extra=1,
+    can_delete=True,
+)
+
+ProjectPaymentCashDenominationEditFormSet = inlineformset_factory(
+    ProjectPayment,
+    ProjectPaymentCashDenomination,
+    form=ProjectPaymentCashDenominationForm,
+    extra=0,
+    can_delete=False
+)
 # ======================================================
 # PROJECT EXPENSE FORM
 # ======================================================
 
 class ProjectExpenseForm(forms.ModelForm):
 
-    DENOMINATION_CHOICES = [
-        ("", "Select"),
-        ("100", "₹100"),
-        ("200", "₹200"),
-        ("500", "₹500"),
-        ("Others", "Others"),
-    ]
-
-    denomination = forms.ChoiceField(
-        choices=DENOMINATION_CHOICES,
-        required=False,
-        widget=forms.Select(attrs={
-            "class": "form-select",
-            "id": "denomination"
-        })
-    )
-
-    notes_count = forms.IntegerField(
-        required=False,
-        widget=forms.NumberInput(attrs={
-            "class": "form-control",
-            "id": "notes_count",
-            "placeholder": "Enter No. of Notes"
-        })
-    )
-
-    custom_denomination = forms.DecimalField(
-        required=False,
-        decimal_places=2,
-        max_digits=10,
-        widget=forms.NumberInput(attrs={
-            "class": "form-control",
-            "id": "custom_denomination",
-            "placeholder": "Enter Custom Denomination"
-        })
-    )
+   
 
     transaction_id = forms.CharField(
         required=False,
@@ -877,7 +809,17 @@ class ProjectExpenseForm(forms.ModelForm):
 
         model = ProjectExpense
 
-        fields = "__all__"
+        fields = [
+            "project",
+            "expense_name",
+            "amount",
+            "payment_mode",
+            "expense_date",
+            "remarks",
+            "transaction_id",
+            "cheque_number",
+            "bank_name",
+        ]
 
         widgets = {
 
@@ -911,6 +853,21 @@ class ProjectExpenseForm(forms.ModelForm):
             }),
 
         }
+    
+    def __init__(self, *args, **kwargs):
+    
+            super().__init__(*args, **kwargs)
+    
+            if self.instance and self.instance.pk:
+    
+                self.fields["project"].disabled = True
+                self.fields["expense_name"].disabled = True
+                self.fields["amount"].disabled = True
+                self.fields["payment_mode"].disabled = True
+                self.fields["expense_date"].disabled = True
+                self.fields["transaction_id"].disabled = True
+                self.fields["cheque_number"].disabled = True
+                self.fields["bank_name"].disabled = True
     # ==========================================
     # PROJECT
     # ==========================================
@@ -1021,42 +978,31 @@ class ProjectExpenseForm(forms.ModelForm):
         cleaned_data = super().clean()
 
         payment_mode = cleaned_data.get("payment_mode")
-
-        denomination = cleaned_data.get("denomination")
-
-        notes_count = cleaned_data.get("notes_count")
-
-        custom_denomination = cleaned_data.get("custom_denomination")
-
         transaction_id = cleaned_data.get("transaction_id")
-
         cheque_number = cleaned_data.get("cheque_number")
-
         bank_name = cleaned_data.get("bank_name")
 
-        if payment_mode == "Cash":
-
-            if not denomination:
-                self.add_error("denomination", "Please select denomination.")
-
-            if not notes_count:
-                self.add_error("notes_count", "Enter number of notes.")
-
-            if denomination == "Others" and not custom_denomination:
-                self.add_error("custom_denomination", "Enter custom denomination.")
-
-        elif payment_mode in ["UPI", "Bank", "Card"]:
+        if payment_mode in ["UPI", "Bank", "Card"]:
 
             if not transaction_id:
-                self.add_error("transaction_id", "Transaction ID is required.")
+                self.add_error(
+                    "transaction_id",
+                    "Transaction ID is required."
+                )
 
         elif payment_mode == "Cheque":
 
             if not cheque_number:
-                self.add_error("cheque_number", "Cheque Number is required.")
+                self.add_error(
+                    "cheque_number",
+                    "Cheque Number is required."
+                )
 
             if not bank_name:
-                self.add_error("bank_name", "Bank Name is required.")
+                self.add_error(
+                    "bank_name",
+                    "Bank Name is required."
+                )
 
         return cleaned_data
 
@@ -1081,55 +1027,68 @@ class ProjectExpenseForm(forms.ModelForm):
                 )
 
         return remarks
+# ======================================================
+# PROJECT EXPENSE CASH DENOMINATION FORM
+# ======================================================
+
+class ProjectExpenseCashDenominationForm(forms.ModelForm):
+
+    class Meta:
+
+        model = ProjectExpenseCashDenomination
+
+        fields = [
+            "denomination",
+            "notes_count",
+            "amount",
+        ]
+
+        widgets = {
+
+            "denomination": forms.Select(
+                attrs={
+                    "class": "form-select"
+                }
+            ),
+
+            "notes_count": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "min": 1
+                }
+            ),
+
+            "amount": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "readonly": True
+                }
+            ),
+
+        }
         
+ProjectExpenseCashDenominationFormSet = inlineformset_factory(
+    ProjectExpense,
+    ProjectExpenseCashDenomination,
+    form=ProjectExpenseCashDenominationForm,
+    extra=1,
+    can_delete=True,
+)
+
+ProjectExpenseCashDenominationEditFormSet = inlineformset_factory(
+    ProjectExpense,
+    ProjectExpenseCashDenomination,
+    form=ProjectExpenseCashDenominationForm,
+    extra=0,
+    can_delete=False,
+)
 # ======================================================
 # EMPLOYEE SALARY FORM
 # ======================================================
 
 class EmployeeSalaryForm(forms.ModelForm):
     
-    DENOMINATION_CHOICES = [
-        ("", "Select"),
-        ("100", "₹100"),
-        ("200", "₹200"),
-        ("500", "₹500"),
-        ("Others", "Others"),
-    ]
-
-    denomination = forms.ChoiceField(
-        choices=DENOMINATION_CHOICES,
-        required=False,
-        widget=forms.Select(
-            attrs={
-                "class": "form-select",
-                "id": "denomination",
-            }
-        ),
-    )
-
-    notes_count = forms.IntegerField(
-        required=False,
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-                "id": "notes_count",
-                "placeholder": "Enter No. of Notes",
-            }
-        ),
-    )
-
-    custom_denomination = forms.DecimalField(
-        required=False,
-        decimal_places=2,
-        max_digits=10,
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control",
-                "id": "custom_denomination",
-                "placeholder": "Enter Custom Denomination",
-            }
-        ),
-    )
+   
 
     transaction_id = forms.CharField(
         required=False,
@@ -1168,7 +1127,25 @@ class EmployeeSalaryForm(forms.ModelForm):
 
         model = EmployeeSalary
 
-        fields = "__all__"
+        fields = [
+            "employee_name",
+            "employee_id",
+            "department",
+            "designation",
+            "project",
+            "salary_month",
+            "basic_salary",
+            "bonus",
+            "deduction",
+            "net_salary",
+            "payment_date",
+            "payment_mode",
+            "payment_status",
+            "remarks",
+            "transaction_id",
+            "cheque_number",
+            "bank_name",
+        ]
 
         widgets = {
 
@@ -1215,6 +1192,12 @@ class EmployeeSalaryForm(forms.ModelForm):
                 "class": "form-control",
                 "placeholder": "Deduction"
             }),
+            "net_salary": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "readonly": True,
+                }
+            ),
 
             "payment_date": forms.DateInput(attrs={
                 "class": "form-control",
@@ -1236,6 +1219,28 @@ class EmployeeSalaryForm(forms.ModelForm):
             }),
 
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        readonly_fields = [
+            "employee_id",
+            "salary_month",
+            "payment_mode",
+            "basic_salary",
+            "bonus",
+            "deduction",
+            "net_salary",
+            "payment_date",
+            "payment_status",
+            "transaction_id",
+            "cheque_number",
+            "bank_name",
+        ]
+
+        for field in readonly_fields:
+            if field in self.fields:
+                self.fields[field].disabled = True
 
     # =====================================
     # EMPLOYEE NAME
@@ -1392,77 +1397,27 @@ class EmployeeSalaryForm(forms.ModelForm):
         cleaned_data = super().clean()
 
         payment_mode = cleaned_data.get("payment_mode")
-
-        denomination = cleaned_data.get("denomination")
-
-        notes_count = cleaned_data.get("notes_count")
-
-        custom_denomination = cleaned_data.get("custom_denomination")
-
         transaction_id = cleaned_data.get("transaction_id")
-
         cheque_number = cleaned_data.get("cheque_number")
-
         bank_name = cleaned_data.get("bank_name")
 
-
-        # =====================================
-        # CASH
-        # =====================================
-
-        if payment_mode == "Cash":
-
-            if not denomination:
-
-                self.add_error(
-                    "denomination",
-                    "Please select denomination."
-                )
-
-            if not notes_count:
-
-                self.add_error(
-                    "notes_count",
-                    "Enter number of notes."
-                )
-
-            if denomination == "Others" and not custom_denomination:
-
-                self.add_error(
-                    "custom_denomination",
-                    "Enter custom denomination."
-                )
-
-
-        # =====================================
-        # UPI / BANK TRANSFER
-        # =====================================
-
-        elif payment_mode in ["UPI", "Bank Transfer"]:
+        if payment_mode in ["UPI", "Bank Transfer"]:
 
             if not transaction_id:
-
                 self.add_error(
                     "transaction_id",
                     "Transaction ID is required."
                 )
 
-
-        # =====================================
-        # CHEQUE
-        # =====================================
-
         elif payment_mode == "Cheque":
 
             if not cheque_number:
-
                 self.add_error(
                     "cheque_number",
                     "Cheque Number is required."
                 )
 
             if not bank_name:
-
                 self.add_error(
                     "bank_name",
                     "Bank Name is required."
@@ -1491,4 +1446,61 @@ class EmployeeSalaryForm(forms.ModelForm):
         return remarks
     
     
-    
+class EmployeeSalaryCashDenominationForm(forms.ModelForm):
+
+    class Meta:
+
+        model = EmployeeSalaryCashDenomination
+
+        fields = [
+            "denomination",
+            "notes_count",
+            "amount",
+        ]
+
+        widgets = {
+
+            "denomination": forms.Select(
+                attrs={
+                    "class": "form-select denomination"
+                }
+            ),
+
+            "notes_count": forms.NumberInput(
+                attrs={
+                    "class": "form-control notes",
+                    "min": 1,
+                }
+            ),
+
+            "amount": forms.NumberInput(
+                attrs={
+                    "class": "form-control amount",
+                    "readonly": True,
+                }
+            ),
+
+        }
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["denomination"].disabled = True
+        self.fields["notes_count"].disabled = True
+        self.fields["amount"].disabled = True
+            
+EmployeeSalaryCashDenominationFormSet = inlineformset_factory(
+    EmployeeSalary,
+    EmployeeSalaryCashDenomination,
+    form=EmployeeSalaryCashDenominationForm,
+    extra=1,
+    can_delete=True,
+)
+
+EmployeeSalaryCashDenominationEditFormSet = inlineformset_factory(
+    EmployeeSalary,
+    EmployeeSalaryCashDenomination,
+    form=EmployeeSalaryCashDenominationForm,
+    extra=0,
+    can_delete=False,
+)

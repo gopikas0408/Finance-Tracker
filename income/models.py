@@ -45,23 +45,7 @@ class Income(BaseModel):
         related_name="incomes"
     )
     
-    # Cash Details
-
-    denomination = models.CharField(
-        max_length=20,
-        blank=True,
-        null=True
-    )
-
-    custom_denomination = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
-
-    notes_count = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
+    
 
     # Online Payment
 
@@ -161,3 +145,79 @@ class Income(BaseModel):
 
     def __str__(self):
         return f"{self.income_source} - ₹{self.amount}"
+    
+    
+class CashDenomination(BaseModel):
+
+    DENOMINATION_CHOICES = [
+
+        
+        ("500", "₹500"),
+        ("200", "₹200"),
+        ("100", "₹100"),
+        ("50", "₹50"),
+        ("20", "₹20"),
+        ("10", "₹10"),
+        ("Other", "Other"),
+
+    ]
+
+    income = models.ForeignKey(
+
+        Income,
+
+        on_delete=models.CASCADE,
+
+        related_name="cash_denominations"
+
+    )
+
+    denomination = models.CharField(
+
+        max_length=20,
+
+        choices=DENOMINATION_CHOICES
+
+    )
+
+    
+
+    notes_count = models.PositiveIntegerField()
+
+    amount = models.DecimalField(
+
+        max_digits=12,
+
+        decimal_places=2,
+        editable=False
+
+    )
+
+    class Meta:
+
+        ordering = ["id"]
+
+        verbose_name = "Cash Denomination"
+
+        verbose_name_plural = "Cash Denominations"
+
+    def clean(self):
+
+        super().clean()
+
+        if self.notes_count <= 0:
+
+            raise ValidationError({
+
+                "notes_count": "Notes count must be greater than zero."
+
+            })
+
+        value = int(self.denomination)
+
+
+
+        self.amount = value * self.notes_count
+
+    def __str__(self):
+        return f"₹{self.denomination} × {self.notes_count}"

@@ -2,44 +2,13 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 import os
-
-from .models import Expense
+from django.forms import inlineformset_factory
+from .models import Expense, CashDenomination
 
 
 class ExpenseForm(forms.ModelForm):
 
-    DENOMINATION_CHOICES = [
-        ("", "Select"),
-        ("100", "₹100"),
-        ("200", "₹200"),
-        ("500", "₹500"),
-        ("Others", "Others"),
-    ]
-
-    denomination = forms.ChoiceField(
-        choices=DENOMINATION_CHOICES,
-        required=False,
-        widget=forms.Select(attrs={
-            "class": "form-select",
-            "id": "denomination"
-        })
-    )
-
-    notes_count = forms.IntegerField(
-        required=False,
-        widget=forms.NumberInput(attrs={
-            "class": "form-control",
-            "id": "notes_count"
-        })
-    )
-
-    custom_denomination = forms.IntegerField(
-        required=False,
-        widget=forms.NumberInput(attrs={
-            "class": "form-control",
-            "id": "custom_denomination"
-        })
-    )
+   
 
     transaction_id = forms.CharField(
         required=False,
@@ -86,27 +55,7 @@ class ExpenseForm(forms.ModelForm):
                 }
             ),
             
-            "denomination": forms.Select(
-                attrs={
-                    "class": "form-select"
-                }
-            ),
-
-            "notes_count": forms.NumberInput(
-                attrs={
-                    "class": "form-control",
-                    "min": "1",
-                    "placeholder": "Enter No. of Notes"
-                }
-            ),
-
-            "custom_denomination": forms.NumberInput(
-                attrs={
-                    "class": "form-control",
-                    "placeholder": "Enter Custom Denomination"
-                }
-            ),
-
+            
             "transaction_id": forms.TextInput(
                 attrs={
                     "class": "form-control",
@@ -229,20 +178,7 @@ class ExpenseForm(forms.ModelForm):
 
         return amount
 
-    # ==========================================
-    # Payment Mode Validation
-    # ==========================================
-
-    def clean_payment_mode(self):
-
-        payment_mode = self.cleaned_data.get("payment_mode")
-
-        if not payment_mode:
-            raise ValidationError(
-                "Please select Payment Mode."
-            )
-
-        return payment_mode
+   
     
     
     # ==========================================
@@ -255,60 +191,32 @@ class ExpenseForm(forms.ModelForm):
 
         payment_mode = cleaned_data.get("payment_mode")
 
-        denomination = cleaned_data.get("denomination")
-
-        notes_count = cleaned_data.get("notes_count")
-
-        custom_denomination = cleaned_data.get("custom_denomination")
-
         transaction_id = cleaned_data.get("transaction_id")
 
         cheque_number = cleaned_data.get("cheque_number")
 
         bank_name = cleaned_data.get("bank_name")
 
-        # Cash
-        if payment_mode == "Cash":
-
-            if not denomination:
-                self.add_error(
-                    "denomination",
-                    "Please select denomination."
-                )
-
-            if notes_count in [None, ""]:
-                self.add_error(
-                    "notes_count",
-                    "Enter number of notes."
-                )
-
-            if denomination == "Others" and not custom_denomination:
-                self.add_error(
-                    "custom_denomination",
-                    "Enter custom denomination."
-            )
-
-        # UPI / Bank / Card
-
-        elif payment_mode in ["UPI", "Bank", "Card"]:
+        if payment_mode in ["UPI", "Bank", "Card"]:
 
             if not transaction_id:
+
                 self.add_error(
                     "transaction_id",
                     "Transaction ID is required."
                 )
 
-        # Cheque
-
         elif payment_mode == "Cheque":
 
             if not cheque_number:
+
                 self.add_error(
                     "cheque_number",
                     "Cheque Number is required."
                 )
 
             if not bank_name:
+
                 self.add_error(
                     "bank_name",
                     "Bank Name is required."
@@ -394,3 +302,65 @@ class ExpenseForm(forms.ModelForm):
                 )
 
         return attachment
+    
+class CashDenominationForm(forms.ModelForm):
+
+    class Meta:
+
+        model = CashDenomination
+
+        fields = (
+            "denomination",
+            "notes_count",
+        )
+
+        widgets = {
+
+            "denomination": forms.Select(
+                attrs={
+                    "class": "form-select denomination",
+                }
+            ),
+
+            "notes_count": forms.NumberInput(
+                attrs={
+                    "class": "form-control notes-count",
+                    "min": 1,
+                }
+            ),
+
+        }
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        denomination = cleaned_data.get("denomination")
+
+        notes = cleaned_data.get("notes_count")
+
+        if notes is None or notes <= 0:
+
+            raise ValidationError(
+                "Notes count must be greater than zero."
+            )
+
+        cleaned_data["amount"] = denomination * notes
+
+        return cleaned_data
+    
+ExpenseCashDenominationFormSet = inlineformset_factory(
+    Expense,
+    CashDenomination,
+    form=CashDenominationForm,
+    extra=1,
+    can_delete=True,
+)
+
+ExpenseCashDenominationEditFormSet = inlineformset_factory(
+    Expense,
+    CashDenomination,
+    form=CashDenominationForm,
+    extra=0,
+    can_delete=False
+)

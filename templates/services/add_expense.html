@@ -29,6 +29,7 @@
     <form method="POST" id="expenseForm" novalidate>
 
         {% csrf_token %}
+        {{ formset.management_form }}
 
         <div class="form-grid">
 
@@ -138,54 +139,79 @@ Payment Mode
 Cash Details
 =========================== -->
 
-            <div id="cashFields" class="full-width" style="display:none;">
+           <div id="cashFields" class="full-width" style="display:none;">
 
-                <hr>
+    <hr>
 
-                <h5>Cash Details</h5>
+    <h5>Cash Details</h5>
 
-                <div class="form-grid">
+    <table class="table table-bordered">
 
-                    <div class="form-group">
+        <thead>
+            <tr>
+                <th>Denomination</th>
+                <th>No of Notes</th>
+                <th>Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
-                        <label>
+        <tbody id="cashTableBody">
 
-                            Denomination
+            {% for cash_form in formset %}
+            <tr class="cash-row">
 
-                        </label>
+                <td>{{ cash_form.denomination }}</td>
+                <td>{{ cash_form.notes_count }}</td>
+                <td>{{ cash_form.amount }}</td>
 
-                        {{ form.denomination }}
+                <td>
+                    {% if not forloop.first %}
+                    <button
+                        type="button"
+                        class="btn btn-danger btn-sm remove-row">
+                        Delete
+                    </button>
+                    {% endif %}
+                </td>
 
-                    </div>
+            </tr>
+            {% endfor %}
 
-                    <div class="form-group">
+        </tbody>
 
-                        <label>
+    </table>
 
-                            No of Notes
+    <!-- Hidden Empty Form -->
+    <div id="empty-form" style="display:none;">
+        <table>
+            <tbody>
+                <tr class="cash-row">
+                    <td>{{ formset.empty_form.denomination }}</td>
+                    <td>{{ formset.empty_form.notes_count }}</td>
+                    <td>{{ formset.empty_form.amount }}</td>
+                    <td>
+                        <button
+                            type="button"
+                            class="btn btn-danger btn-sm remove-row">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-                        </label>
+    <button
+        type="button"
+        id="addCashRow"
+        class="btn btn-outline-primary btn-sm">
 
-                        {{ form.notes_count }}
+        + Add More
 
-                    </div>
+    </button>
 
-                </div>
-
-                <div id="customDenomination" style="display:none;">
-
-                    <label>
-
-                        Custom Denomination
-
-                    </label>
-
-                    {{ form.custom_denomination }}
-
-                </div>
-
-            </div>
-
+</div>
 
             <!-- ===========================
 Transaction Details
@@ -344,13 +370,7 @@ Expense Date
 
     const cashFields = document.getElementById("cashFields");
 
-    const denomination = document.getElementById("denomination");
-
-    const notesCount = document.getElementById("notes_count");
-
-    const customDiv = document.getElementById("customDenomination");
-
-    const customDenomination = document.getElementById("custom_denomination");
+   
 
 
     // ==========================
@@ -359,7 +379,7 @@ Expense Date
 
     const transactionSection = document.getElementById("transactionSection");
 
-    const transactionId = document.getElementById("transaction_id");
+    const transactionId = document.getElementById("id_transaction_id");
 
 
     // ==========================
@@ -368,9 +388,8 @@ Expense Date
 
     const chequeSection = document.getElementById("chequeSection");
 
-    const chequeNumber = document.getElementById("cheque_number");
-
-    const bankName = document.getElementById("bank_name");
+   const chequeNumber = document.getElementById("id_cheque_number");
+   const bankName = document.getElementById("id_bank_name");
 
 
     // ==========================
@@ -657,7 +676,7 @@ function paymentModeUI() {
 
         amount.readOnly = true;
 
-        calculateCashAmount();
+       
 
     }
 
@@ -684,71 +703,7 @@ function paymentModeUI() {
 }
 
 
-// ==========================================
-// CUSTOM DENOMINATION
-// ==========================================
 
-denomination.addEventListener("change", function () {
-
-    if (this.value === "Others") {
-
-        customDiv.style.display = "block";
-
-    }
-
-    else {
-
-        customDiv.style.display = "none";
-
-        customDenomination.value = "";
-
-    }
-
-    calculateCashAmount();
-
-});
-
-
-// ==========================================
-// CASH AMOUNT CALCULATION
-// ==========================================
-
-function calculateCashAmount() {
-
-    if (paymentMode.value !== "Cash") {
-
-        return;
-
-    }
-
-    let denominationValue = 0;
-
-    if (denomination.value === "Others") {
-
-        denominationValue = parseFloat(customDenomination.value) || 0;
-
-    }
-
-    else {
-
-        denominationValue = parseFloat(denomination.value) || 0;
-
-    }
-
-    let notes = parseInt(notesCount.value) || 0;
-
-    amount.value = denominationValue * notes;
-
-}
-
-
-// ==========================================
-// AUTO CALCULATE EVENTS
-// ==========================================
-
-notesCount.addEventListener("input", calculateCashAmount);
-
-customDenomination.addEventListener("input", calculateCashAmount);
 
 
 // ==========================================
@@ -779,9 +734,7 @@ if (expenseDate.showPicker) {
 }
 
 
-// ==========================================
-// INITIAL LOAD
-// ==========================================
+
 
 paymentModeUI();
 // ==========================================
@@ -924,6 +877,106 @@ form.addEventListener("submit", function (e) {
 });
 
 });
+function calculateTotal(row) {
+
+    const denomination = row.querySelector("select");
+    const notes = row.querySelector("input[type='number']");
+    const amount = row.querySelector(".row-total, input[readonly]");
+
+    let value = parseFloat(denomination.value) || 0;
+    let count = parseInt(notes.value) || 0;
+
+    let total = value * count;
+
+    amount.value = total.toFixed(2);
+
+    calculateGrandTotal();
+
+}
+function calculateGrandTotal() {
+
+    let total = 0;
+
+    document.querySelectorAll(".cash-row").forEach(function(row){
+
+        const amount = row.querySelector(".row-total, input[readonly]");
+
+        total += parseFloat(amount.value) || 0;
+
+    });
+
+    document.getElementById("id_amount").value = total.toFixed(2);
+
+}
+// ==========================================
+// ADD MORE ROW
+// ==========================================
+
+const addCashRowBtn = document.getElementById("addCashRow");
+const cashBody = document.getElementById("cashTableBody");
+const totalForms = document.getElementById("id_cash_denominations-TOTAL_FORMS");
+const emptyForm = document.getElementById("empty-form");
+
+addCashRowBtn.addEventListener("click", function () {
+
+    let formNum = parseInt(totalForms.value);
+
+    let newRow = emptyForm.innerHTML.replace(/__prefix__/g, formNum);
+
+    cashBody.insertAdjacentHTML("beforeend", newRow);
+
+    totalForms.value = formNum + 1;
+
+});
+
+// ==========================================
+// CALCULATE ROW & TOTAL
+// ==========================================
+
+document.addEventListener("change", function (e) {
+
+    const row = e.target.closest(".cash-row");
+
+    if (!row) return;
+
+    calculateTotal(row);
+
+});
+
+document.addEventListener("input", function (e) {
+
+    const row = e.target.closest(".cash-row");
+
+    if (!row) return;
+
+    calculateTotal(row);
+
+});
+
+// ==========================================
+// DELETE ROW
+// ==========================================
+
+document.addEventListener("click", function (e) {
+
+    if (e.target.closest(".remove-row")) {
+
+        const rows = document.querySelectorAll(".cash-row");
+
+        if (rows.length > 1) {
+
+            e.target.closest(".cash-row").remove();
+
+        } else {
+
+            alert("At least one row is required.");
+
+        }
+
+    }
+
+});
+
 </script>
 
 {% endblock %}

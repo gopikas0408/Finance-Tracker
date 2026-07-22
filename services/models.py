@@ -380,23 +380,7 @@ class ProjectPayment(models.Model):
 
     )
     
-    denomination = models.CharField(
-        max_length=20,
-        blank=True,
-        null=True
-    )
-
-    notes_count = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
-
-    custom_denomination = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        blank=True,
-        null=True
-    )
+    
 
     transaction_id = models.CharField(
         max_length=150,
@@ -442,72 +426,47 @@ class ProjectPayment(models.Model):
 
     def clean(self):
 
+        # ==========================================
         # Amount Validation
+        # ==========================================
 
         if self.amount <= 0:
 
             raise ValidationError({
-
-                "amount":
-
-                "Payment amount must be greater than zero."
-
+                "amount": "Payment amount must be greater than zero."
             })
-
-        # Maximum Amount
 
         if self.amount > 999999999:
 
             raise ValidationError({
-
-                "amount":
-
-                "Payment amount is too large."
-
+                "amount": "Payment amount is too large."
             })
 
-        # Payment Date
+        # ==========================================
+        # Payment Date Validation
+        # ==========================================
 
         if self.payment_date > timezone.now().date():
 
             raise ValidationError({
-
-                "payment_date":
-
-                "Future payment date is not allowed."
-
+                "payment_date": "Future payment date is not allowed."
             })
-            
-            
+
         # ==========================================
         # Payment Mode Validation
         # ==========================================
 
-        if self.payment_mode == "Cash":
-
-            if not self.denomination:
-                raise ValidationError({
-                    "denomination": "Please select denomination."
-                })
-
-            if not self.notes_count:
-                raise ValidationError({
-                    "notes_count": "Enter number of notes."
-                })
-
-            if self.denomination == "Others" and not self.custom_denomination:
-                raise ValidationError({
-                    "custom_denomination": "Enter custom denomination."
-                })
-
-        elif self.payment_mode in ["UPI", "Bank", "Card"]:
+        if self.payment_mode in ["UPI", "Bank", "Card"]:
 
             if not self.transaction_id:
+
                 raise ValidationError({
                     "transaction_id": "Transaction ID is required."
                 })
 
-        # Remarks
+        # ==========================================
+        # Remarks Validation
+        # ==========================================
 
         if self.remarks:
 
@@ -516,16 +475,46 @@ class ProjectPayment(models.Model):
             if len(self.remarks) > 500:
 
                 raise ValidationError({
-
-                    "remarks":
-
-                    "Remarks cannot exceed 500 characters."
-
+                    "remarks": "Remarks cannot exceed 500 characters."
                 })
+    
+    
+class ProjectPaymentCashDenomination(models.Model):
 
-    def __str__(self):
+    payment = models.ForeignKey(
+        ProjectPayment,
+        related_name="cash_denominations",
+        on_delete=models.CASCADE
+    )
+    DENOMINATION_CHOICES = [
 
-        return f"{self.project.project_name} - ₹{self.amount}"
+        
+        (500, "₹500"),
+        (200, "₹200"),
+        (100, "₹100"),
+        (50, "₹50"),
+        (20, "₹20"),
+        (10, "₹10"),
+
+    ]
+
+    denomination = models.IntegerField(
+        choices=DENOMINATION_CHOICES
+    )
+
+    notes_count = models.PositiveIntegerField()
+
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    def save(self,*args,**kwargs):
+
+        self.amount = self.denomination * self.notes_count
+
+        super().save(*args,**kwargs)
+        
 # ==========================================
 # PROJECT EXPENSE MODEL
 # ==========================================
@@ -550,23 +539,7 @@ class ProjectExpense(models.Model):
         choices=PAYMENT_CHOICES,
     )
     
-    denomination = models.CharField(
-        max_length=20,
-        blank=True,
-        null=True
-    )
-
-    notes_count = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
-
-    custom_denomination = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        blank=True,
-        null=True
-    )
+    
 
     transaction_id = models.CharField(
         max_length=150,
@@ -711,22 +684,7 @@ class ProjectExpense(models.Model):
             })
             
             
-        if self.payment_mode == "Cash":
-
-            if not self.denomination:
-                raise ValidationError({
-                    "denomination": "Please select denomination."
-                })
-
-            if not self.notes_count:
-                raise ValidationError({
-                    "notes_count": "Enter number of notes."
-                })
-
-            if self.denomination == "Others" and not self.custom_denomination:
-                raise ValidationError({
-                    "custom_denomination": "Enter custom denomination."
-                })
+        
 
         elif self.payment_mode in ["UPI", "Bank", "Card"]:
 
@@ -766,6 +724,43 @@ class ProjectExpense(models.Model):
     def __str__(self):
 
         return self.expense_name
+    
+class ProjectExpenseCashDenomination(models.Model):
+
+    DENOMINATION_CHOICES = [
+
+        
+        (500, "₹500"),
+        (200, "₹200"),
+        (100, "₹100"),
+        (50, "₹50"),
+        (20, "₹20"),
+        (10, "₹10"),
+
+    ]
+
+    expense = models.ForeignKey(
+        ProjectExpense,
+        related_name="cash_denominations",
+        on_delete=models.CASCADE
+    )
+
+    denomination = models.IntegerField(
+        choices=DENOMINATION_CHOICES
+    )
+
+    notes_count = models.PositiveIntegerField()
+
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    def save(self, *args, **kwargs):
+
+        self.amount = self.denomination * self.notes_count
+
+        super().save(*args, **kwargs)
     
 
 # ======================================================
@@ -842,7 +837,7 @@ class EmployeeSalary(models.Model):
     net_salary = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        editable=False
+        default=0
     )
 
     payment_date = models.DateField()
@@ -852,37 +847,11 @@ class EmployeeSalary(models.Model):
         choices=PAYMENT_MODE
     )
     
-    # ==========================================
-    # CASH DETAILS
-    # ==========================================
 
-    DENOMINATION_CHOICES = [
 
-        ("100", "₹100"),
-        ("200", "₹200"),
-        ("500", "₹500"),
-        ("Others", "Others"),
+    
 
-    ]
-
-    denomination = models.CharField(
-        max_length=20,
-        choices=DENOMINATION_CHOICES,
-        blank=True,
-        null=True
-    )
-
-    notes_count = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
-
-    custom_denomination = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        blank=True,
-        null=True
-    )
+    
 
     # ==========================================
     # ONLINE PAYMENT
@@ -986,22 +955,7 @@ class EmployeeSalary(models.Model):
         # PAYMENT MODE VALIDATION
         # ==========================================
 
-        if self.payment_mode == "Cash":
-
-            if not self.denomination:
-                raise ValidationError({
-                    "denomination": "Please select denomination."
-                })
-
-            if not self.notes_count:
-                raise ValidationError({
-                    "notes_count": "Enter number of notes."
-                })
-
-            if self.denomination == "Others" and not self.custom_denomination:
-                raise ValidationError({
-                    "custom_denomination": "Enter custom denomination."
-                })
+       
 
         elif self.payment_mode in ["UPI", "Bank Transfer"]:
 
@@ -1010,65 +964,65 @@ class EmployeeSalary(models.Model):
                     "transaction_id": "Transaction ID is required."
                 })
 
-                # Department
+            # Department
 
-                if not re.match(
+            if not re.match(
 
-                    r'^[A-Za-z ]+$',
+                r'^[A-Za-z ]+$',
 
-                    self.department
+                self.department
 
-                ):
+             ):
 
-                    raise ValidationError({
+                raise ValidationError({
 
-                        "department":
+                    "department":
 
-                        "Department must contain only alphabets."
+                    "Department must contain only alphabets."
 
-                    })
+                })
 
-                # Designation
+            # Designation
 
-                if not re.match(
+            if not re.match(
 
-                    r'^[A-Za-z ]+$',
+                 r'^[A-Za-z ]+$',
 
-                    self.designation
+                self.designation
 
-                ):
+            ):
 
-                    raise ValidationError({
+                raise ValidationError({
 
-                        "designation":
+                    "designation":
 
-                        "Designation must contain only alphabets."
+                    "Designation must contain only alphabets."
 
-                    })
+                })
 
-                # Basic Salary
+            # Basic Salary
 
-                if self.basic_salary <= 0:
+            if self.basic_salary <= 0:
 
-                    raise ValidationError({
+                raise ValidationError({
 
-                        "basic_salary":
+                    "basic_salary":
 
-                        "Basic salary must be greater than zero."
+                    "Basic salary must be greater than zero."
 
-                    })
+                })
 
-                # Bonus
+            # Bonus
 
-                if self.bonus < 0:
+            if self.bonus < 0:
 
-                    raise ValidationError({
+                raise ValidationError({
 
-                        "bonus":
+                    "bonus":
 
-                        "Bonus cannot be negative."
+                    "Bonus cannot be negative."
 
-                    })
+                })
 
         # Deduction
 
@@ -1154,3 +1108,40 @@ class EmployeeSalary(models.Model):
     def __str__(self):
 
         return self.employee_name
+    
+class EmployeeSalaryCashDenomination(models.Model):
+
+    DENOMINATION_CHOICES = [
+
+        
+        (500, "₹500"),
+        (200, "₹200"),
+        (100, "₹100"),
+        (50, "₹50"),
+        (20, "₹20"),
+        (10, "₹10"),
+
+    ]
+
+    salary = models.ForeignKey(
+        EmployeeSalary,
+        related_name="cash_denominations",
+        on_delete=models.CASCADE
+    )
+
+    denomination = models.IntegerField(
+        choices=DENOMINATION_CHOICES
+    )
+
+    notes_count = models.PositiveIntegerField()
+
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    def save(self, *args, **kwargs):
+
+        self.amount = self.denomination * self.notes_count
+
+        super().save(*args, **kwargs)

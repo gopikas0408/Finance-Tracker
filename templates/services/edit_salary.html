@@ -201,6 +201,104 @@ SALARY FORM
             </div>
 
         </div>
+        <!-- ==========================================
+PAYMENT DETAILS
+========================================== -->
+
+{% if salary.payment_mode == "Cash" %}
+
+<div class="form-group full-width">
+
+    <label><strong>Cash Denominations</strong></label>
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Denomination</th>
+                <th>No. of Notes</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for cash in salary.cash_denominations.all %}
+
+            <tr>
+
+                <td>₹{{ cash.denomination }}</td>
+
+                <td>{{ cash.notes_count }}</td>
+
+                <td>₹{{ cash.amount }}</td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="3" class="text-center">
+
+                    No Cash Denominations
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% elif salary.payment_mode == "UPI" %}
+
+<div class="form-group">
+
+    <label>Transaction ID</label>
+
+    <input
+        type="text"
+        class="form-control"
+        value="{{ salary.transaction_id }}"
+        readonly
+    >
+
+</div>
+
+{% elif salary.payment_mode == "Bank" %}
+
+<div class="form-group">
+
+    <label>Cheque Number</label>
+
+    <input
+        type="text"
+        class="form-control"
+        value="{{ salary.cheque_number }}"
+        readonly
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>Bank Name</label>
+
+    <input
+        type="text"
+        class="form-control"
+        value="{{ salary.bank_name }}"
+        readonly
+    >
+
+</div>
+
+{% endif %}
 
         <div class="form-buttons">
 

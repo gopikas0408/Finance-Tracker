@@ -50,25 +50,7 @@ class Expense(models.Model):
         choices=PAYMENT_CHOICES
     )
     
-    # ===========================
-    # CASH DETAILS
-    # ===========================
-
-    denomination = models.CharField(
-        max_length=20,
-        blank=True,
-        null=True
-    )
-
-    notes_count = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
-
-    custom_denomination = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
+   
 
     # ===========================
     # ONLINE PAYMENT
@@ -212,4 +194,47 @@ class Expense(models.Model):
         
     
         
-    
+class CashDenomination(models.Model):
+
+    DENOMINATION_CHOICES = [
+
+        
+        (500, "₹500"),
+        (200, "₹200"),
+        (100, "₹100"),
+        (50, "₹50"),
+        (20, "₹20"),
+        (10, "₹10"),
+
+    ]
+
+    expense = models.ForeignKey(
+        Expense,
+        on_delete=models.CASCADE,
+        related_name="cash_denominations",
+    )
+
+    denomination = models.IntegerField(
+        choices=DENOMINATION_CHOICES
+    )
+
+    notes_count = models.PositiveIntegerField()
+
+    amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+    )
+
+    class Meta:
+        ordering = ["id"]
+
+    def save(self, *args, **kwargs):
+
+        self.amount = self.denomination * self.notes_count
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+
+        return f"{self.denomination} x {self.notes_count}"

@@ -58,263 +58,245 @@ FORM CARD
         </div>
     </div>
 
-    <form method="POST" enctype="multipart/form-data" id="expenseForm" novalidate>
+   <form method="POST" enctype="multipart/form-data" id="expenseForm" novalidate>
 
-        {% csrf_token %}
+    {% csrf_token %}
 
-        <div class="form-grid">
-            <div class="form-group">
-
-                <label>
-                    Expense Name
-                    <span class="text-danger">*</span>
-                </label>
-
-                {{ form.expense_name }}
-
-                <small class="text-muted">
-                    Enter expense name.
-                </small>
-
-                <div id="expenseNameError" class="text-danger mt-1"></div>
-
-                {% if form.expense_name.errors %}
-                <div class="text-danger">
-                    {{ form.expense_name.errors }}
-                </div>
-                {% endif %}
-
-            </div>
-
-            <div class="form-group">
-
-                <label>
-                    Category
-                    <span class="text-danger">*</span>
-                </label>
-
-                {{ form.category }}
-
-                <small class="text-muted">
-                    Select expense category.
-                </small>
-
-                <div id="categoryError" class="text-danger mt-1"></div>
-
-                {% if form.category.errors %}
-                <div class="text-danger">
-                    {{ form.category.errors }}
-                </div>
-                {% endif %}
-
-            </div>
-            <div class="form-group">
-
-                <label>
-                    Payment Mode
-                    <span class="text-danger">*</span>
-                </label>
-
-                {{ form.payment_mode }}
-
-                <small class="text-muted">
-                    Select payment mode.
-                </small>
-
-                <div id="paymentError" class="text-danger mt-1"></div>
-
-                {% if form.payment_mode.errors %}
-                <div class="text-danger">
-                    {{ form.payment_mode.errors }}
-                </div>
-                {% endif %}
-
-            </div>
-            <div class="form-group">
-
-                <label>
-                    Amount
-                    <span class="text-danger">*</span>
-                </label>
-
-                {{ form.amount }}
-
-                <small class="text-muted">
-                    Cash amount is calculated automatically.
-                </small>
-
-                <div id="amountError" class="text-danger mt-1"></div>
-
-                {% if form.amount.errors %}
-                <div class="text-danger">
-                    {{ form.amount.errors }}
-                </div>
-                {% endif %}
-
-            </div>
-            <div id="cashFields" class="full-width" style="display:none;">
-
-                <hr>
-
-                <h4>Cash Details</h4>
-
-                <div class="form-grid">
-
-                    <div class="form-group">
-
-                        <label>Denomination</label>
-
-                        {{ form.denomination }}
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>No of Notes</label>
-
-                        {{ form.notes_count }}
-
-                    </div>
-
-                </div>
-
-                <div id="customDenomination" style="display:none;">
-
-                    <label>Custom Denomination</label>
-
-                    {{ form.custom_denomination }}
-
-                </div>
-
-            </div>
-            <div id="transactionSection" class="full-width" style="display:none;">
-
-    <hr>
-
-    <h4>Transaction Details</h4>
-
-    <label>Transaction ID</label>
-
-    {{ form.transaction_id }}
-
-</div>
-<div id="chequeSection" class="full-width" style="display:none;">
-
-    <hr>
-
-    <h4>Cheque Details</h4>
+    <!-- ================= FIRST ROW ================= -->
 
     <div class="form-grid">
 
         <div class="form-group">
-
-            <label>Cheque Number</label>
-
-            {{ form.cheque_number }}
-
+            <label>
+                Expense Name <span class="text-danger">*</span>
+            </label>
+            {{ form.expense_name }}
+            <small class="text-muted">Enter expense name.</small>
+            <div id="expenseNameError" class="text-danger mt-1"></div>
         </div>
 
         <div class="form-group">
+            <label>
+                Category <span class="text-danger">*</span>
+            </label>
+            {{ form.category }}
+            <small class="text-muted">Select expense category.</small>
+            <div id="categoryError" class="text-danger mt-1"></div>
+        </div>
 
-            <label>Bank Name</label>
+    </div>
 
-            {{ form.bank_name }}
+    <!-- ================= SECOND ROW ================= -->
+
+    <div class="form-grid">
+
+        <div class="form-group">
+            <label>
+                Payment Mode <span class="text-danger">*</span>
+            </label>
+            {{ form.payment_mode }}
+            <small class="text-muted">Select payment mode.</small>
+            <div id="paymentError" class="text-danger mt-1"></div>
+        </div>
+          <div class="form-group">
+            <label>
+                Amount <span class="text-danger">*</span>
+            </label>
+            {{ form.amount }}
+            <small class="text-muted">
+                Cash amount is calculated automatically.
+            </small>
+            <div id="amountError" class="text-danger mt-1"></div>
+        </div>
+
+    </div>
+
+       
+
+    <!-- ================= CASH DETAILS ================= -->
+
+    <div id="cashFields" style="display:none;">
+
+        <hr>
+
+        <h4>Cash Details</h4>
+
+        {{ formset.management_form }}
+
+        <div id="denomination-container">
+
+            {% for cash_form in formset %}
+
+            <div class="row denomination-row align-items-end mb-3">
+
+                <div class="col-md-3">
+                    <label>Denomination</label>
+                    {{ cash_form.denomination }}
+                </div>
+
+                <div class="col-md-3">
+                    <label>No of Notes</label>
+                    {{ cash_form.notes_count }}
+                </div>
+
+                <div class="col-md-3">
+                    <label>Total</label>
+                    <input type="text"
+                           class="form-control row-total"
+                           readonly>
+                </div>
+
+                <div class="col-md-3">
+
+                    {% if not forloop.first %}
+
+                    <button
+                        type="button"
+                        class="btn btn-danger remove-row w-100">
+
+                        <i class="bi bi-trash"></i>
+
+                        Remove
+
+                    </button>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        <button
+            type="button"
+            id="add-row"
+            class="btn btn-success">
+
+            + Add More
+
+        </button>
+
+        <hr>
+
+    </div>
+
+    <!-- ================= TRANSACTION ================= -->
+
+    <div id="transactionSection" style="display:none;">
+
+        <h5>Transaction ID</h5>
+
+        {{ form.transaction_id }}
+
+    </div>
+
+    <!-- ================= CHEQUE ================= -->
+
+    <div id="chequeSection" style="display:none;">
+
+        <h4>Cheque Details</h4>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Cheque Number</label>
+
+                {{ form.cheque_number }}
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Bank Name</label>
+
+                {{ form.bank_name }}
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-            <div class="form-group">
+    <!-- ================= THIRD ROW ================= -->
 
-                <label>
-                    Expense Date
-                    <span class="text-danger">*</span>
-                </label>
 
-                {{ form.expense_date }}
+    <div class="form-grid">
+        
 
-                <small class="text-muted">
-                    Select expense date.
-                </small>
+        <div class="form-group">
 
-                <div id="expenseDateError" class="text-danger mt-1"></div>
+            <label>
+                Expense Date
+                <span class="text-danger">*</span>
+            </label>
 
-                {% if form.expense_date.errors %}
-                <div class="text-danger">
-                    {{ form.expense_date.errors }}
-                </div>
-                {% endif %}
+            {{ form.expense_date }}
 
-            </div>
-            <div class="form-group full-width">
+        </div>
 
-                <label>Description</label>
+        <div class="form-group">
 
-                {{ form.description }}
+        </div>
 
-                <small class="text-muted">
-                    Optional notes.
-                </small>
+    </div>
+   
 
-                <div id="descriptionError" class="text-danger mt-1"></div>
+    <!-- ================= DESCRIPTION ================= -->
 
-                {% if form.description.errors %}
-                <div class="text-danger">
-                    {{ form.description.errors }}
-                </div>
-                {% endif %}
+    <div class="form-group full-width">
 
-            </div>
-            <div class="form-group full-width">
+        <label>Description</label>
 
-                <label>Attachment</label>
+        {{ form.description }}
 
-                {{ form.attachment }}
+    </div>
 
-                <small class="text-muted">
-                    PDF / JPG / PNG
-                </small>
+    <!-- ================= ATTACHMENT ================= -->
 
-                <div id="attachmentError" class="text-danger mt-1"></div>
+    <div class="form-group full-width">
 
-                {% if form.attachment.errors %}
-                <div class="text-danger">
-                    {{ form.attachment.errors }}
-                </div>
-                {% endif %}
+        <label>Attachment</label>
 
-            </div>
+        {{ form.attachment }}
 
-            <div class="form-buttons">
+    </div>
 
-                <button type="submit" class="btn btn-success">
+    <!-- ================= BUTTONS ================= -->
 
-                    <i class="bi bi-check-circle-fill"></i>
+    <div class="form-buttons">
 
-                    Save Expense
+        <button type="submit" class="btn btn-success">
 
-                </button>
+            <i class="bi bi-check-circle-fill"></i>
 
-                <button type="reset" class="btn btn-warning">
+            Save Expense
 
-                    <i class="bi bi-arrow-clockwise"></i>
+        </button>
 
-                    Reset
+        <button type="reset" class="btn btn-warning">
 
-                </button>
+            <i class="bi bi-arrow-clockwise"></i>
 
-                <a href="{% url 'expenses:expense_list' %}" class="btn btn-danger">
+            Reset
 
-                    <i class="bi bi-x-circle"></i>
+        </button>
 
-                    Cancel
+        <a href="{% url 'expenses:expense_list' %}"
+           class="btn btn-danger">
 
-                </a>
+            <i class="bi bi-x-circle"></i>
 
-            </div>
+            Cancel
 
-    </form>
+        </a>
+
+    </div>
+
+</form>
 
 </div>
 
@@ -328,6 +310,10 @@ FORM CARD
         const amount = document.getElementById("id_amount");
         const paymentMode = document.getElementById("id_payment_mode");
         const expenseDate = document.getElementById("id_expense_date");
+        const today = new Date().toISOString().split("T")[0];
+        expenseDate.max = today;
+        
+
         const description = document.getElementById("id_description");
         const attachment = document.getElementById("id_attachment");
 
@@ -509,72 +495,46 @@ FORM CARD
         // Expense Date
         // ==========================
 
-        function validateExpenseDate() {
+    function validateExpenseDate() {
 
-            if (expenseDate.value === "") {
+    const selectedDate = expenseDate.value;
 
-                setError(
-                    expenseDate,
-                    expenseDateError,
-                    "Expense Date is required."
-                );
+    if (selectedDate === "") {
 
-                return false;
+        setError(
+            expenseDate,
+            expenseDateError,
+            "Expense Date is required."
+        );
 
-            }
+        return false;
+    }
 
-            const today = new Date().toISOString().split("T")[0];
+    const today = new Date();
 
-            if (expenseDate.value > today) {
+    
+    today.setHours(0, 0, 0, 0);
 
-                setError(
-                    expenseDate,
-                    expenseDateError,
-                    "Future dates are not allowed."
-                );
+    const enteredDate = new Date(selectedDate);
 
-                return false;
+    if (enteredDate > today) {
 
-            }
+        setError(
+            expenseDate,
+            expenseDateError,
+            "Future dates are not allowed."
+        );
 
-            setSuccess(
-                expenseDate,
-                expenseDateError
-            );
+        return false;
+    }
 
-            return true;
+    setSuccess(
+        expenseDate,
+        expenseDateError
+    );
 
-        }
-
-        // ==========================
-        // Description
-        // ==========================
-
-        function validateDescription() {
-
-            const value = description.value.trim();
-
-            if (value !== "" && value.length < 5) {
-
-                setError(
-                    description,
-                    descriptionError,
-                    "Minimum 5 characters."
-                );
-
-                return false;
-
-            }
-
-            setSuccess(
-                description,
-                descriptionError
-            );
-
-            return true;
-
-        }
-
+    return true;
+}
         // ==========================
         // Attachment
         // ==========================
@@ -644,19 +604,11 @@ FORM CARD
 
         const chequeSection = document.getElementById("chequeSection");
 
-        const denomination = document.getElementById("denomination");
+        const transactionId = document.getElementById("id_transaction_id");
 
-        const notesCount = document.getElementById("notes_count");
+        const chequeNumber = document.getElementById("id_cheque_number");
 
-        const customDiv = document.getElementById("customDenomination");
-
-        const customDenomination = document.getElementById("custom_denomination");
-
-        const transactionId = document.getElementById("transaction_id");
-
-        const chequeNumber = document.getElementById("cheque_number");
-
-        const bankName = document.getElementById("bank_name");
+        const bankName = document.getElementById("id_bank_name");
 
 
         // ==========================================
@@ -681,7 +633,7 @@ FORM CARD
 
                 amount.readOnly = true;
 
-                calculateCashAmount();
+                updateGrandTotal();
 
             }
 
@@ -708,71 +660,7 @@ FORM CARD
         }
 
 
-        // ==========================================
-        // CUSTOM DENOMINATION
-        // ==========================================
 
-        denomination.addEventListener("change", function () {
-
-            if (this.value === "Others") {
-
-                customDiv.style.display = "block";
-
-            }
-
-            else {
-
-                customDiv.style.display = "none";
-
-                customDenomination.value = "";
-
-            }
-
-            calculateCashAmount();
-
-        });
-
-
-        // ==========================================
-        // CASH AMOUNT CALCULATION
-        // ==========================================
-
-        function calculateCashAmount() {
-
-            if (paymentMode.value !== "Cash") {
-
-                return;
-
-            }
-
-            let denominationValue = 0;
-
-            if (denomination.value === "Others") {
-
-                denominationValue = parseFloat(customDenomination.value) || 0;
-
-            }
-
-            else {
-
-                denominationValue = parseFloat(denomination.value) || 0;
-
-            }
-
-            let notes = parseInt(notesCount.value) || 0;
-
-            amount.value = denominationValue * notes;
-
-        }
-
-
-        // ==========================================
-        // AUTO CALCULATE EVENTS
-        // ==========================================
-
-        notesCount.addEventListener("input", calculateCashAmount);
-
-        customDenomination.addEventListener("input", calculateCashAmount);
 
 
 
@@ -783,23 +671,23 @@ FORM CARD
 
         if (expenseDate) {
 
-    expenseDate.addEventListener("click", function () {
+            expenseDate.addEventListener("click", function () {
 
-        if (this.showPicker) {
-            this.showPicker();
+                if (this.showPicker) {
+                    this.showPicker();
+                }
+
+            });
+
+            expenseDate.addEventListener("focus", function () {
+
+                if (this.showPicker) {
+                    this.showPicker();
+                }
+
+            });
+
         }
-
-    });
-
-    expenseDate.addEventListener("focus", function () {
-
-        if (this.showPicker) {
-            this.showPicker();
-        }
-
-    });
-
-}
 
         paymentModeUI();
 
@@ -917,56 +805,56 @@ FORM CARD
 
 
         // ==========================================
-// SUBMIT VALIDATION
-// ==========================================
+        // SUBMIT VALIDATION
+        // ==========================================
 
-form.addEventListener("submit", function (e) {
+        form.addEventListener("submit", function (e) {
 
-    let valid = true;
+            let valid = true;
 
-    if (!validateExpenseName()) {
-        valid = false;
-    }
+            if (!validateExpenseName()) {
+                valid = false;
+            }
 
-    if (!validateCategory()) {
-        valid = false;
-    }
+            if (!validateCategory()) {
+                valid = false;
+            }
 
-    if (!validatePaymentMode()) {
-        valid = false;
-    }
+            if (!validatePaymentMode()) {
+                valid = false;
+            }
 
-    if (!amount.readOnly) {
-        if (!validateAmount()) {
-            valid = false;
-        }
-    }
+            if (!amount.readOnly) {
+                if (!validateAmount()) {
+                    valid = false;
+                }
+            }
 
-    if (!validateExpenseDate()) {
-        valid = false;
-    }
+            if (!validateExpenseDate()) {
+                valid = false;
+            }
 
-    if (!validateDescription()) {
-        valid = false;
-    }
+            if (!validateDescription()) {
+                valid = false;
+            }
 
-    if (!validateAttachment()) {
-        valid = false;
-    }
+            if (!validateAttachment()) {
+                valid = false;
+            }
 
-    if (!validateTransactionId()) {
-        valid = false;
-    }
+            if (!validateTransactionId()) {
+                valid = false;
+            }
 
-    if (!validateCheque()) {
-        valid = false;
-    }
+            if (!validateCheque()) {
+                valid = false;
+            }
 
-    if (!valid) {
-        e.preventDefault();
-    }
+            if (!valid) {
+                e.preventDefault();
+            }
 
-});
+        });
 
         // ==========================================
         // INITIAL LOAD
@@ -974,7 +862,157 @@ form.addEventListener("submit", function (e) {
 
         paymentModeUI();
 
-    });
+        function updateGrandTotal() {
+
+            let grandTotal = 0;
+
+            document.querySelectorAll(".denomination-row").forEach(function (row) {
+
+                const denomination = row.querySelector("select");
+
+                const notes = row.querySelector("input[type='number']");
+
+                const total = row.querySelector(".row-total");
+
+                const value = parseFloat(denomination.value) || 0;
+
+                const count = parseInt(notes.value) || 0;
+
+                const amount = value * count;
+
+                total.value = amount;
+
+                grandTotal += amount;
+
+            });
+
+            document.getElementById("id_amount").value = grandTotal;
+
+        }
+
+        document.addEventListener("input", function (e) {
+
+            if (e.target.closest(".denomination-row")) {
+
+                updateGrandTotal();
+
+            }
+
+        });
+
+        updateGrandTotal();
+
+        // ==========================================
+        // ADD MORE CASH ROW
+        // ==========================================
+
+        const addRowBtn = document.getElementById("add-row");
+        const container = document.getElementById("denomination-container");
+        const totalForms = document.querySelector(
+            'input[name$="-TOTAL_FORMS"]'
+        );
+
+        if (addRowBtn) {
+
+            addRowBtn.addEventListener("click", function () {
+
+                let formCount = parseInt(totalForms.value);
+
+                const rows = container.querySelectorAll(".denomination-row");
+
+                const lastRow = rows[rows.length - 1];
+
+                const newRow = lastRow.cloneNode(true);
+
+                newRow.querySelectorAll("input, select").forEach(function (field) {
+
+                    if (field.name) {
+
+                        field.name = field.name.replace(
+                            /cash_denominations-\d+-/,
+                           `cash_denominations-${formCount}-`
+                        );
+
+                    }
+
+                    if (field.id) {
+
+                        field.id = field.id.replace(
+                        /id_cash_denominations-\d+-/,
+                        `id_cash_denominations-${formCount}-`
+                    );
+
+                    }
+
+                    if (field.tagName === "INPUT") {
+
+                        if (!field.classList.contains("row-total")) {
+                            field.value = "";
+                        } else {
+                            field.value = "0";
+                        }
+
+                    } else if (field.tagName === "SELECT") {
+
+                        field.selectedIndex = 0;
+
+                    }
+
+                });
+
+                const buttonColumn =
+                    newRow.querySelector(".col-md-3:last-child");
+
+                buttonColumn.innerHTML = `
+
+                <button
+                type="button"
+                class="btn btn-danger remove-row w-100">
+
+                <i class="bi bi-trash"></i>
+
+                Remove
+
+                </button>
+
+                `;
+                container.appendChild(newRow);
+
+                totalForms.value = formCount + 1;
+
+            });
+
+        }
+
+
+        // ==========================================
+        // REMOVE CASH ROW
+        // ==========================================
+
+       document.addEventListener("click", function (e) {
+
+    const removeButton = e.target.closest(".remove-row");
+
+    if (removeButton) {
+
+        const rows = document.querySelectorAll(".denomination-row");
+
+        if (rows.length > 1) {
+
+            removeButton.closest(".denomination-row").remove();
+
+            updateGrandTotal();
+
+        } else {
+
+            alert("At least one denomination row is required.");
+
+        }
+
+    }
+
+});
+});
 
 </script>
 

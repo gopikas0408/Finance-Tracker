@@ -77,6 +77,85 @@
         </div>
 
     </div>
+    {% if payment.payment_mode == "Cash" %}
+
+<hr>
+
+<h4>Cash Details</h4>
+
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Denomination</th>
+            <th>No of Notes</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for cash in payment.cash_denominations.all %}
+
+        <tr>
+
+            <td>{{ cash.denomination }}</td>
+            <td>{{ cash.notes_count }}</td>
+            <td>₹ {{ cash.amount }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% elif payment.payment_mode == "UPI" or payment.payment_mode == "Bank" or payment.payment_mode == "Card" %}
+
+<hr>
+
+<h4>Transaction Details</h4>
+
+<div class="details-grid">
+
+    <div class="detail-item">
+
+        <label>Transaction ID</label>
+
+        <h5>{{ payment.transaction_id|default:"-" }}</h5>
+
+    </div>
+
+</div>
+
+{% elif payment.payment_mode == "Cheque" %}
+
+<hr>
+
+<h4>Cheque Details</h4>
+
+<div class="details-grid">
+
+    <div class="detail-item">
+
+        <label>Cheque Number</label>
+
+        <h5>{{ payment.cheque_number|default:"-" }}</h5>
+
+    </div>
+
+    <div class="detail-item">
+
+        <label>Bank Name</label>
+
+        <h5>{{ payment.bank_name|default:"-" }}</h5>
+
+    </div>
+
+</div>
+
+{% endif %}
 
     <div class="detail-item mt-4">
 

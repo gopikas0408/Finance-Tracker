@@ -4,7 +4,10 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 
 from .models import Expense
-from .forms import ExpenseForm
+from .forms import (
+    ExpenseForm,
+    ExpenseCashDenominationFormSet,
+)
 import openpyxl
 
 from transactions.services import TransactionService
@@ -125,10 +128,29 @@ def add_expense(request):
         request.FILES or None,
 
     )
+    
+    if request.method == "POST":
+        formset = ExpenseCashDenominationFormSet(request.POST)
+    else:
+        formset = ExpenseCashDenominationFormSet()
 
-    if form.is_valid():
+    if form.is_valid() and formset.is_valid():
+        
+        expense = form.save(commit=False)
 
-        expense = form.save()
+        expense.save()
+
+        formset.instance = expense
+
+        formset.save()
+
+        total = expense.cash_denominations.aggregate(
+            total=Sum("amount")
+        )["total"] or 0
+
+        expense.amount = total
+
+        expense.save()
 
         TransactionService.create_transaction(
 
@@ -169,6 +191,7 @@ def add_expense(request):
         {
 
             "form": form,
+            "formset": formset,
 
         },
 
@@ -197,10 +220,28 @@ def edit_expense(request, id):
         instance=expense,
 
     )
+    formset = ExpenseCashDenominationFormSet(
+        request.POST or None,
+        instance=expense
+    )
 
-    if form.is_valid():
+    if form.is_valid() and formset.is_valid():
 
-        expense = form.save()
+        expense = form.save(commit=False)
+
+        expense.save()
+
+        formset.instance = expense
+
+        formset.save()
+
+        total = expense.cash_denominations.aggregate(
+            total=Sum("amount")
+        )["total"] or 0
+
+        expense.amount = total
+
+        expense.save()
 
         TransactionService.update_transaction(
 
@@ -239,8 +280,10 @@ def edit_expense(request, id):
         {
 
             "form": form,
+            "formset": formset,
 
             "expense": expense,
+            "payment_locked": True,
 
         },
 

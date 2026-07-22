@@ -361,21 +361,7 @@ class StudentPayment(models.Model):
         ("Bank", "Bank"),
         ("Card", "Card"),
     )
-    denomination = models.CharField(
-        max_length=20,
-        blank=True,
-        null=True
-    )
-
-    notes_count = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
-
-    custom_denomination = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
+  
 
     transaction_id = models.CharField(
         max_length=100,
@@ -467,28 +453,7 @@ class StudentPayment(models.Model):
         # Payment Mode Validation
         # ==========================================
 
-        if self.payment_mode == "Cash":
-
-            if not self.denomination:
-
-                raise ValidationError({
-                    "denomination":
-                    "Please select denomination."
-                })
-
-            if not self.notes_count:
-
-                raise ValidationError({
-                    "notes_count":
-                    "Enter number of notes."
-                })
-
-            if self.denomination == "Others" and not self.custom_denomination:
-
-                raise ValidationError({
-                    "custom_denomination":
-                    "Enter custom denomination."
-                })
+        
 
 
         elif self.payment_mode in ["UPI", "Bank", "Card"]:
@@ -619,3 +584,95 @@ class StudentPayment(models.Model):
     def __str__(self):
 
         return f"{self.student.student_name} - ₹{self.amount}"
+    
+class StudentPaymentCashDenomination(models.Model):
+
+    DENOMINATION_CHOICES = (
+
+        ("500", "₹500"),
+        ("200", "₹200"),
+        ("100", "₹100"),
+        ("50", "₹50"),
+        ("20", "₹20"),
+        ("10", "₹10"),
+        ("Coins", "Coins"),
+        ("Others", "Others"),
+
+    )
+
+    payment = models.ForeignKey(
+
+        StudentPayment,
+
+        on_delete=models.CASCADE,
+
+        related_name="cash_denominations"
+
+    )
+
+    denomination = models.CharField(
+
+        max_length=20,
+
+        choices=DENOMINATION_CHOICES
+
+    )
+
+    custom_denomination = models.PositiveIntegerField(
+
+        blank=True,
+
+        null=True
+
+    )
+
+    notes_count = models.PositiveIntegerField()
+
+    amount = models.DecimalField(
+
+        max_digits=12,
+
+        decimal_places=2,
+
+        editable=False,
+
+        default=0
+
+    )
+
+    def clean(self):
+
+        if self.denomination == "Others":
+
+            if not self.custom_denomination:
+
+                raise ValidationError({
+
+                    "custom_denomination":
+                    "Enter custom denomination."
+
+                })
+
+            value = self.custom_denomination
+
+        else:
+
+            if self.denomination == "Coins":
+
+                value = 1
+
+            else:
+
+                value = int(self.denomination)
+
+        self.amount = value * self.notes_count
+
+    def save(self, *args, **kwargs):
+
+        self.full_clean()
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+
+        return f"{self.denomination} x {self.notes_count}"

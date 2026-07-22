@@ -322,57 +322,73 @@ SALARY FORM
 
             <!-- Cash Details -->
 
+            {{ formset.management_form }}
+
             <div id="cashFields" class="full-width" style="display:none;">
 
                 <hr>
 
                 <h4>Cash Details</h4>
 
-                <div class="form-grid">
+                <table class="table table-bordered">
 
-                    <div class="form-group">
+                    <thead>
 
-                        <label>Denomination</label>
+                        <tr>
+                            <th>Denomination</th>
+                            <th>No of Notes</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
 
-                        {{ form.denomination }}
+                    </thead>
 
-                        {% if form.denomination.errors %}
-                        <div class="text-danger">
-                            {{ form.denomination.errors }}
-                        </div>
-                        {% endif %}
+                    <tbody id="cashBody">
 
-                    </div>
+                       {% for cash_form in formset %}
 
-                    <div class="form-group">
+<tr class="cash-row">
 
-                        <label>No of Notes</label>
+    <td>{{ cash_form.denomination }}</td>
 
-                        {{ form.notes_count }}
+    <td>{{ cash_form.notes_count }}</td>
 
-                        {% if form.notes_count.errors %}
-                        <div class="text-danger">
-                            {{ form.notes_count.errors }}
-                        </div>
-                        {% endif %}
+    <td>{{ cash_form.amount }}</td>
 
-                    </div>
+    <td>
 
-                </div>
+        {% if forloop.first %}
 
-                <div id="customDenomination" style="display:none;">
+            <span>-</span>
 
-                    <label>Custom Denomination</label>
+        {% else %}
 
-                    {{ form.custom_denomination }}
+            <button type="button"
+                    class="btn btn-danger btn-sm removeRow">
 
-                    {% if form.custom_denomination.errors %}
-                    <div class="text-danger">
-                        {{ form.custom_denomination.errors }}
-                    </div>
-                    {% endif %}
+                Delete
 
-                </div>
+            </button>
+
+        {% endif %}
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                <button type="button" class="btn btn-primary" id="addRow">
+
+                    <i class="bi bi-plus-circle"></i>
+
+                    Add More
+
+                </button>
 
             </div>
 
@@ -577,10 +593,7 @@ SALARY FORM
     // Cash Fields
 
     const cashFields = document.getElementById("cashFields");
-    const denomination = document.getElementById("denomination");
-    const notesCount = document.getElementById("notes_count");
-    const customDiv = document.getElementById("customDenomination");
-    const customDenomination = document.getElementById("custom_denomination");
+    
 
     // Transaction
 
@@ -1137,7 +1150,7 @@ SALARY FORM
 
             cashFields.style.display = "block";
 
-            calculateCashAmount();
+            
 
         }
 
@@ -1160,70 +1173,160 @@ SALARY FORM
         }
 
     }
+    const cashBody = document.getElementById("cashBody");
+
+    const addRow = document.getElementById("addRow");
+
+    addRow.addEventListener("click", function () {
+
+        const row = `
+<tr>
+
+<td>
+
+<select class="form-select denomination">
+
+<option value="">Select</option>
 
 
-    // ==========================================
-    // CUSTOM DENOMINATION
-    // ==========================================
 
-    denomination.addEventListener("change", function () {
+<option value="500">500</option>
 
-        if (this.value === "Others") {
+<option value="200">200</option>
 
-            customDiv.style.display = "block";
+<option value="100">100</option>
 
-        }
+<option value="50">50</option>
 
-        else {
+<option value="20">20</option>
 
-            customDiv.style.display = "none";
+<option value="10">10</option>
 
-            customDenomination.value = "";
+</select>
 
-        }
+</td>
 
-        calculateCashAmount();
+<td>
+
+<input type="number"
+class="form-control notes"
+min="1">
+
+</td>
+
+<td>
+
+<input type="text"
+class="form-control amount"
+readonly>
+
+</td>
+
+<td>
+
+<button type="button"
+class="btn btn-danger btn-sm removeRow">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+`;
+
+        cashBody.insertAdjacentHTML("beforeend", row);
+
+    });
+   function calculateRow(row) {
+
+    const denomination = row.querySelector(".denomination");
+
+    const notes = row.querySelector(".notes");
+
+    const amount = row.querySelector(".amount");
+
+    if (!denomination || !notes || !amount) {
+        return;
+    }
+
+    // Calculate current row amount
+    const denominationValue = parseFloat(denomination.value) || 0;
+
+    const notesValue = parseFloat(notes.value) || 0;
+
+    amount.value = (denominationValue * notesValue).toFixed(2);
+
+    // Calculate total basic salary
+    let totalSalary = 0;
+
+    document.querySelectorAll("#cashBody .amount").forEach(function(field) {
+
+        totalSalary += parseFloat(field.value) || 0;
 
     });
 
+    basicSalary.value = totalSalary.toFixed(2);
 
-    // ==========================================
-    // CASH AMOUNT CALCULATION
-    // ==========================================
+    // Update Net Salary
+    calculateNetSalary();
+}
 
-    function calculateCashAmount() {
+document.addEventListener("change", function(e) {
 
-        if (paymentMode.value !== "Cash") {
+    const row = e.target.closest("tr");
 
-            return;
+    if (row) {
 
-        }
-
-        let denominationValue = 0;
-
-        if (denomination.value === "Others") {
-
-            denominationValue = parseFloat(customDenomination.value) || 0;
-
-        }
-
-        else {
-
-            denominationValue = parseFloat(denomination.value) || 0;
-
-        }
-
-        let notes = parseInt(notesCount.value) || 0;
-
-        basicSalary.value = denominationValue * notes;
-
-        calculateNetSalary();
+        calculateRow(row);
 
     }
 
-    notesCount.addEventListener("input", calculateCashAmount);
+});
 
-    customDenomination.addEventListener("input", calculateCashAmount);
+document.addEventListener("input", function(e) {
+
+    const row = e.target.closest("tr");
+
+    if (row) {
+
+        calculateRow(row);
+
+    }
+
+});
+document.addEventListener("click", function(e){
+
+    if(e.target.classList.contains("removeRow")){
+
+        const rows = document.querySelectorAll("#cashBody tr");
+
+        if(rows.length > 1){
+
+            e.target.closest("tr").remove();
+
+            let totalSalary = 0;
+
+            document.querySelectorAll("#cashBody .amount").forEach(function(field){
+
+                totalSalary += parseFloat(field.value) || 0;
+
+            });
+
+            basicSalary.value = totalSalary.toFixed(2);
+
+            calculateNetSalary();
+
+        }
+
+    }
+
+});
+
+
+
+  
 
 
     // ==========================================
@@ -1231,10 +1334,15 @@ SALARY FORM
     // ==========================================
 
     paymentMode.addEventListener("change", paymentModeUI);
-
     paymentModeUI();
 
+document.querySelectorAll("#cashBody tr").forEach(function(row){
 
+    calculateRow(row);
+
+});
+
+calculateNetSalary();
     // ==========================================
     // OPEN DATE PICKER
     // ==========================================

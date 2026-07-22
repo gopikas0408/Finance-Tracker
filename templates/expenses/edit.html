@@ -48,9 +48,7 @@
 
     </div>
 
-    <form method="POST"
-          enctype="multipart/form-data"
-          id="expenseForm">
+    <form method="POST" enctype="multipart/form-data" id="expenseForm">
 
         {% csrf_token %}
 
@@ -78,33 +76,142 @@
 
             <div class="form-group">
 
-                <label>Amount</label>
+                <label>
+                    Amount (₹)
+                    <span class="required">*</span>
+                </label>
 
                 {{ form.amount }}
 
-                {{ form.amount.errors }}
+                <small class="text-danger">
+                    Expense amount cannot be modified after payment.
+                </small>
+
+                <div class="invalid-feedback" id="amount_error"></div>
 
             </div>
 
             <div class="form-group">
 
-                <label>Payment Mode</label>
+                <label>
+                    Payment Mode
+                    <span class="required">*</span>
+                </label>
 
                 {{ form.payment_mode }}
 
-                {{ form.payment_mode.errors }}
+                <small class="text-danger">
+                    Payment mode cannot be modified after payment.
+                </small>
+
+                <div class="invalid-feedback" id="payment_mode_error"></div>
 
             </div>
 
             <div class="form-group">
 
-                <label>Expense Date</label>
+                <label>
+                    Expense Date
+                    <span class="required">*</span>
+                </label>
 
                 {{ form.expense_date }}
 
-                {{ form.expense_date.errors }}
+                <small class="text-danger">
+                    Expense date cannot be modified after payment.
+                </small>
+
+                <div class="invalid-feedback" id="expense_date_error"></div>
 
             </div>
+
+            <div id="cashFields" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Cash Details</h4>
+
+                {{ formset.management_form }}
+
+                {% for cash_form in formset %}
+                 {% if cash_form.instance.pk %}
+
+                <div class="row denomination-row">
+
+                    <div class="col-md-4">
+
+                        <label>Denomination</label>
+
+                        {{ cash_form.denomination }}
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label>No of Notes</label>
+
+                        {{ cash_form.notes_count }}
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label>Total</label>
+
+                        <input type="text" class="form-control" value="{{ cash_form.instance.amount }}" readonly>
+                    </div>
+
+                </div>
+                 {% endif %}
+
+                {% endfor %}
+
+            </div>
+            <div id="transactionSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Transaction Details</h4>
+
+                <div class="form-group">
+
+                    <label>Transaction ID</label>
+
+                    {{ form.transaction_id }}
+
+                </div>
+
+            </div>
+            <div id="chequeSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Cheque Details</h4>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Cheque Number</label>
+
+                        {{ form.cheque_number }}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Bank Name</label>
+
+                        {{ form.bank_name }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
 
             <div class="form-group full-width">
 
@@ -138,8 +245,7 @@
 
             </button>
 
-            <a href="{% url 'expenses:expense_list' %}"
-               class="btn btn-secondary">
+            <a href="{% url 'expenses:expense_list' %}" class="btn btn-secondary">
 
                 Cancel
 
@@ -152,211 +258,199 @@
 </div>
 <script>
 
-// ========================================
-// ELEMENTS
-// ========================================
+    // ========================================
+    // ELEMENTS
+    // ========================================
 
-const expenseForm = document.getElementById("expenseForm");
+    const expenseForm = document.getElementById("expenseForm");
 
-const expenseName = document.getElementById("id_expense_name");
-const category = document.getElementById("id_category");
-const amount = document.getElementById("id_amount");
-const paymentMode = document.getElementById("id_payment_mode");
-const expenseDate = document.getElementById("id_expense_date");
-const description = document.getElementById("id_description");
-const attachment = document.getElementById("id_attachment");
+    const expenseName = document.getElementById("id_expense_name");
+    const category = document.getElementById("id_category");
+    const amount = document.getElementById("id_amount");
+    const paymentMode = document.getElementById("id_payment_mode");
+    const expenseDate = document.getElementById("id_expense_date");
+    const description = document.getElementById("id_description");
+    const attachment = document.getElementById("id_attachment");
 
-// ========================================
-// VALIDATION FUNCTIONS
-// ========================================
+    const cashFields = document.getElementById("cashFields");
+    const transactionSection = document.getElementById("transactionSection");
+    const chequeSection = document.getElementById("chequeSection");
 
-function validateExpenseName(){
+    // ========================================
+    // VALIDATION FUNCTIONS
+    // ========================================
 
-    if(expenseName.value.trim() === ""){
+    function validateExpenseName() {
 
-        alert("Expense Name is required.");
+        if (expenseName.value.trim() === "") {
 
-        expenseName.focus();
+            alert("Expense Name is required.");
 
-        return false;
-
-    }
-
-    if(expenseName.value.trim().length < 3){
-
-        alert("Expense Name must contain at least 3 characters.");
-
-        expenseName.focus();
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-function validateCategory(){
-
-    if(category.value === ""){
-
-        alert("Please select Expense Category.");
-
-        category.focus();
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-function validateAmount(){
-
-    if(amount.value === ""){
-
-        alert("Amount is required.");
-
-        amount.focus();
-
-        return false;
-
-    }
-
-    if(parseFloat(amount.value) <= 0){
-
-        alert("Amount must be greater than zero.");
-
-        amount.focus();
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-function validatePaymentMode(){
-
-    if(paymentMode.value === ""){
-
-        alert("Please select Payment Mode.");
-
-        paymentMode.focus();
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-function validateExpenseDate(){
-
-    if(expenseDate.value === ""){
-
-        alert("Expense Date is required.");
-
-        expenseDate.focus();
-
-        return false;
-
-    }
-
-    return true;
-
-}
-
-function validateDescription(){
-
-    if(description.value.trim() !== ""){
-
-        if(description.value.trim().length < 5){
-
-            alert("Description must contain at least 5 characters.");
-
-            description.focus();
+            expenseName.focus();
 
             return false;
 
         }
 
-    }
+        if (expenseName.value.trim().length < 3) {
 
-    return true;
+            alert("Expense Name must contain at least 3 characters.");
 
-}
-
-function validateAttachment(){
-
-    if(attachment.files.length > 0){
-
-        const file = attachment.files[0];
-
-        const allowed = [
-
-            "application/pdf",
-
-            "image/jpeg",
-
-            "image/png"
-
-        ];
-
-        if(!allowed.includes(file.type)){
-
-            alert("Only PDF, JPG, JPEG and PNG files are allowed.");
+            expenseName.focus();
 
             return false;
 
         }
 
-        if(file.size > 5 * 1024 * 1024){
+        return true;
 
-            alert("Maximum file size is 5 MB.");
+    }
+
+    function validateCategory() {
+
+        if (category.value === "") {
+
+            alert("Please select Expense Category.");
+
+            category.focus();
 
             return false;
 
         }
 
-    }
-
-    return true;
-
-}
-
-// ========================================
-// FORM SUBMIT
-// ========================================
-
-expenseForm.addEventListener("submit",function(e){
-
-    if(
-
-        !validateExpenseName() ||
-
-        !validateCategory() ||
-
-        !validateAmount() ||
-
-        !validatePaymentMode() ||
-
-        !validateExpenseDate() ||
-
-        !validateDescription() ||
-
-        !validateAttachment()
-
-    ){
-
-        e.preventDefault();
+        return true;
 
     }
 
-});
+
+
+    function validateDescription() {
+
+        if (description.value.trim() !== "") {
+
+            if (description.value.trim().length < 5) {
+
+                alert("Description must contain at least 5 characters.");
+
+                description.focus();
+
+                return false;
+
+            }
+
+        }
+
+        return true;
+
+    }
+
+    function validateAttachment() {
+
+        if (attachment.files.length > 0) {
+
+            const file = attachment.files[0];
+
+            const allowed = [
+
+                "application/pdf",
+
+                "image/jpeg",
+
+                "image/png"
+
+            ];
+
+            if (!allowed.includes(file.type)) {
+
+                alert("Only PDF, JPG, JPEG and PNG files are allowed.");
+
+                return false;
+
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+
+                alert("Maximum file size is 5 MB.");
+
+                return false;
+
+            }
+
+        }
+
+        return true;
+
+    }
+    amount.readOnly = true;
+
+
+
+    expenseDate.readOnly = true;
+    // ========================================
+    // FORM SUBMIT
+    // ========================================
+
+    expenseForm.addEventListener("submit", function (e) {
+
+        if (
+
+            !validateExpenseName() ||
+
+            !validateCategory() ||
+
+            !validateDescription() ||
+
+            !validateAttachment()
+
+        ) {
+
+            e.preventDefault();
+
+        }
+
+
+
+    });
+
+
+    function togglePaymentFields() {
+
+        cashFields.style.display = "none";
+        transactionSection.style.display = "none";
+        chequeSection.style.display = "none";
+
+        if (paymentMode.value === "Cash") {
+
+            cashFields.style.display = "block";
+
+        } else if (
+            paymentMode.value === "UPI" ||
+            paymentMode.value === "Bank" ||
+            paymentMode.value === "Card"
+        ) {
+
+            transactionSection.style.display = "block";
+
+        } else if (paymentMode.value === "Cheque") {
+
+            chequeSection.style.display = "block";
+
+        }
+    }
+
+    togglePaymentFields();
+    expenseForm.addEventListener("submit", function (e) {
+
+        if (
+            !validateExpenseName() ||
+            !validateCategory() ||
+            !validateDescription() ||
+            !validateAttachment()
+        ) {
+            e.preventDefault();
+        }
+
+    });
 
 </script>
 {% endblock %}

@@ -1,85 +1,73 @@
 from django import forms
-from .models import Income
-import os
+from django.forms import inlineformset_factory
 from django.utils import timezone
+import os
+
+from .models import (
+    Income,
+    CashDenomination,
+)
 
 
 class IncomeForm(forms.ModelForm):
 
     class Meta:
         model = Income
-        fields = "__all__"
+        fields = (
+            "income_source",
+            "amount",
+            "payment_mode",
+            "transaction_id",
+            "cheque_number",
+            "bank_name",
+            "received_date",
+            "description",
+            "attachment",
+        )
 
         widgets = {
 
             "received_date": forms.DateInput(
                 attrs={
                     "type": "date",
-                    "class": "form-control"
+                    "class": "form-control",
                 }
             ),
 
             "income_source": forms.Select(
                 attrs={
-                    "class": "form-select"
+                    "class": "form-select",
                 }
             ),
-             "denomination": forms.Select(
 
+            "transaction_id": forms.TextInput(
                 attrs={
-                    "class":"form-select"
+                    "class": "form-control",
                 }
-
-            ),
-             
-            "custom_denomination": forms.NumberInput(
-
-                attrs={
-                    "class":"form-control"
-                }
-
-            ),
-            "notes_count": forms.NumberInput(
-
-                attrs={
-                    "class":"form-control"
-                }
-
-            ),
-             "transaction_id": forms.TextInput(
-
-                attrs={
-                    "class":"form-control"
-                }
-
             ),
 
             "cheque_number": forms.TextInput(
-
                 attrs={
-                    "class":"form-control"
+                    "class": "form-control",
                 }
-
             ),
-             "bank_name": forms.TextInput(
 
+            "bank_name": forms.TextInput(
                 attrs={
-                    "class":"form-control"
+                    "class": "form-control",
                 }
-
             ),
 
             "amount": forms.NumberInput(
                 attrs={
                     "class": "form-control",
-                    "min": "1",
-                    "step": "0.01"
+                    "readonly": True,
                 }
             ),
 
             "payment_mode": forms.Select(
                 attrs={
-                    "class": "form-select"
+                    "class": "form-select",
                 }
             ),
 
@@ -87,94 +75,186 @@ class IncomeForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "rows": 4,
-                    "maxlength": "500"
                 }
             ),
 
             "attachment": forms.FileInput(
                 attrs={
                     "class": "form-control",
-                    "accept": ".pdf,.jpg,.jpeg,.png"
+                    "accept": ".pdf,.jpg,.jpeg,.png",
                 }
-            )
+            ),
 
         }
 
-    # -------------------------------
-    # Amount Validation
-    # -------------------------------
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        
+        
+
+        if self.instance.pk:
+            
+            self.fields["income_source"].widget.attrs["disabled"] = True
+            self.fields["payment_mode"].widget.attrs["disabled"] = True
+            self.fields["amount"].widget.attrs["readonly"] = True
+
+            self.fields["payment_mode"].widget.attrs["style"] = (
+                "pointer-events:none;background:#f8f9fa;"
+            )
+
+            self.fields["received_date"].widget.attrs["readonly"] = True
+
+            self.fields["transaction_id"].widget.attrs["readonly"] = True
+
+            self.fields["cheque_number"].widget.attrs["readonly"] = True
+
+            self.fields["bank_name"].widget.attrs["readonly"] = True
 
     def clean_amount(self):
+
         amount = self.cleaned_data.get("amount")
 
         if amount is None:
-            raise forms.ValidationError("Amount is required.")
+
+            raise forms.ValidationError(
+                "Amount is required."
+            )
 
         if amount <= 0:
-            raise forms.ValidationError("Amount must be greater than zero.")
+
+            raise forms.ValidationError(
+                "Amount must be greater than zero."
+            )
 
         return amount
 
-    # -------------------------------
-    # Description Validation
-    # -------------------------------
+    def clean_received_date(self):
+
+        received_date = self.cleaned_data.get("received_date")
+
+        if received_date > timezone.localdate():
+
+            raise forms.ValidationError(
+                "Future dates are not allowed."
+            )
+
+        return received_date
 
     def clean_description(self):
+
         description = self.cleaned_data.get("description")
 
         if description:
+
             description = description.strip()
 
             if len(description) < 5:
+
                 raise forms.ValidationError(
                     "Description should contain at least 5 characters."
                 )
 
         return description
 
-    # -------------------------------
-    # Attachment Validation
-    # -------------------------------
-
     def clean_attachment(self):
+
         attachment = self.cleaned_data.get("attachment")
 
         if attachment:
 
-            ext = os.path.splitext(attachment.name)[1].lower()
+            ext = os.path.splitext(
+                attachment.name
+            )[1].lower()
 
-            allowed = [".pdf", ".jpg", ".jpeg", ".png"]
+            allowed = [
+                ".pdf",
+                ".jpg",
+                ".jpeg",
+                ".png",
+            ]
 
             if ext not in allowed:
+
                 raise forms.ValidationError(
                     "Only PDF, JPG, JPEG and PNG files are allowed."
                 )
 
             if attachment.size > 5 * 1024 * 1024:
+
                 raise forms.ValidationError(
-                    "File size must be less than 5 MB."
+                    "Maximum file size is 5 MB."
                 )
 
         return attachment
-    
-    # -------------------------------
-# Received Date Validation
-# -------------------------------
 
-def clean_received_date(self):
 
-    received_date = self.cleaned_data.get("received_date")
+class CashDenominationForm(forms.ModelForm):
 
-    if not received_date:
+    class Meta:
 
-        raise forms.ValidationError(
-            "Received Date is required."
+        model = CashDenomination
+
+        fields = (
+            "denomination",
+            
+            "notes_count",
         )
 
-    if received_date > timezone.localdate():
+        widgets = {
 
-        raise forms.ValidationError(
-            "Future dates are not allowed."
-        )
+            "denomination": forms.Select(
+                attrs={
+                    "class": "form-select denomination",
+                }
+            ),
 
-    return received_date
+            
+
+            "notes_count": forms.NumberInput(
+                attrs={
+                    "class": "form-control notes-count",
+                    "min": 1,
+                }
+            ),
+
+        }
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        denomination = cleaned_data.get("denomination")
+
+        
+
+        notes = cleaned_data.get("notes_count")
+
+        if notes is None or notes <= 0:
+
+            raise forms.ValidationError(
+                "Notes count must be greater than zero."
+            )
+
+        value = int(denomination)
+
+        cleaned_data["amount"] = value * notes
+
+        return cleaned_data
+
+
+CashDenominationFormSet = inlineformset_factory(
+    Income,
+    CashDenomination,
+    form=CashDenominationForm,
+    extra=0,
+    can_delete=True,
+)
+
+IncomeCashDenominationEditFormSet = inlineformset_factory(
+    Income,
+    CashDenomination,
+    form=CashDenominationForm,
+    extra=0,
+    can_delete=False
+)

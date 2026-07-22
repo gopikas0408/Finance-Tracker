@@ -150,6 +150,102 @@ SALARY DETAILS
         </div>
 
     </div>
+    <div class="detail-item">
+
+    <label>Payment Mode</label>
+
+    <p>{{ salary.payment_mode }}</p>
+
+</div>
+    <!-- ==========================================
+PAYMENT DETAILS
+========================================== -->
+
+{% if salary.payment_mode == "Cash" %}
+
+<div class="detail-item full-width">
+
+    <label><strong>Cash Denominations</strong></label>
+
+    <table class="table table-bordered mt-2">
+
+        <thead>
+
+            <tr>
+
+                <th>Denomination</th>
+
+                <th>No. of Notes</th>
+
+                <th>Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for cash in salary.cash_denominations.all %}
+
+            <tr>
+
+                <td>₹{{ cash.denomination }}</td>
+
+                <td>{{ cash.notes_count }}</td>
+
+                <td>₹{{ cash.amount|floatformat:2 }}</td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="3" class="text-center">
+
+                    No Cash Denominations Found
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% elif salary.payment_mode == "UPI" %}
+
+<div class="detail-item">
+
+    <label>Transaction ID</label>
+
+    <p>{{ salary.transaction_id }}</p>
+
+</div>
+
+{% elif salary.payment_mode == "Bank" %}
+
+<div class="detail-item">
+
+    <label>Cheque Number</label>
+
+    <p>{{ salary.cheque_number }}</p>
+
+</div>
+
+<div class="detail-item">
+
+    <label>Bank Name</label>
+
+    <p>{{ salary.bank_name }}</p>
+
+</div>
+
+{% endif %}
 
     <div class="form-buttons">
 

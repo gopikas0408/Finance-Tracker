@@ -29,6 +29,7 @@
    <form method="POST" id="paymentForm" novalidate>
 
     {% csrf_token %}
+    {{ formset.management_form }}
 
     <div class="row">
 
@@ -139,72 +140,82 @@
 
         <!-- CASH DETAILS -->
 
-        <div
-            id="cashFields"
-            class="col-12"
-            style="display:none;"
-        >
+       <div id="cashFields" class="col-12" style="display:none;">
 
-            <hr>
+    <hr>
 
-            <h5>Cash Details</h5>
+    <h5>Cash Details</h5>
 
-            <div class="row">
+    {{ formset.management_form }}
 
-                <div class="col-md-6 mb-3">
+    <table class="table table-bordered" id="cashTable">
 
-                    <label>Denomination</label>
+        <thead>
 
-                    {{ form.denomination }}
+            <tr>
 
-                    <div id="denominationError" class="text-danger mt-1"></div>
+                <th>Denomination</th>
 
-                    {% if form.denomination.errors %}
-                    <div class="text-danger">
-                        {{ form.denomination.errors }}
-                    </div>
-                    {% endif %}
+                <th>No. of Notes</th>
 
-                </div>
+                <th>Amount</th>
 
-                <div class="col-md-6 mb-3">
+                <th width="80">Action</th>
 
-                    <label>No of Notes</label>
+            </tr>
 
-                    {{ form.notes_count }}
+        </thead>
 
-                    <div id="notesError" class="text-danger mt-1"></div>
+        <tbody>
 
-                    {% if form.notes_count.errors %}
-                    <div class="text-danger">
-                        {{ form.notes_count.errors }}
-                    </div>
-                    {% endif %}
+            {% for cash_form in formset %}
 
-                </div>
+            <tr class="cash-row">
 
-            </div>
+                <td>{{ cash_form.denomination }}</td>
 
-            <div
-                id="customDenominationDiv"
-                style="display:none;"
-            >
 
-                <label>Custom Denomination</label>
+                <td>{{ cash_form.notes_count }}</td>
 
-                {{ form.custom_denomination }}
+                <td>
+    <input
+        type="text"
+        class="form-control amount-field"
+        value="0"
+        readonly
+    >
+</td>
 
-                <div id="customDenominationError" class="text-danger mt-1"></div>
+                <td>
 
-                {% if form.custom_denomination.errors %}
-                <div class="text-danger">
-                    {{ form.custom_denomination.errors }}
-                </div>
-                {% endif %}
+                    <button
+                        type="button"
+                        class="btn btn-danger remove-row">
 
-            </div>
+                        Delete
 
-        </div>
+                    </button>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <button
+        type="button"
+        class="btn btn-primary"
+        id="addRow">
+
+        Add More
+
+    </button>
+
+</div>
 
         <!-- Transaction -->
 
@@ -541,25 +552,13 @@ const transactionSection = document.getElementById("transactionSection");
 
 const chequeSection = document.getElementById("chequeSection");
 
-const denomination = document.getElementById("denomination");
-
-const notesCount = document.getElementById("notes_count");
-
-const customDiv = document.getElementById("customDenominationDiv");
-
-const customDenomination = document.getElementById("custom_denomination");
-
 const transactionId = document.getElementById("transaction_id");
 
 const chequeNumber = document.getElementById("cheque_number");
 
 const bankName = document.getElementById("bank_name");
 
-const denominationError = document.getElementById("denominationError");
 
-const notesError = document.getElementById("notesError");
-
-const customDenominationError = document.getElementById("customDenominationError");
 
 const transactionError = document.getElementById("transactionError");
 
@@ -588,7 +587,7 @@ function paymentModeUI() {
 
         amount.readOnly = true;
 
-        calculateCashAmount();
+       
 
     }
 
@@ -615,83 +614,9 @@ function paymentModeUI() {
 }
 
 
-// ==========================================
-// CUSTOM DENOMINATION
-// ==========================================
-
-denomination.addEventListener("change", function () {
-
-    if (this.value === "Others") {
-
-        customDiv.style.display = "block";
-
-    }
-
-    else {
-
-        customDiv.style.display = "none";
-
-        customDenomination.value = "";
-
-    }
-
-    calculateCashAmount();
-
-});
 
 
-// ==========================================
-// CASH AMOUNT CALCULATION
-// ==========================================
 
-function calculateCashAmount() {
-
-    if (paymentMode.value !== "Cash") {
-
-        return;
-
-    }
-
-    let denominationValue = 0;
-
-    if (denomination.value === "Others") {
-
-        denominationValue = parseFloat(customDenomination.value) || 0;
-
-    }
-
-    else {
-
-        denominationValue = parseFloat(denomination.value) || 0;
-
-    }
-
-    let notes = parseInt(notesCount.value) || 0;
-
-    amount.value = denominationValue * notes;
-
-}
-
-
-// ==========================================
-// AUTO CALCULATE
-// ==========================================
-
-notesCount.addEventListener(
-
-    "input",
-
-    calculateCashAmount
-
-);
-
-customDenomination.addEventListener(
-
-    "input",
-
-    calculateCashAmount
-
-);
 
 
 // ==========================================
@@ -955,6 +880,165 @@ form.addEventListener("submit", function (e) {
     if (!valid) {
 
         e.preventDefault();
+
+    }
+
+});
+// ==========================================
+// CASH FORMSET
+// ==========================================
+
+const totalForms = document.getElementById(
+    "id_cash_denominations-TOTAL_FORMS"
+);
+
+const addRowBtn = document.getElementById("addRow");
+
+const cashTableBody = document.querySelector("#cashTable tbody");
+
+
+// ==========================================
+// ADD ROW
+// ==========================================
+
+addRowBtn.addEventListener("click", function () {
+
+    let total = parseInt(totalForms.value);
+
+    let firstRow = cashTableBody.querySelector(".cash-row");
+
+    let newRow = firstRow.cloneNode(true);
+
+    newRow.innerHTML = newRow.innerHTML.replace(
+        /cash_denominations-0-/g,
+        "cash_denominations-" + total + "-"
+    );
+
+    newRow.querySelectorAll("input").forEach(function(input){
+
+        input.value = "";
+
+    });
+
+    newRow.querySelectorAll("select").forEach(function(select){
+
+        select.selectedIndex = 0;
+
+    });
+
+    cashTableBody.appendChild(newRow);
+
+    totalForms.value = total + 1;
+
+});
+
+
+// ==========================================
+// DELETE ROW
+// ==========================================
+
+document.addEventListener("click", function(e){
+
+    if(e.target.classList.contains("remove-row")){
+
+        let rows = document.querySelectorAll(".cash-row");
+
+        if(rows.length > 1){
+
+            e.target.closest("tr").remove();
+
+        }
+
+    }
+
+});
+
+
+// ==========================================
+// AUTO AMOUNT
+// ==========================================
+
+document.addEventListener("input", function(e){
+
+    let row = e.target.closest(".cash-row");
+
+    if(!row) return;
+
+    let denomination = row.querySelector("select");
+
+    let custom = row.querySelector(
+        "input[name$='custom_denomination']"
+    );
+
+    let notes = row.querySelector(
+        "input[name$='notes_count']"
+    );
+
+    let amountField = row.querySelector(".amount-field");
+
+    let value = 0;
+
+    if(denomination.value === "Others"){
+
+        value = parseFloat(custom.value) || 0;
+
+    }
+
+    else{
+
+        value = parseFloat(denomination.value) || 0;
+
+    }
+
+    let total = value * (parseInt(notes.value) || 0);
+
+    amountField.value = total;
+
+    amount.value = 0;
+
+    document.querySelectorAll(
+    ".amount-field"
+).forEach(function(input){
+
+        amount.value =
+            Number(amount.value) + Number(input.value || 0);
+
+    });
+
+    calculateBalance();
+
+});
+
+
+// ==========================================
+// SHOW / HIDE CUSTOM DENOMINATION
+// ==========================================
+
+document.addEventListener("change", function(e){
+
+    let row = e.target.closest(".cash-row");
+
+    if(!row) return;
+
+    if(e.target.name.endsWith("denomination")){
+
+        let custom = row.querySelector(
+            "input[name$='custom_denomination']"
+        );
+
+        if(e.target.value === "Others"){
+
+            custom.parentElement.style.display = "block";
+
+        }
+
+        else{
+
+            custom.parentElement.style.display = "none";
+
+            custom.value = "";
+
+        }
 
     }
 

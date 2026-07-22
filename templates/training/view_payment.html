@@ -51,6 +51,99 @@ Back
 <td>{{ payment.payment_mode }}</td>
 
 </tr>
+{% if payment.payment_mode == "Cash" %}
+
+<tr>
+    <th>Cash Details</th>
+
+    <td>
+
+        <table class="table table-bordered mb-0">
+
+            <thead>
+
+                <tr>
+
+                    <th>Denomination</th>
+
+                    
+
+                    <th>Notes</th>
+
+                    <th>Amount</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for cash in cash_denominations %}
+
+                <tr>
+
+                    <td>{{ cash.denomination }}</td>
+
+
+                    <td>{{ cash.notes_count }}</td>
+
+                    <td>₹{{ cash.amount }}</td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4" class="text-center">
+
+                        No Cash Details
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </td>
+
+</tr>
+
+{% endif %}
+{% if payment.payment_mode == "UPI" or payment.payment_mode == "Bank" or payment.payment_mode == "Card" %}
+
+<tr>
+
+    <th>Transaction ID</th>
+
+    <td>{{ payment.transaction_id }}</td>
+
+</tr>
+
+{% endif %}
+{% if payment.payment_mode == "Cheque" %}
+
+<tr>
+
+    <th>Cheque Number</th>
+
+    <td>{{ payment.cheque_number }}</td>
+
+</tr>
+
+<tr>
+
+    <th>Bank Name</th>
+
+    <td>{{ payment.bank_name }}</td>
+
+</tr>
+
+{% endif %}
 
 <tr>
 

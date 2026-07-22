@@ -3,8 +3,14 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 import re
 from django.db.models import Sum
+from django.forms import inlineformset_factory
 
-from .models import Course, Student, StudentPayment
+from .models import (
+    Course,
+    Student,
+    StudentPayment,
+    StudentPaymentCashDenomination,
+)
 
 
 # =====================================================
@@ -397,13 +403,7 @@ class StudentForm(forms.ModelForm):
 
 class StudentPaymentForm(forms.ModelForm):
     
-    DENOMINATION_CHOICES = [
-        ("", "Select"),
-        ("100", "₹100"),
-        ("200", "₹200"),
-        ("500", "₹500"),
-        ("Others", "Others"),
-    ]
+    
 
     course_fee = forms.DecimalField(
         required=False,
@@ -429,30 +429,7 @@ class StudentPaymentForm(forms.ModelForm):
         })
     )
 
-    denomination = forms.ChoiceField(
-        choices=DENOMINATION_CHOICES,
-        required=False,
-        widget=forms.Select(attrs={
-            "class": "form-select",
-            "id": "denomination"
-        })
-    )
-
-    notes_count = forms.IntegerField(
-        required=False,
-        widget=forms.NumberInput(attrs={
-            "class": "form-control",
-            "id": "notes_count"
-        })
-    )
-
-    custom_denomination = forms.IntegerField(
-        required=False,
-        widget=forms.NumberInput(attrs={
-            "class": "form-control",
-            "id": "custom_denomination"
-        })
-    )
+    
 
     transaction_id = forms.CharField(
         required=False,
@@ -569,6 +546,8 @@ class StudentPaymentForm(forms.ModelForm):
                     except Student.DoesNotExist:
 
                         pass
+                    
+   
 
     # ==========================================
     # STUDENT
@@ -589,14 +568,24 @@ class StudentPaymentForm(forms.ModelForm):
             raise ValidationError(
                 "Amount must be greater than zero."
             )
-
+            
         if student:
 
-            if amount > student.balance_amount:
+            total_paid = (
+                StudentPayment.objects.filter(student=student)
+                .exclude(pk=self.instance.pk)
+                .aggregate(total=Sum("amount"))["total"] or 0
+            )
+
+            balance = student.course_fee - total_paid
+
+            if amount > balance:
 
                 raise ValidationError(
-                    f"Remaining Balance is only ₹{student.balance_amount}."
+                    f"Remaining Balance is only ₹{balance}."
                 )
+
+       
 
         return amount
 
@@ -647,12 +636,6 @@ def clean(self):
 
     payment_mode = cleaned_data.get("payment_mode")
 
-    denomination = cleaned_data.get("denomination")
-
-    notes_count = cleaned_data.get("notes_count")
-
-    custom_denomination = cleaned_data.get("custom_denomination")
-
     transaction_id = cleaned_data.get("transaction_id")
 
     cheque_number = cleaned_data.get("cheque_number")
@@ -680,31 +663,9 @@ def clean(self):
                 f"Remaining Balance is only ₹{balance}."
             )
 
-    # Cash
+    
 
-    if payment_mode == "Cash":
-
-        if not denomination:
-
-            self.add_error(
-                "denomination",
-                "Please select denomination."
-            )
-
-        if not notes_count:
-
-            self.add_error(
-                "notes_count",
-                "Enter number of notes."
-            )
-
-        if denomination == "Others" and not custom_denomination:
-
-            self.add_error(
-                "custom_denomination",
-                "Enter custom denomination."
-            )
-
+    
     # UPI / Bank / Card
 
     elif payment_mode in ["UPI", "Bank", "Card"]:
@@ -735,3 +696,54 @@ def clean(self):
             )
 
     return cleaned_data
+
+class StudentPaymentCashDenominationForm(forms.ModelForm):
+
+    class Meta:
+
+        model = StudentPaymentCashDenomination
+
+        fields = [
+            "denomination",
+            "custom_denomination",
+            "notes_count",
+        ]
+
+        widgets = {
+
+            "denomination": forms.Select(
+                attrs={
+                    "class": "form-select"
+                }
+            ),
+
+            "custom_denomination": forms.NumberInput(
+                attrs={
+                    "class": "form-control"
+                }
+            ),
+
+            "notes_count": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "min": "1"
+                }
+            ),
+
+        }
+        
+        
+StudentPaymentCashDenominationFormSet = inlineformset_factory(
+    StudentPayment,
+    StudentPaymentCashDenomination,
+    form=StudentPaymentCashDenominationForm,
+    extra=1,
+    can_delete=True
+)
+StudentPaymentCashDenominationFormSet = inlineformset_factory(
+    StudentPayment,
+    StudentPaymentCashDenomination,
+    form=StudentPaymentCashDenominationForm,
+    extra=0,
+    can_delete=True
+)

@@ -93,17 +93,14 @@
             <div class="form-group">
 
                 <label>
-
                     Amount (₹)
-
                     <span class="required">*</span>
-
                 </label>
 
                 {{ form.amount }}
 
-                <small class="text-muted">
-                    Modify the received amount if necessary.
+                <small class="text-danger">
+                    Payment amount cannot be modified after payment.
                 </small>
 
                 <div class="invalid-feedback" id="amount_error"></div>
@@ -115,43 +112,129 @@
             <div class="form-group">
 
                 <label>
-
                     Payment Mode
-
                     <span class="required">*</span>
-
                 </label>
 
                 {{ form.payment_mode }}
 
-                <small class="text-muted">
-                    Choose the payment method.
+                <small class="text-danger">
+                    Payment mode cannot be modified after payment.
                 </small>
 
                 <div class="invalid-feedback" id="payment_mode_error"></div>
 
             </div>
-
             <!-- Date -->
 
             <div class="form-group">
 
                 <label>
-
                     Received Date
-
                     <span class="required">*</span>
-
                 </label>
 
                 {{ form.received_date }}
 
-                <small class="text-muted">
-                    Update the received date if required.
+                <small class="text-danger">
+                    Payment date cannot be modified after payment.
                 </small>
 
                 <div class="invalid-feedback" id="received_date_error"></div>
+
             </div>
+            <div id="cashFields" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Cash Details</h4>
+
+                {{ formset.management_form }}
+
+                <div id="denomination-container">
+
+                    {% for cash_form in formset %}
+
+                    <div class="row denomination-row align-items-end mb-3">
+
+                        <div class="col-md-4">
+
+                            <label>Denomination</label>
+
+                            {{ cash_form.denomination }}
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <label>No of Notes</label>
+
+                            {{ cash_form.notes_count }}
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <label>Total</label>
+
+                            {{ cash_form.amount }}
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <div id="transactionSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Transaction Details</h4>
+
+                <div class="form-group">
+
+                    <label>Transaction ID</label>
+
+                    {{ form.transaction_id }}
+
+                </div>
+
+            </div>
+
+            <div id="chequeSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Cheque Details</h4>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Cheque Number</label>
+
+                        {{ form.cheque_number }}
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Bank Name</label>
+
+                        {{ form.bank_name }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
 
             <!-- Description -->
 
@@ -232,355 +315,446 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-    const form = document.getElementById("incomeForm");
+        const form = document.getElementById("incomeForm");
 
-    const incomeSource = document.getElementById("id_income_source");
-    const amount = document.getElementById("id_amount");
-    const paymentMode = document.getElementById("id_payment_mode");
-    const receivedDate = document.getElementById("id_received_date");
-    const description = document.getElementById("id_description");
-    const attachment = document.getElementById("id_attachment");
+        const incomeSource = document.getElementById("id_income_source");
+        const amount = document.getElementById("id_amount");
+        const paymentMode = document.getElementById("id_payment_mode");
+        const receivedDate = document.getElementById("id_received_date");
+        const description = document.getElementById("id_description");
+        const attachment = document.getElementById("id_attachment");
 
-    // Error Labels
-    const incomeSourceError = document.getElementById("income_source_error");
-    const amountError = document.getElementById("amount_error");
-    const paymentModeError = document.getElementById("payment_mode_error");
-    const receivedDateError = document.getElementById("received_date_error");
-    const descriptionError = document.getElementById("description_error");
-    const attachmentError = document.getElementById("attachment_error");
+        // Payment Sections
+        const cashFields = document.getElementById("cashFields");
+        const transactionSection = document.getElementById("transactionSection");
+        const chequeSection = document.getElementById("chequeSection");
 
-
-    function setError(input, errorElement, message) {
-
-        input.classList.remove("is-valid");
-        input.classList.add("is-invalid");
-
-        errorElement.innerText = message;
-
-    }
-
-    function setSuccess(input, errorElement) {
-
-        input.classList.remove("is-invalid");
-        input.classList.add("is-valid");
-
-        errorElement.innerText = "";
-
-    }
+        // Error Labels
+        const incomeSourceError = document.getElementById("income_source_error");
+        const amountError = document.getElementById("amount_error");
+        const paymentModeError = document.getElementById("payment_mode_error");
+        const receivedDateError = document.getElementById("received_date_error");
+        const descriptionError = document.getElementById("description_error");
+        const attachmentError = document.getElementById("attachment_error");
 
 
-    // ===========================
-    // Income Source
-    // ===========================
+        function setError(input, errorElement, message) {
 
-    function validateIncomeSource() {
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
 
-        if (incomeSource.value === "") {
+            errorElement.innerText = message;
 
-            setError(
+        }
+
+        function setSuccess(input, errorElement) {
+
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
+
+            errorElement.innerText = "";
+
+        }
+
+
+        // ===========================
+        // Income Source
+        // ===========================
+
+        function validateIncomeSource() {
+
+            if (incomeSource.value === "") {
+
+                setError(
+                    incomeSource,
+                    incomeSourceError,
+                    "Please select Income Source."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
                 incomeSource,
-                incomeSourceError,
-                "Please select Income Source."
+                incomeSourceError
             );
-
-            return false;
-
-        }
-
-        setSuccess(
-            incomeSource,
-            incomeSourceError
-        );
-
-        return true;
-
-    }
-
-
-    // ===========================
-    // Amount
-    // ===========================
-
-    function validateAmount() {
-
-        const value = amount.value.trim();
-
-        if (value === "") {
-
-            setError(
-                amount,
-                amountError,
-                "Amount is required."
-            );
-
-            return false;
-
-        }
-
-        if (isNaN(value)) {
-
-            setError(
-                amount,
-                amountError,
-                "Amount must be numeric."
-            );
-
-            return false;
-
-        }
-
-        if (parseFloat(value) <= 0) {
-
-            setError(
-                amount,
-                amountError,
-                "Amount must be greater than 0."
-            );
-
-            return false;
-
-        }
-
-        if (parseFloat(value) > 999999999) {
-
-            setError(
-                amount,
-                amountError,
-                "Amount is too large."
-            );
-
-            return false;
-
-        }
-
-        setSuccess(
-            amount,
-            amountError
-        );
-
-        return true;
-
-    }
-
-
-    // ===========================
-    // Payment Mode
-    // ===========================
-
-    function validatePaymentMode() {
-
-        if (paymentMode.value === "") {
-
-            setError(
-                paymentMode,
-                paymentModeError,
-                "Please select Payment Mode."
-            );
-
-            return false;
-
-        }
-
-        setSuccess(
-            paymentMode,
-            paymentModeError
-        );
-
-        return true;
-
-    }
-
-
-    // ===========================
-    // Received Date
-    // ===========================
-
-    function validateDate() {
-
-        if (receivedDate.value === "") {
-
-            setError(
-                receivedDate,
-                receivedDateError,
-                "Received Date is required."
-            );
-
-            return false;
-
-        }
-
-        const selected = new Date(receivedDate.value);
-        const today = new Date();
-
-        today.setHours(0,0,0,0);
-
-        if (selected > today) {
-
-            setError(
-                receivedDate,
-                receivedDateError,
-                "Future date is not allowed."
-            );
-
-            return false;
-
-        }
-
-        setSuccess(
-            receivedDate,
-            receivedDateError
-        );
-
-        return true;
-
-    }
-
-
-    // ===========================
-    // Description
-    // ===========================
-
-    function validateDate() {
-
-    if (receivedDate.value === "") {
-
-        setError(
-            receivedDate,
-            receivedDateError,
-            "Received Date is required."
-        );
-
-        return false;
-
-    }
-
-    const today = new Date();
-
-    const todayString = today.toISOString().split("T")[0];
-
-    if (receivedDate.value > todayString) {
-
-        setError(
-            receivedDate,
-            receivedDateError,
-            "Future date is not allowed."
-        );
-
-        return false;
-
-    }
-
-    setSuccess(
-        receivedDate,
-        receivedDateError
-    );
-
-    return true;
-
-}
-
-    // ===========================
-    // Attachment
-    // ===========================
-
-    function validateAttachment() {
-
-        if (attachment.files.length === 0) {
-
-            attachmentError.innerText = "";
-            attachment.classList.remove("is-invalid");
-            attachment.classList.remove("is-valid");
 
             return true;
 
         }
 
-        const file = attachment.files[0];
 
-        const allowed = [
-            "pdf",
-            "jpg",
-            "jpeg",
-            "png"
-        ];
+        // ===========================
+        // Amount
+        // ===========================
 
-        const extension = file.name.split(".").pop().toLowerCase();
+        function validateAmount() {
 
-        if (!allowed.includes(extension)) {
+            const value = amount.value.trim();
 
-            setError(
-                attachment,
-                attachmentError,
-                "Only PDF, JPG, JPEG, PNG files allowed."
+            if (value === "") {
+
+                setError(
+                    amount,
+                    amountError,
+                    "Amount is required."
+                );
+
+                return false;
+
+            }
+
+            if (isNaN(value)) {
+
+                setError(
+                    amount,
+                    amountError,
+                    "Amount must be numeric."
+                );
+
+                return false;
+
+            }
+
+            if (parseFloat(value) <= 0) {
+
+                setError(
+                    amount,
+                    amountError,
+                    "Amount must be greater than 0."
+                );
+
+                return false;
+
+            }
+
+            if (parseFloat(value) > 999999999) {
+
+                setError(
+                    amount,
+                    amountError,
+                    "Amount is too large."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                amount,
+                amountError
             );
 
-            return false;
+            return true;
 
         }
 
-        if (file.size > 5 * 1024 * 1024) {
 
-            setError(
-                attachment,
-                attachmentError,
-                "Maximum file size is 5MB."
+        // ===========================
+        // Payment Mode
+        // ===========================
+
+        function validatePaymentMode() {
+
+            if (paymentMode.value === "") {
+
+                setError(
+                    paymentMode,
+                    paymentModeError,
+                    "Please select Payment Mode."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                paymentMode,
+                paymentModeError
             );
 
-            return false;
+            return true;
 
         }
 
-        setSuccess(
-            attachment,
-            attachmentError
-        );
 
-        return true;
+        // ===========================
+        // Received Date
+        // ===========================
+
+        function validateDate() {
+
+            if (receivedDate.value === "") {
+
+                setError(
+                    receivedDate,
+                    receivedDateError,
+                    "Received Date is required."
+                );
+
+                return false;
+
+            }
+
+            const selected = new Date(receivedDate.value);
+            const today = new Date();
+
+            today.setHours(0, 0, 0, 0);
+
+            if (selected > today) {
+
+                setError(
+                    receivedDate,
+                    receivedDateError,
+                    "Future date is not allowed."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                receivedDate,
+                receivedDateError
+            );
+
+            return true;
+
+        }
+        function validateDescription() {
+
+            if (description.value.trim().length > 500) {
+
+                setError(
+                    description,
+                    descriptionError,
+                    "Description cannot exceed 500 characters."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                description,
+                descriptionError
+            );
+
+            return true;
+
+        }
+
+
+
+        // ===========================
+        // Attachment
+        // ===========================
+
+        function validateAttachment() {
+
+            if (attachment.files.length === 0) {
+
+                attachmentError.innerText = "";
+                attachment.classList.remove("is-invalid");
+                attachment.classList.remove("is-valid");
+
+                return true;
+
+            }
+
+            const file = attachment.files[0];
+
+            const allowed = [
+                "pdf",
+                "jpg",
+                "jpeg",
+                "png"
+            ];
+
+            const extension = file.name.split(".").pop().toLowerCase();
+
+            if (!allowed.includes(extension)) {
+
+                setError(
+                    attachment,
+                    attachmentError,
+                    "Only PDF, JPG, JPEG, PNG files allowed."
+                );
+
+                return false;
+
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+
+                setError(
+                    attachment,
+                    attachmentError,
+                    "Maximum file size is 5MB."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                attachment,
+                attachmentError
+            );
+
+            return true;
+
+        }
+        function togglePaymentFields() {
+
+            cashFields.style.display = "none";
+            transactionSection.style.display = "none";
+            chequeSection.style.display = "none";
+
+            const mode = paymentMode.value;
+
+            if (mode === "Cash") {
+
+                cashFields.style.display = "block";
+
+            }
+            else if (
+                mode === "UPI" ||
+                mode === "Bank" ||
+                mode === "Card"
+            ) {
+
+                transactionSection.style.display = "block";
+
+            }
+            else if (mode === "Cheque") {
+
+                chequeSection.style.display = "block";
+
+            }
+
+        }
+
+        // ===========================
+        // Live Validation
+        // ===========================
+
+        incomeSource.addEventListener("change", validateIncomeSource);
+
+        amount.addEventListener("input", validateAmount);
+
+        paymentMode.addEventListener("change", function () {
+
+            validatePaymentMode();
+
+            togglePaymentFields();
+
+        });
+
+        receivedDate.addEventListener("change", validateDate);
+
+        description.addEventListener("input", validateDescription);
+
+        attachment.addEventListener("change", validateAttachment);
+
+
+        // ===========================
+        // Submit Validation
+        // ===========================
+
+        form.addEventListener("submit", function (e) {
+
+            const valid =
+
+                validateIncomeSource() &&
+                validateAmount() &&
+                validatePaymentMode() &&
+                validateDate() &&
+                validateDescription() &&
+                validateAttachment();
+
+            if (!valid) {
+
+                e.preventDefault();
+
+            }
+
+        });
+        togglePaymentFields();
+    });
+    function updateGrandTotal() {
+
+        let grandTotal = 0;
+
+        document.querySelectorAll(".denomination-row").forEach(function (row) {
+
+            const denomination = row.querySelector("select");
+
+            const notes = row.querySelector("input[type='number']");
+
+            const total = row.querySelector(".row-total");
+
+            const value = parseFloat(denomination.value) || 0;
+
+            const count = parseInt(notes.value) || 0;
+
+            const amount = value * count;
+
+            total.value = amount;
+
+            grandTotal += amount;
+
+        });
+
+        document.getElementById("id_amount").value = grandTotal;
 
     }
 
+    document.addEventListener("input", function (e) {
 
-    // ===========================
-    // Live Validation
-    // ===========================
+        if (e.target.closest(".denomination-row")) {
 
-    incomeSource.addEventListener("change", validateIncomeSource);
-
-    amount.addEventListener("input", validateAmount);
-
-    paymentMode.addEventListener("change", validatePaymentMode);
-
-    receivedDate.addEventListener("change", validateDate);
-
-    description.addEventListener("input", validateDescription);
-
-    attachment.addEventListener("change", validateAttachment);
-
-
-    // ===========================
-    // Submit Validation
-    // ===========================
-
-    form.addEventListener("submit", function (e) {
-
-        const valid =
-
-            validateIncomeSource() &&
-            validateAmount() &&
-            validatePaymentMode() &&
-            validateDate() &&
-            validateDescription() &&
-            validateAttachment();
-
-        if (!valid) {
-
-            e.preventDefault();
+            updateGrandTotal();
 
         }
 
     });
 
-});
+    updateGrandTotal();
+const cashFields = document.getElementById("cashFields");
+const transactionSection = document.getElementById("transactionSection");
+const chequeSection = document.getElementById("chequeSection");
+
+function togglePaymentFields() {
+
+    cashFields.style.display = "none";
+    transactionSection.style.display = "none";
+    chequeSection.style.display = "none";
+
+    if (mode.value === "Cash") {
+
+        cashFields.style.display = "block";
+
+    }
+    else if (
+        mode.value === "UPI" ||
+        mode.value === "Bank" ||
+        mode.value === "Card"
+    ) {
+
+        transactionSection.style.display = "block";
+
+    }
+    else if (mode.value === "Cheque") {
+
+        chequeSection.style.display = "block";
+
+    }
+
+}
+
+togglePaymentFields();
 </script>
 
 {% endblock %}

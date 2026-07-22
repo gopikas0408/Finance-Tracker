@@ -34,117 +34,198 @@ EDIT PAYMENT FORM
 
 <div class="dashboard-box">
 
-<form method="POST" id="paymentForm" novalidate>
+    <form method="POST" id="paymentForm" novalidate>
 
-{% csrf_token %}
+        {% csrf_token %}
 
-<div class="row">
+        <div class="row">
 
-    <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3">
 
-    <label>Student</label>
+                <label>Student</label>
 
-    {{ form.student }}
+                {{ form.student }}
 
-    <small class="text-danger">
-        {{ form.student.errors|striptags }}
-    </small>
+                <small class="text-danger">
+                    {{ form.student.errors|striptags }}
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Total Fee</label>
+
+                {{ form.course_fee }}
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Already Paid</label>
+
+                {{ form.paid_amount }}
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Balance Amount</label>
+
+                {{ form.balance_amount }}
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Payment Amount</label>
+
+                {{ form.amount }}
+
+                <small class="text-danger">
+                    {{ form.amount.errors|striptags }}
+                </small>
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label>Payment Mode</label>
+
+                {{ form.payment_mode }}
+
+                <small class="text-danger">
+                    {{ form.payment_mode.errors|striptags }}
+                </small>
+
+            </div>
+           {% if payment.payment_mode == "Cash" %}
+
+<div id="cashFields">
+
+    {{ formset.management_form }}
+
+    <table class="table">
+
+        <thead>
+
+            <tr>
+
+                <th>Denomination</th>
+
+                <th>Notes</th>
+
+                <th>Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for cash_form in formset %}
+
+            <tr>
+
+                <td>{{ cash_form.denomination }}</td>
+
+                <td>{{ cash_form.notes_count }}</td>
+
+                <td>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="{{ cash_form.instance.amount }}"
+                        readonly
+                    >
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
 
 </div>
 
-<div class="col-md-6 mb-3">
+{% endif %}
+            {% if payment.payment_mode == "UPI" or payment.payment_mode == "Bank" or payment.payment_mode == "Card" %}
 
-    <label>Total Fee</label>
+<div id="transactionSection">
 
-    {{ form.course_fee }}
+    <label>Transaction ID</label>
 
-</div>
-
-<div class="col-md-6 mb-3">
-
-    <label>Already Paid</label>
-
-    {{ form.paid_amount }}
+    {{ form.transaction_id }}
 
 </div>
 
-<div class="col-md-6 mb-3">
+{% endif %}
 
-    <label>Balance Amount</label>
+{% if payment.payment_mode == "Cheque" %}
 
-    {{ form.balance_amount }}
+<div id="chequeSection">
 
-</div>
+    <label>Cheque Number</label>
 
-<div class="col-md-6 mb-3">
+    {{ form.cheque_number }}
 
-    <label>Payment Amount</label>
+    <label class="mt-2">Bank Name</label>
 
-    {{ form.amount }}
-
-    <small class="text-danger">
-        {{ form.amount.errors|striptags }}
-    </small>
+    {{ form.bank_name }}
 
 </div>
 
-<div class="col-md-6 mb-3">
+{% endif %}
 
-    <label>Payment Mode</label>
+            <div class="col-md-6 mb-3">
 
-    {{ form.payment_mode }}
+                <label>Payment Date</label>
 
-    <small class="text-danger">
-        {{ form.payment_mode.errors|striptags }}
-    </small>
+                {{ form.payment_date }}
 
-</div>
+                <small class="text-danger">
+                    {{ form.payment_date.errors|striptags }}
+                </small>
 
-<div class="col-md-6 mb-3">
+            </div>
 
-    <label>Payment Date</label>
+            <div class="col-md-12 mb-3">
 
-    {{ form.payment_date }}
+                <label>Remarks</label>
 
-    <small class="text-danger">
-        {{ form.payment_date.errors|striptags }}
-    </small>
+                {{ form.remarks }}
 
-</div>
+                <small class="text-danger">
+                    {{ form.remarks.errors|striptags }}
+                </small>
 
-<div class="col-md-12 mb-3">
+            </div>
 
-    <label>Remarks</label>
+        </div>
 
-    {{ form.remarks }}
+        <div class="form-buttons">
 
-    <small class="text-danger">
-        {{ form.remarks.errors|striptags }}
-    </small>
+            <button type="submit" class="btn btn-warning">
 
-</div>
+                <i class="bi bi-pencil-square"></i>
 
-</div>
+                Update Payment
 
-<div class="form-buttons">
+            </button>
 
-    <button type="submit" class="btn btn-warning">
+            <a href="{% url 'payment_list' %}" class="btn btn-secondary">
 
-        <i class="bi bi-pencil-square"></i>
+                Cancel
 
-        Update Payment
+            </a>
 
-    </button>
+        </div>
 
-    <a href="{% url 'payment_list' %}" class="btn btn-secondary">
-
-        Cancel
-
-    </a>
-
-</div>
-
-</form>
+    </form>
 
 </div>
 
@@ -156,166 +237,166 @@ JAVASCRIPT VALIDATION
 
 
 
-document.getElementById("paymentForm").addEventListener("submit", function(e){
+    document.getElementById("paymentForm").addEventListener("submit", function (e) {
 
-    let student = document.getElementById("id_student");
-    let amount = document.getElementById("id_amount");
-    let paymentDate = document.getElementById("id_payment_date");
-    let remarks = document.getElementById("id_remarks");
-    let balance = document.getElementById("id_balance_amount");
+        let student = document.getElementById("id_student");
+        let amount = document.getElementById("id_amount");
+        let paymentDate = document.getElementById("id_payment_date");
+        let remarks = document.getElementById("id_remarks");
+        let balance = document.getElementById("id_balance_amount");
 
-    // Student
+        // Student
 
-    if(student.value===""){
+        if (student.value === "") {
 
-        alert("Please select a student.");
+            alert("Please select a student.");
 
-        student.focus();
+            student.focus();
 
-        e.preventDefault();
-
-        return;
-
-    }
-
-    // Payment Amount
-
-    if(amount.value==="" || Number(amount.value)<=0){
-
-        alert("Amount must be greater than zero.");
-
-        amount.focus();
-
-        e.preventDefault();
-
-        return;
-
-    }
-
-    // Cannot Pay More Than Balance
-
-    if(balance && Number(amount.value)>Number(balance.value)){
-
-        alert("Payment amount cannot exceed the remaining balance.");
-
-        amount.focus();
-
-        e.preventDefault();
-
-        return;
-
-    }
-
-    // Future Date
-
-    const today=new Date().toISOString().split("T")[0];
-
-    if(paymentDate.value>today){
-
-        alert("Future Payment Date is not allowed.");
-
-        paymentDate.focus();
-
-        e.preventDefault();
-
-        return;
-
-    }
-
-    // Remarks
-
-    if(remarks && remarks.value.trim().length>500){
-
-        alert("Remarks cannot exceed 500 characters.");
-
-        remarks.focus();
-
-        e.preventDefault();
-
-        return;
-
-    }
-
-});
-
-
-document.addEventListener("DOMContentLoaded",function(){
-
-    const student=document.getElementById("id_student");
-
-    const totalFee=document.getElementById("id_course_fee");
-
-    const paidAmount=document.getElementById("id_paid_amount");
-
-    const balanceAmount=document.getElementById("id_balance_amount");
-
-    const paymentAmount=document.getElementById("id_amount");
-
-
-    // Load Student Fee Details
-
-    function loadStudentDetails(){
-
-        if(student.value===""){
-
-            totalFee.value="";
-            paidAmount.value="";
-            balanceAmount.value="";
+            e.preventDefault();
 
             return;
-        }
-
-        fetch("/training/student-fee/"+student.value+"/")
-
-        .then(response=>response.json())
-
-        .then(data=>{
-
-            totalFee.value=data.course_fee;
-
-            paidAmount.value=data.paid_amount;
-
-            balanceAmount.value=data.balance_amount;
-
-        });
-
-    }
-
-    // Calculate Balance
-
-    function calculateBalance(){
-
-        let total=parseFloat(totalFee.value)||0;
-
-        let paid=parseFloat(paidAmount.value)||0;
-
-        let current=parseFloat(paymentAmount.value)||0;
-
-        let remaining=total-(paid+current);
-
-        if(remaining<0){
-
-            alert("Payment exceeds remaining balance.");
-
-            paymentAmount.value="";
-
-            remaining=total-paid;
 
         }
 
-        balanceAmount.value=remaining.toFixed(2);
+        // Payment Amount
 
-    }
+        if (amount.value === "" || Number(amount.value) <= 0) {
 
-    student.addEventListener("change",loadStudentDetails);
+            alert("Amount must be greater than zero.");
 
-    paymentAmount.addEventListener("input",calculateBalance);
+            amount.focus();
 
-    // Load values when edit page opens
+            e.preventDefault();
 
-    loadStudentDetails();
+            return;
 
-});
+        }
+
+        // Cannot Pay More Than Balance
+
+        if (balance && Number(amount.value) > Number(balance.value)) {
+
+            alert("Payment amount cannot exceed the remaining balance.");
+
+            amount.focus();
+
+            e.preventDefault();
+
+            return;
+
+        }
+
+        // Future Date
+
+        const today = new Date().toISOString().split("T")[0];
+
+        if (paymentDate.value > today) {
+
+            alert("Future Payment Date is not allowed.");
+
+            paymentDate.focus();
+
+            e.preventDefault();
+
+            return;
+
+        }
+
+        // Remarks
+
+        if (remarks && remarks.value.trim().length > 500) {
+
+            alert("Remarks cannot exceed 500 characters.");
+
+            remarks.focus();
+
+            e.preventDefault();
+
+            return;
+
+        }
+
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const student = document.getElementById("id_student");
+
+        const totalFee = document.getElementById("id_course_fee");
+
+        const paidAmount = document.getElementById("id_paid_amount");
+
+        const balanceAmount = document.getElementById("id_balance_amount");
+
+        const paymentAmount = document.getElementById("id_amount");
+
+
+        // Load Student Fee Details
+
+        function loadStudentDetails() {
+
+            if (student.value === "") {
+
+                totalFee.value = "";
+                paidAmount.value = "";
+                balanceAmount.value = "";
+
+                return;
+            }
+
+            fetch("/training/student-fee/" + student.value + "/")
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    totalFee.value = data.course_fee;
+
+                    paidAmount.value = data.paid_amount;
+
+                    balanceAmount.value = data.balance_amount;
+
+                });
+
+        }
+
+        // Calculate Balance
+
+        function calculateBalance() {
+
+            let total = parseFloat(totalFee.value) || 0;
+
+            let paid = parseFloat(paidAmount.value) || 0;
+
+            let current = parseFloat(paymentAmount.value) || 0;
+
+            let remaining = total - (paid + current);
+
+            if (remaining < 0) {
+
+                alert("Payment exceeds remaining balance.");
+
+                paymentAmount.value = "";
+
+                remaining = total - paid;
+
+            }
+
+            balanceAmount.value = remaining.toFixed(2);
+
+        }
+
+        student.addEventListener("change", loadStudentDetails);
+
+        paymentAmount.addEventListener("input", calculateBalance);
+
+        // Load values when edit page opens
+
+        loadStudentDetails();
+
+    });
 
 
 </script>

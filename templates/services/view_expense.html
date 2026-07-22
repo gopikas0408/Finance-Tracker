@@ -59,6 +59,13 @@
             <h5>{{ expense.expense_date }}</h5>
 
         </div>
+        <div class="detail-item">
+
+    <label>Payment Mode</label>
+
+    <h5>{{ expense.payment_mode }}</h5>
+
+</div>
 
         <div class="detail-item">
 
@@ -69,6 +76,75 @@
         </div>
 
     </div>
+    {% if expense.payment_mode == "Cash" %}
+
+<div class="detail-item" style="grid-column:1/-1;">
+
+    <label>Cash Details</label>
+
+    <table class="table table-bordered">
+
+        <thead>
+
+            <tr>
+                <th>Denomination</th>
+                <th>No of Notes</th>
+                <th>Amount</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for cash in expense.cash_denominations.all %}
+
+            <tr>
+
+                <td>{{ cash.denomination }}</td>
+
+                <td>{{ cash.notes_count }}</td>
+
+                <td>₹ {{ cash.amount }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% elif expense.payment_mode == "UPI" or expense.payment_mode == "Bank" or expense.payment_mode == "Card" %}
+
+<div class="detail-item">
+
+    <label>Transaction ID</label>
+
+    <h5>{{ expense.transaction_id }}</h5>
+
+</div>
+
+{% elif expense.payment_mode == "Cheque" %}
+
+<div class="detail-item">
+
+    <label>Cheque Number</label>
+
+    <h5>{{ expense.cheque_number }}</h5>
+
+</div>
+
+<div class="detail-item">
+
+    <label>Bank Name</label>
+
+    <h5>{{ expense.bank_name }}</h5>
+
+</div>
+
+{% endif %}
 
     <div class="detail-item mt-4">
 

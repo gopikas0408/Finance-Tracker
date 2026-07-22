@@ -4,7 +4,19 @@ from django.db.models import Q, Sum
 from django.core.paginator import Paginator
 
 from .models import Client, Project, ProjectPayment, ProjectExpense, EmployeeSalary
-from .forms import ClientForm, ProjectForm, ProjectPaymentForm, ProjectExpenseForm, EmployeeSalaryForm
+from .forms import (
+    ClientForm,
+    ProjectForm,
+    ProjectPaymentForm,
+    ProjectPaymentCashDenominationFormSet,
+    ProjectPaymentCashDenominationEditFormSet,
+    ProjectExpenseForm,
+    ProjectExpenseCashDenominationFormSet,
+    ProjectExpenseCashDenominationEditFormSet,
+    EmployeeSalaryForm,
+    EmployeeSalaryCashDenominationFormSet,
+    EmployeeSalaryCashDenominationEditFormSet,
+)
 from datetime import date
 from django.http import HttpResponse
 from openpyxl import Workbook
@@ -696,15 +708,19 @@ def payment_list(request):
 
 def add_payment(request):
 
-    form = ProjectPaymentForm(
+    form = ProjectPaymentForm(request.POST or None)
 
+    formset = ProjectPaymentCashDenominationFormSet(
         request.POST or None
-
     )
 
-    if form.is_valid():
+    if form.is_valid() and formset.is_valid():
 
         payment = form.save()
+
+        formset.instance = payment
+
+        formset.save()
 
         TransactionService.create_transaction(
 
@@ -748,11 +764,23 @@ def add_payment(request):
 
         {
 
-            "form": form
+            "form": form,
+            "formset": formset,
 
         }
 
     )
+from django.contrib import messages
+from django.shortcuts import redirect
+
+def edit_payment(request, pk):
+
+    messages.error(
+        request,
+        "Payment cannot be edited once it has been recorded."
+    )
+
+    return redirect("services:service_payment_list")
 
 # ======================================================
 # EDIT PROJECT PAYMENT
@@ -775,10 +803,18 @@ def edit_payment(request, id):
         instance=payment
 
     )
+    formset = ProjectPaymentCashDenominationEditFormSet(
+        request.POST or None,
+        instance=payment
+    )
 
-    if form.is_valid():
+    if form.is_valid() and formset.is_valid():
 
         payment = form.save()
+
+        formset.instance = payment
+
+        formset.save()
 
         TransactionService.update_transaction(
 
@@ -821,12 +857,15 @@ def edit_payment(request, id):
         {
 
             "form": form,
+            "formset": formset,
 
             "payment": payment,
 
         }
 
     )
+
+
 
 # ======================================================
 # VIEW PROJECT PAYMENT
@@ -835,39 +874,27 @@ def edit_payment(request, id):
 def view_payment(request, id):
 
     payment = get_object_or_404(
-
         ProjectPayment,
-
         id=id
-
     )
 
+    cash_denominations = payment.cash_denominations.all()
+
     log_activity(
-
         module="Services",
-
         action="View",
-
         record_name=payment.project.project_name,
-
         description=f"Viewed Project Payment of ₹{payment.amount} for '{payment.project.project_name}'.",
-
         user=request.user,
-
     )
 
     return render(
-
         request,
-
         "services/view_payment.html",
-
         {
-
             "payment": payment,
-
+            "cash_denominations": cash_denominations,
         }
-
     )
 
 
@@ -995,16 +1022,22 @@ def add_expense(request):
         request.POST or None,
         request.FILES or None,
     )
+    formset = ProjectExpenseCashDenominationFormSet(
+        request.POST or None
+    )
 
     if request.method == "POST":
 
         print("POST DATA:", request.POST)
 
-        if form.is_valid():
+        if form.is_valid() and formset.is_valid():
 
             print("VALID FORM")
 
             expense = form.save()
+
+            formset.instance = expense
+            formset.save()
 
             messages.success(
                 request,
@@ -1023,7 +1056,9 @@ def add_expense(request):
         request,
         "services/add_expense.html",
         {
-            "form": form
+            "form": form,
+            "formset": formset,
+            
         }
     )
 
@@ -1048,10 +1083,22 @@ def edit_expense(request, id):
         instance=expense
 
     )
+    formset = ProjectExpenseCashDenominationEditFormSet(
+        request.POST or None,
+        instance=expense
+    )
+    if request.method != "POST":
+        for form_item in formset:
+            form_item.fields["denomination"].disabled = True
+            form_item.fields["notes_count"].disabled = True
+            form_item.fields["amount"].disabled = True
 
-    if form.is_valid():
+    if form.is_valid() and formset.is_valid():
 
         expense = form.save()
+
+        formset.instance = expense
+        formset.save()
 
         TransactionService.update_transaction(
 
@@ -1094,6 +1141,7 @@ def edit_expense(request, id):
         {
 
             "form": form,
+            "formset": formset,
 
             "expense": expense,
 
@@ -1115,6 +1163,7 @@ def view_expense(request, id):
         id=id
 
     )
+    cash_denominations = expense.cash_denominations.all()
 
     log_activity(
 
@@ -1139,6 +1188,7 @@ def view_expense(request, id):
         {
 
             "expense": expense,
+            "cash_denominations": cash_denominations,
 
         }
 
@@ -1270,16 +1320,22 @@ def add_salary(request):
     form = EmployeeSalaryForm(
         request.POST or None
     )
+    formset = EmployeeSalaryCashDenominationFormSet(
+        request.POST or None
+    )
 
     if request.method == "POST":
 
         print("POST DATA:", request.POST)
 
-        if form.is_valid():
+        if form.is_valid() and formset.is_valid():
 
             print("VALID FORM")
 
             salary = form.save()
+
+            formset.instance = salary
+            formset.save()
 
             TransactionService.create_transaction(
 
@@ -1321,6 +1377,7 @@ def add_salary(request):
 
         {
             "form": form,
+            "formset": formset,
         }
 
     )
@@ -1346,10 +1403,22 @@ def edit_salary(request, id):
         instance=salary
 
     )
+    formset = EmployeeSalaryCashDenominationEditFormSet(
+        request.POST or None,
+        instance=salary
+    )
+    if request.method != "POST":
+        for form_item in formset:
+            form_item.fields["denomination"].disabled = True
+            form_item.fields["notes_count"].disabled = True
+            form_item.fields["amount"].disabled = True
 
-    if form.is_valid():
+    if form.is_valid() and formset.is_valid():
 
         salary = form.save()
+
+        formset.instance = salary
+        formset.save()
 
         TransactionService.update_transaction(
 
@@ -1392,6 +1461,7 @@ def edit_salary(request, id):
         {
 
             "form": form,
+            "formset": formset,
 
             "salary": salary,
 
@@ -1412,6 +1482,7 @@ def view_salary(request, id):
         id=id
 
     )
+    cash_denominations = salary.cash_denominations.all()
 
     log_activity(
 
@@ -1436,6 +1507,7 @@ def view_salary(request, id):
         {
 
             "salary": salary,
+            "cash_denominations": cash_denominations,
 
         }
 

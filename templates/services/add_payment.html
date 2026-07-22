@@ -28,850 +28,919 @@
 
     <form method="POST" id="paymentForm" enctype="multipart/form-data" novalidate>
 
-    {% csrf_token %}
+        {% csrf_token %}
 
-    <div class="form-grid">
+        <div class="form-grid">
 
-        <!-- ========================= -->
-        <!-- Project -->
-        <!-- ========================= -->
-
-        <div class="form-group">
-
-            <label>
-
-                Project
-
-                <span class="text-danger">*</span>
-
-            </label>
-
-            {{ form.project }}
-
-            <small class="text-muted">
-                Select project.
-            </small>
-
-            <div id="projectError" class="text-danger mt-1"></div>
-
-            {{ form.project.errors }}
-
-        </div>
-
-
-        <!-- ========================= -->
-        <!-- Payment Mode -->
-        <!-- ========================= -->
-
-        <div class="form-group">
-
-            <label>
-
-                Payment Mode
-
-                <span class="text-danger">*</span>
-
-            </label>
-
-            {{ form.payment_mode }}
-
-            <small class="text-muted">
-                Select payment mode.
-            </small>
-
-            <div id="modeError" class="text-danger mt-1"></div>
-
-            {{ form.payment_mode.errors }}
-
-        </div>
-
-
-        <!-- ========================= -->
-        <!-- Amount -->
-        <!-- ========================= -->
-
-        <div class="form-group">
-
-            <label>
-
-                Amount
-
-                <span class="text-danger">*</span>
-
-            </label>
-
-            {{ form.amount }}
-
-            <small class="text-muted">
-
-                Cash amount is calculated automatically.
-
-            </small>
-
-            <div id="amountError" class="text-danger mt-1"></div>
-
-            {{ form.amount.errors }}
-
-        </div>
-                <!-- ========================= -->
-        <!-- CASH DETAILS -->
-        <!-- ========================= -->
-
-        <div
-            id="cashFields"
-            class="full-width"
-            style="display:none;"
-        >
-
-            <hr>
-
-            <h4>Cash Details</h4>
-
-            <div class="form-grid">
-
-                <div class="form-group">
-
-                    <label>Denomination</label>
-
-                    {{ form.denomination }}
-
-                    <div class="text-danger mt-1">
-                        {{ form.denomination.errors }}
-                    </div>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>No of Notes</label>
-
-                    {{ form.notes_count }}
-
-                    <div class="text-danger mt-1">
-                        {{ form.notes_count.errors }}
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div
-                id="customDenomination"
-                style="display:none;"
-            >
-
-                <label>Custom Denomination</label>
-
-                {{ form.custom_denomination }}
-
-                <div class="text-danger mt-1">
-                    {{ form.custom_denomination.errors }}
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ========================= -->
-        <!-- TRANSACTION DETAILS -->
-        <!-- ========================= -->
-
-        <div
-            id="transactionSection"
-            class="full-width"
-            style="display:none;"
-        >
-
-            <hr>
-
-            <h4>Transaction Details</h4>
+            <!-- ========================= -->
+            <!-- Project -->
+            <!-- ========================= -->
 
             <div class="form-group">
 
-                <label>Transaction ID</label>
+                <label>
 
-                {{ form.transaction_id }}
+                    Project
 
-                <div class="text-danger mt-1">
-                    {{ form.transaction_id.errors }}
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.project }}
+
+                <small class="text-muted">
+                    Select project.
+                </small>
+
+                <div id="projectError" class="text-danger mt-1"></div>
+
+                {{ form.project.errors }}
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- Payment Mode -->
+            <!-- ========================= -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Payment Mode
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.payment_mode }}
+
+                <small class="text-muted">
+                    Select payment mode.
+                </small>
+
+                <div id="modeError" class="text-danger mt-1"></div>
+
+                {{ form.payment_mode.errors }}
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- Amount -->
+            <!-- ========================= -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Amount
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.amount }}
+
+                <small class="text-muted">
+
+                    Cash amount is calculated automatically.
+
+                </small>
+
+                <div id="amountError" class="text-danger mt-1"></div>
+
+                {{ form.amount.errors }}
+
+            </div>
+            <!-- ========================= -->
+            <!-- CASH DETAILS -->
+            <!-- ========================= -->
+
+            <div id="cashFields" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Cash Details</h4>
+
+                {{ formset.management_form }}
+
+                <table class="table table-bordered" id="cashTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Denomination</th>
+
+                            <th>No of Notes</th>
+
+                            <th>Amount</th>
+
+                            <th width="80">Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="cashBody">
+
+                        {% for cash_form in formset %}
+
+                        <tr class="cash-row">
+
+                            <td>{{ cash_form.denomination }}</td>
+
+                            <td>{{ cash_form.notes_count }}</td>
+
+                            <td>{{ cash_form.amount }}</td>
+
+                            <td>
+
+                                <button type="button" class="btn btn-danger btn-sm remove-row">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                <!-- Empty Form (Hidden) -->
+
+                <div id="empty-form" style="display:none;">
+
+                    <table>
+
+                        <tbody>
+
+                            <tr class="cash-row">
+
+                                <td>{{ formset.empty_form.denomination }}</td>
+
+                                <td>{{ formset.empty_form.notes_count }}</td>
+
+                                <td>{{ formset.empty_form.amount }}</td>
+
+                                <td>
+
+                                    {% if not forloop.first %}
+
+                                    <button type="button" class="btn btn-danger btn-sm remove-row">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </button>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
                 </div>
+
+                <button type="button" id="addCashRow" class="btn btn-success btn-sm mt-3">
+
+                    <i class="bi bi-plus-circle"></i>
+
+                    Add more
+
+                </button>
+
+            </div>
+
+            <!-- ========================= -->
+            <!-- TRANSACTION DETAILS -->
+            <!-- ========================= -->
+
+            <div id="transactionSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Transaction Details</h4>
+
+                <div class="form-group">
+
+                    <label>Transaction ID</label>
+
+                    {{ form.transaction_id }}
+
+                    <div class="text-danger mt-1">
+                        {{ form.transaction_id.errors }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- CHEQUE DETAILS -->
+            <!-- ========================= -->
+
+            <div id="chequeSection" class="full-width" style="display:none;">
+
+                <hr>
+
+                <h4>Cheque Details</h4>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Cheque Number</label>
+
+                        {{ form.cheque_number }}
+
+                        <div class="text-danger mt-1">
+                            {{ form.cheque_number.errors }}
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Bank Name</label>
+
+                        {{ form.bank_name }}
+
+                        <div class="text-danger mt-1">
+                            {{ form.bank_name.errors }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ========================= -->
+            <!-- PAYMENT DATE -->
+            <!-- ========================= -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Payment Date
+
+                    <span class="text-danger">*</span>
+
+                </label>
+
+                {{ form.payment_date }}
+
+                <small class="text-muted">
+
+                    Select payment date.
+
+                </small>
+
+                <div id="dateError" class="text-danger mt-1"></div>
+
+                {{ form.payment_date.errors }}
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- REMARKS -->
+            <!-- ========================= -->
+
+            <div class="form-group full-width">
+
+                <label>
+
+                    Remarks
+
+                </label>
+
+                {{ form.remarks }}
+
+                <small class="text-muted">
+
+                    Optional remarks about this payment.
+
+                </small>
+
+                <div id="remarksError" class="text-danger mt-1"></div>
+
+                {{ form.remarks.errors }}
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- ATTACHMENT -->
+            <!-- ========================= -->
+
+            <div class="form-group full-width">
+
+                <label>
+
+                    Attachment
+
+                </label>
+
+                {{ form.attachment }}
+
+                <small class="text-muted">
+
+                    Upload PDF / JPG / JPEG / PNG
+
+                </small>
+
+                <div id="attachmentError" class="text-danger mt-1"></div>
+
+                {{ form.attachment.errors }}
 
             </div>
 
         </div>
 
-
         <!-- ========================= -->
-        <!-- CHEQUE DETAILS -->
+        <!-- BUTTONS -->
         <!-- ========================= -->
 
-        <div
-            id="chequeSection"
-            class="full-width"
-            style="display:none;"
-        >
+        <div class="form-buttons">
 
-            <hr>
+            <button type="submit" class="btn btn-success">
 
-            <h4>Cheque Details</h4>
+                <i class="bi bi-check-circle-fill"></i>
 
-            <div class="form-grid">
+                Save Payment
 
-                <div class="form-group">
+            </button>
 
-                    <label>Cheque Number</label>
+            <button type="reset" class="btn btn-warning">
 
-                    {{ form.cheque_number }}
+                <i class="bi bi-arrow-clockwise"></i>
 
-                    <div class="text-danger mt-1">
-                        {{ form.cheque_number.errors }}
-                    </div>
+                Reset
 
-                </div>
+            </button>
 
-                <div class="form-group">
+            <a href="{% url 'services:service_payment_list' %}" class="btn btn-danger">
 
-                    <label>Bank Name</label>
+                <i class="bi bi-x-circle-fill"></i>
 
-                    {{ form.bank_name }}
+                Cancel
 
-                    <div class="text-danger mt-1">
-                        {{ form.bank_name.errors }}
-                    </div>
-
-                </div>
-
-            </div>
+            </a>
 
         </div>
 
-                <!-- ========================= -->
-        <!-- PAYMENT DATE -->
-        <!-- ========================= -->
-
-        <div class="form-group">
-
-            <label>
-
-                Payment Date
-
-                <span class="text-danger">*</span>
-
-            </label>
-
-            {{ form.payment_date }}
-
-            <small class="text-muted">
-
-                Select payment date.
-
-            </small>
-
-            <div id="dateError" class="text-danger mt-1"></div>
-
-            {{ form.payment_date.errors }}
-
-        </div>
-
-
-        <!-- ========================= -->
-        <!-- REMARKS -->
-        <!-- ========================= -->
-
-        <div class="form-group full-width">
-
-            <label>
-
-                Remarks
-
-            </label>
-
-            {{ form.remarks }}
-
-            <small class="text-muted">
-
-                Optional remarks about this payment.
-
-            </small>
-
-            <div id="remarksError" class="text-danger mt-1"></div>
-
-            {{ form.remarks.errors }}
-
-        </div>
-
-
-        <!-- ========================= -->
-        <!-- ATTACHMENT -->
-        <!-- ========================= -->
-
-        <div class="form-group full-width">
-
-            <label>
-
-                Attachment
-
-            </label>
-
-            {{ form.attachment }}
-
-            <small class="text-muted">
-
-                Upload PDF / JPG / JPEG / PNG
-
-            </small>
-
-            <div id="attachmentError" class="text-danger mt-1"></div>
-
-            {{ form.attachment.errors }}
-
-        </div>
-
-    </div>
-
-    <!-- ========================= -->
-    <!-- BUTTONS -->
-    <!-- ========================= -->
-
-    <div class="form-buttons">
-
-        <button
-            type="submit"
-            class="btn btn-success"
-        >
-
-            <i class="bi bi-check-circle-fill"></i>
-
-            Save Payment
-
-        </button>
-
-        <button
-            type="reset"
-            class="btn btn-warning"
-        >
-
-            <i class="bi bi-arrow-clockwise"></i>
-
-            Reset
-
-        </button>
-
-        <a
-            href="{% url 'services:service_payment_list' %}"
-            class="btn btn-danger"
-        >
-
-            <i class="bi bi-x-circle-fill"></i>
-
-            Cancel
-
-        </a>
-
-    </div>
-
-</form>
+    </form>
 
 </div>
 
 
-</div>
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    const form = document.getElementById("paymentForm");
+        const form = document.getElementById("paymentForm");
 
-    const project = document.getElementById("id_project");
-    const paymentMode = document.getElementById("id_payment_mode");
-    const amount = document.getElementById("id_amount");
-    const paymentDate = document.getElementById("id_payment_date");
-    const remarks = document.getElementById("id_remarks");
-    const attachment = document.getElementById("id_attachment");
+        const project = document.getElementById("id_project");
+        const paymentMode = document.getElementById("id_payment_mode");
+        const amount = document.getElementById("id_amount");
+        const paymentDate = document.getElementById("id_payment_date");
+        const remarks = document.getElementById("id_remarks");
+        const attachment = document.getElementById("id_attachment");
 
-    const projectError = document.getElementById("projectError");
-    const modeError = document.getElementById("modeError");
-    const amountError = document.getElementById("amountError");
-    const dateError = document.getElementById("dateError");
-    const remarksError = document.getElementById("remarksError");
-    const attachmentError = document.getElementById("attachmentError");
+        const projectError = document.getElementById("projectError");
+        const modeError = document.getElementById("modeError");
+        const amountError = document.getElementById("amountError");
+        const dateError = document.getElementById("dateError");
+        const remarksError = document.getElementById("remarksError");
+        const attachmentError = document.getElementById("attachmentError");
 
-    const cashFields = document.getElementById("cashFields");
-    const transactionSection = document.getElementById("transactionSection");
-    const chequeSection = document.getElementById("chequeSection");
+        const cashFields = document.getElementById("cashFields");
+        const transactionSection = document.getElementById("transactionSection");
+        const chequeSection = document.getElementById("chequeSection");
 
-    const denomination = document.getElementById("denomination");
-    const notesCount = document.getElementById("notes_count");
-    const customDiv = document.getElementById("customDenomination");
-    const customDenomination = document.getElementById("custom_denomination");
+        const transactionId = document.getElementById("transaction_id");
+        const chequeNumber = document.getElementById("cheque_number");
+        const bankName = document.getElementById("bank_name");
 
-    const transactionId = document.getElementById("transaction_id");
-    const chequeNumber = document.getElementById("cheque_number");
-    const bankName = document.getElementById("bank_name");
+        function setError(input, error, msg) {
 
-    function setError(input,error,msg){
+            if (input) {
+                input.classList.add("is-invalid");
+                input.classList.remove("is-valid");
+            }
 
-        if(input){
-            input.classList.add("is-invalid");
-            input.classList.remove("is-valid");
-        }
-
-        if(error){
-            error.innerHTML=msg;
-        }
-
-    }
-
-    function setSuccess(input,error){
-
-        if(input){
-            input.classList.remove("is-invalid");
-            input.classList.add("is-valid");
-        }
-
-        if(error){
-            error.innerHTML="";
-        }
-
-    }
-
-    function paymentModeUI(){
-
-        cashFields.style.display="none";
-        transactionSection.style.display="none";
-        chequeSection.style.display="none";
-
-        amount.readOnly=false;
-
-        if(paymentMode.value==="Cash"){
-
-            cashFields.style.display="block";
-
-            amount.readOnly=true;
-
-            calculateAmount();
+            if (error) {
+                error.innerHTML = msg;
+            }
 
         }
 
-        else if(
+        function setSuccess(input, error) {
 
-            paymentMode.value==="UPI" ||
+            if (input) {
+                input.classList.remove("is-invalid");
+                input.classList.add("is-valid");
+            }
 
-            paymentMode.value==="Bank" ||
-
-            paymentMode.value==="Card"
-
-        ){
-
-            transactionSection.style.display="block";
-
-        }
-
-        else if(paymentMode.value==="Cheque"){
-
-            chequeSection.style.display="block";
+            if (error) {
+                error.innerHTML = "";
+            }
 
         }
 
-    }
+        function paymentModeUI() {
 
-    function calculateAmount(){
+            cashFields.style.display = "none";
+            transactionSection.style.display = "none";
+            chequeSection.style.display = "none";
 
-        if(paymentMode.value!=="Cash") return;
+            amount.readOnly = false;
 
-        let value=0;
+            if (paymentMode.value === "Cash") {
 
-        if(denomination.value==="Others"){
+                cashFields.style.display = "block";
 
-            value=parseFloat(customDenomination.value)||0;
+                amount.readOnly = true;
 
-        }
 
-        else{
 
-            value=parseFloat(denomination.value)||0;
+            }
 
-        }
+            else if (
 
-        let count=parseInt(notesCount.value)||0;
+                paymentMode.value === "UPI" ||
 
-        amount.value=value*count;
+                paymentMode.value === "Bank" ||
 
-    }
+                paymentMode.value === "Card"
 
-    denomination.addEventListener("change",function(){
+            ) {
 
-        if(this.value==="Others"){
+                transactionSection.style.display = "block";
 
-            customDiv.style.display="block";
+            }
 
-        }
+            else if (paymentMode.value === "Cheque") {
 
-        else{
+                chequeSection.style.display = "block";
 
-            customDiv.style.display="none";
-
-            customDenomination.value="";
+            }
 
         }
 
-        calculateAmount();
 
-    });
 
-    notesCount.addEventListener("input",calculateAmount);
+        paymentMode.addEventListener("change", paymentModeUI);
 
-    customDenomination.addEventListener("input",calculateAmount);
+        paymentModeUI();
+        // ==========================================
+        // PROJECT VALIDATION
+        // ==========================================
 
-    paymentMode.addEventListener("change",paymentModeUI);
+        function validateProject() {
 
-    paymentModeUI();
-    // ==========================================
-    // PROJECT VALIDATION
-    // ==========================================
+            if (project.value === "") {
 
-    function validateProject(){
+                setError(
+                    project,
+                    projectError,
+                    "Please select a project."
+                );
 
-        if(project.value===""){
+                return false;
 
-            setError(
+            }
+
+            setSuccess(
                 project,
-                projectError,
-                "Please select a project."
+                projectError
             );
-
-            return false;
-
-        }
-
-        setSuccess(
-            project,
-            projectError
-        );
-
-        return true;
-
-    }
-
-    // ==========================================
-    // PAYMENT MODE VALIDATION
-    // ==========================================
-
-    function validatePaymentMode(){
-
-        if(paymentMode.value===""){
-
-            setError(
-                paymentMode,
-                modeError,
-                "Please select payment mode."
-            );
-
-            return false;
-
-        }
-
-        setSuccess(
-            paymentMode,
-            modeError
-        );
-
-        return true;
-
-    }
-
-    // ==========================================
-    // AMOUNT VALIDATION
-    // ==========================================
-
-    function validateAmount(){
-
-        const value=parseFloat(amount.value);
-
-        if(amount.value===""){
-
-            setError(
-                amount,
-                amountError,
-                "Amount is required."
-            );
-
-            return false;
-
-        }
-
-        if(isNaN(value) || value<=0){
-
-            setError(
-                amount,
-                amountError,
-                "Amount must be greater than zero."
-            );
-
-            return false;
-
-        }
-
-        setSuccess(
-            amount,
-            amountError
-        );
-
-        return true;
-
-    }
-
-    // ==========================================
-    // PAYMENT DATE VALIDATION
-    // ==========================================
-
-    function validateDate(){
-
-        if(paymentDate.value===""){
-
-            setError(
-                paymentDate,
-                dateError,
-                "Payment Date is required."
-            );
-
-            return false;
-
-        }
-
-        const today=new Date().toISOString().split("T")[0];
-
-        if(paymentDate.value>today){
-
-            setError(
-                paymentDate,
-                dateError,
-                "Future date is not allowed."
-            );
-
-            return false;
-
-        }
-
-        setSuccess(
-            paymentDate,
-            dateError
-        );
-
-        return true;
-
-    }
-
-    // Open calendar when clicking input
-
-    if(paymentDate.showPicker){
-
-        paymentDate.addEventListener("click",function(){
-
-            this.showPicker();
-
-        });
-
-    }
-
-    // ==========================================
-    // REMARKS VALIDATION
-    // ==========================================
-
-    function validateRemarks(){
-
-        if(remarks.value.length>500){
-
-            setError(
-                remarks,
-                remarksError,
-                "Maximum 500 characters allowed."
-            );
-
-            return false;
-
-        }
-
-        setSuccess(
-            remarks,
-            remarksError
-        );
-
-        return true;
-
-    }
-
-    // ==========================================
-    // ATTACHMENT VALIDATION
-    // ==========================================
-
-    function validateAttachment(){
-
-        if(attachment.files.length===0){
-
-            attachment.classList.remove("is-invalid");
-            attachment.classList.remove("is-valid");
-
-            attachmentError.innerHTML="";
 
             return true;
 
         }
 
-        const file=attachment.files[0];
+        // ==========================================
+        // PAYMENT MODE VALIDATION
+        // ==========================================
 
-        const ext=file.name.split(".").pop().toLowerCase();
+        function validatePaymentMode() {
 
-        const allowed=["pdf","jpg","jpeg","png"];
+            if (paymentMode.value === "") {
 
-        if(!allowed.includes(ext)){
+                setError(
+                    paymentMode,
+                    modeError,
+                    "Please select payment mode."
+                );
 
-            setError(
-                attachment,
-                attachmentError,
-                "Only PDF, JPG, JPEG and PNG files are allowed."
+                return false;
+
+            }
+
+            setSuccess(
+                paymentMode,
+                modeError
             );
 
-            return false;
+            return true;
 
         }
 
-        if(file.size>5*1024*1024){
+        // ==========================================
+        // AMOUNT VALIDATION
+        // ==========================================
 
-            setError(
-                attachment,
-                attachmentError,
-                "Maximum file size is 5 MB."
+        function validateAmount() {
+
+            const value = parseFloat(amount.value);
+
+            if (amount.value === "") {
+
+                setError(
+                    amount,
+                    amountError,
+                    "Amount is required."
+                );
+
+                return false;
+
+            }
+
+            if (isNaN(value) || value <= 0) {
+
+                setError(
+                    amount,
+                    amountError,
+                    "Amount must be greater than zero."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                amount,
+                amountError
             );
 
-            return false;
+            return true;
 
         }
 
-        setSuccess(
-            attachment,
-            attachmentError
-        );
+        // ==========================================
+        // PAYMENT DATE VALIDATION
+        // ==========================================
 
-        return true;
+        function validateDate() {
+
+            if (paymentDate.value === "") {
+
+                setError(
+                    paymentDate,
+                    dateError,
+                    "Payment Date is required."
+                );
+
+                return false;
+
+            }
+
+            const today = new Date().toISOString().split("T")[0];
+
+            if (paymentDate.value > today) {
+
+                setError(
+                    paymentDate,
+                    dateError,
+                    "Future date is not allowed."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                paymentDate,
+                dateError
+            );
+
+            return true;
+
+        }
+
+        // Open calendar when clicking input
+
+        if (paymentDate.showPicker) {
+
+            paymentDate.addEventListener("click", function () {
+
+                this.showPicker();
+
+            });
+
+        }
+
+        // ==========================================
+        // REMARKS VALIDATION
+        // ==========================================
+
+        function validateRemarks() {
+
+            if (remarks.value.length > 500) {
+
+                setError(
+                    remarks,
+                    remarksError,
+                    "Maximum 500 characters allowed."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                remarks,
+                remarksError
+            );
+
+            return true;
+
+        }
+
+        // ==========================================
+        // ATTACHMENT VALIDATION
+        // ==========================================
+
+        function validateAttachment() {
+
+            if (attachment.files.length === 0) {
+
+                attachment.classList.remove("is-invalid");
+                attachment.classList.remove("is-valid");
+
+                attachmentError.innerHTML = "";
+
+                return true;
+
+            }
+
+            const file = attachment.files[0];
+
+            const ext = file.name.split(".").pop().toLowerCase();
+
+            const allowed = ["pdf", "jpg", "jpeg", "png"];
+
+            if (!allowed.includes(ext)) {
+
+                setError(
+                    attachment,
+                    attachmentError,
+                    "Only PDF, JPG, JPEG and PNG files are allowed."
+                );
+
+                return false;
+
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+
+                setError(
+                    attachment,
+                    attachmentError,
+                    "Maximum file size is 5 MB."
+                );
+
+                return false;
+
+            }
+
+            setSuccess(
+                attachment,
+                attachmentError
+            );
+
+            return true;
+
+        }
+
+        // ==========================================
+        // LIVE EVENTS
+        // ==========================================
+
+        project.addEventListener("change", validateProject);
+
+        paymentMode.addEventListener("change", function () {
+
+            validatePaymentMode();
+
+            paymentModeUI();
+
+        });
+
+        amount.addEventListener("input", function () {
+
+            if (!amount.readOnly) {
+
+                validateAmount();
+
+            }
+
+        });
+
+        paymentDate.addEventListener("change", validateDate);
+
+        remarks.addEventListener("input", validateRemarks);
+
+        attachment.addEventListener("change", validateAttachment);
+
+        // ==========================================
+        // SUBMIT VALIDATION
+        // ==========================================
+
+        form.addEventListener("submit", function (e) {
+
+            let valid = true;
+
+            valid = validateProject() && valid;
+
+            valid = validatePaymentMode() && valid;
+
+            valid = validateAmount() && valid;
+
+            valid = validateDate() && valid;
+
+            valid = validateRemarks() && valid;
+
+            valid = validateAttachment() && valid;
+
+            if (
+
+                paymentMode.value === "UPI" ||
+
+                paymentMode.value === "Bank" ||
+
+                paymentMode.value === "Card"
+
+            ) {
+
+                if (transactionId.value.trim() === "") {
+
+                    transactionId.classList.add("is-invalid");
+
+                    valid = false;
+
+                }
+
+                else {
+
+                    transactionId.classList.remove("is-invalid");
+
+                }
+
+            }
+
+            if (paymentMode.value === "Cheque") {
+
+                if (chequeNumber.value.trim() === "") {
+
+                    chequeNumber.classList.add("is-invalid");
+
+                    valid = false;
+
+                }
+
+                else {
+
+                    chequeNumber.classList.remove("is-invalid");
+
+                }
+
+                if (bankName.value.trim() === "") {
+
+                    bankName.classList.add("is-invalid");
+
+                    valid = false;
+
+                }
+
+                else {
+
+                    bankName.classList.remove("is-invalid");
+
+                }
+
+            }
+
+            if (!valid) {
+
+                e.preventDefault();
+
+            }
+
+        });
+
+    });
+    // ==========================================
+    // CASH AMOUNT CALCULATION
+    // ==========================================
+
+    function calculateTotal() {
+
+        let total = 0;
+
+        document.querySelectorAll(".cash-row").forEach(function (row) {
+
+            const denomination = row.querySelector("select");
+            const notes = row.querySelector("input[name$='notes_count']");
+            const amountField = row.querySelector("input[name$='amount']");
+
+            let den = parseFloat(denomination.value) || 0;
+            let count = parseFloat(notes.value) || 0;
+
+            let rowAmount = den * count;
+
+            amountField.value = rowAmount.toFixed(2);
+
+            total += rowAmount;
+
+        });
+
+        document.getElementById("id_amount").value = total.toFixed(2);
 
     }
 
-    // ==========================================
-    // LIVE EVENTS
-    // ==========================================
+    document.addEventListener("change", function (e) {
 
-    project.addEventListener("change",validateProject);
+        if (e.target.matches("select")) {
 
-    paymentMode.addEventListener("change",function(){
-
-        validatePaymentMode();
-
-        paymentModeUI();
-
-    });
-
-    amount.addEventListener("input",function(){
-
-        if(!amount.readOnly){
-
-            validateAmount();
+            calculateTotal();
 
         }
 
     });
 
-    paymentDate.addEventListener("change",validateDate);
+    document.addEventListener("input", function (e) {
 
-    remarks.addEventListener("input",validateRemarks);
+        if (e.target.name && e.target.name.endsWith("notes_count")) {
 
-    attachment.addEventListener("change",validateAttachment);
-
-    // ==========================================
-    // SUBMIT VALIDATION
-    // ==========================================
-
-    form.addEventListener("submit",function(e){
-
-        let valid=true;
-
-        valid = validateProject() && valid;
-
-        valid = validatePaymentMode() && valid;
-
-        valid = validateAmount() && valid;
-
-        valid = validateDate() && valid;
-
-        valid = validateRemarks() && valid;
-
-        valid = validateAttachment() && valid;
-
-        if(
-
-            paymentMode.value==="UPI" ||
-
-            paymentMode.value==="Bank" ||
-
-            paymentMode.value==="Card"
-
-        ){
-
-            if(transactionId.value.trim()===""){
-
-                transactionId.classList.add("is-invalid");
-
-                valid=false;
-
-            }
-
-            else{
-
-                transactionId.classList.remove("is-invalid");
-
-            }
-
-        }
-
-        if(paymentMode.value==="Cheque"){
-
-            if(chequeNumber.value.trim()===""){
-
-                chequeNumber.classList.add("is-invalid");
-
-                valid=false;
-
-            }
-
-            else{
-
-                chequeNumber.classList.remove("is-invalid");
-
-            }
-
-            if(bankName.value.trim()===""){
-
-                bankName.classList.add("is-invalid");
-
-                valid=false;
-
-            }
-
-            else{
-
-                bankName.classList.remove("is-invalid");
-
-            }
-
-        }
-
-        if(!valid){
-
-            e.preventDefault();
+            calculateTotal();
 
         }
 
     });
+// ==========================================
+// ADD MORE ROW
+// ==========================================
+
+const addCashRowBtn = document.getElementById("addCashRow");
+const cashBody = document.getElementById("cashBody");
+const totalForms = document.getElementById("id_cash_denominations-TOTAL_FORMS");
+const emptyForm = document.getElementById("empty-form");
+
+addCashRowBtn.addEventListener("click", function () {
+
+    let formNum = parseInt(totalForms.value);
+
+    let newRow = emptyForm.innerHTML.replace(/__prefix__/g, formNum);
+
+    cashBody.insertAdjacentHTML("beforeend", newRow);
+
+    totalForms.value = formNum + 1;
+
+});
+// ==========================================
+// REMOVE ROW
+// ==========================================
+
+document.addEventListener("click", function (e) {
+
+    if (e.target.closest(".remove-row")) {
+
+        const rows = document.querySelectorAll(".cash-row");
+
+        if (rows.length > 1) {
+
+            e.target.closest(".cash-row").remove();
+
+            calculateTotal();
+
+        }
+
+    }
 
 });
 </script>
