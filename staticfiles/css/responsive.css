@@ -12,7 +12,6 @@
 
 }
 
-
 /* ======================================================
    TABLET
 ====================================================== */
@@ -20,45 +19,79 @@
 @media (max-width:991px){
 
     .sidebar{
+
+        width:280px;
+        height:100vh;
+
         left:-280px;
-        transition:.3s ease;
-        z-index:2000;
+
+        overflow:hidden;
+
     }
 
     .sidebar.active{
+
         left:0;
+
+    }
+
+    .sidebar-menu{
+
+        overflow-y:auto;
+
+        overflow-x:hidden;
+
+        -webkit-overflow-scrolling:touch;
+
     }
 
     .main{
+
         margin-left:0;
+
         width:100%;
+
     }
 
     .mobile-menu-btn{
+
         display:flex;
+
         justify-content:center;
+
         align-items:center;
+
     }
 
     .search-box{
+
         width:100%;
+
     }
 
     .profile h5,
     .profile span{
+
         display:none;
+
     }
 
     .dashboard-cards{
+
         grid-template-columns:repeat(2,1fr);
+
     }
 
     .dashboard-grid{
+
         grid-template-columns:1fr;
+
     }
 
     .quick-actions{
+
         grid-template-columns:repeat(2,1fr);
+
     }
 
 }

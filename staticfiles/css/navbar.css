@@ -274,11 +274,11 @@ transform:scale(1);
 }
 
 .profile img{
-    width:46px;
-    height:46px;
+    width:44px;
+    height:44px;
     border-radius:50%;
     object-fit:cover;
-    border:2px solid #e5e7eb;
+    border:2px solid #0a0a0a;
 }
 
 .profile h5{
