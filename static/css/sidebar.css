@@ -1,23 +1,27 @@
 .sidebar{
 
     width:280px;
-    height:100vh;
 
-    background:#0f172a;
+    height:100vh;
+    min-height:100vh;
 
     position:fixed;
 
-    left:0;
     top:0;
+    left:0;
 
     display:flex;
     flex-direction:column;
 
-    color:white;
-    z-index:2000;
+    background:#0f172a;
 
-    box-shadow:0 10px 30px rgba(0,0,0,.15);
-    transition:.3s ease;
+    color:#fff;
+
+    overflow:hidden;
+
+    z-index:9999;
+
+    will-change:transform;
 
 }
 
@@ -130,6 +134,16 @@
 
     flex:1;
 
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    -webkit-overflow-scrolling:touch;
+
+    scrollbar-width:thin;
+
+    padding-bottom:20px;
+
 }
 
 .sidebar-menu li{
@@ -173,9 +187,15 @@
 
 .sidebar-footer{
 
+    margin-top:auto;
+
+    flex-shrink:0;
+
     border-top:1px solid rgba(255,255,255,.08);
 
     padding:20px 15px;
+
+    background:#0f172a;
 
 }
 
