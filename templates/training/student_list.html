@@ -187,150 +187,234 @@ SEARCH
 STUDENT TABLE
 ========================================== -->
 
-<div class="dashboard-table">
+<div class="dashboard-box student-table-card">
 
     <div class="box-header">
 
-        <h3>Student List</h3>
+        <div>
+
+            <h3>
+
+                <i class="bi bi-table"></i>
+
+                Student List
+
+            </h3>
+
+            <small>
+
+                Total Records :
+                <strong>{{ page_obj.paginator.count }}</strong>
+
+            </small>
+
+        </div>
+
+        <div>
+
+            <span class="badge bg-primary">
+
+                {{ page_obj.paginator.count }} Entries
+
+            </span>
+
+        </div>
 
     </div>
+    <div class="table-responsive">
 
-    <table>
+        <table class="table dashboard-table align-middle">
 
-        <thead>
+            <thead>
 
-            <tr>
+                <tr>
 
-                <th>#</th>
-                <th>Photo</th>
-                <th>Name</th>
-                <th>Course</th>
-                <th>Phone</th>
-                <th>Total Fee</th>
-                <th>Status</th>
-                <th class="text-center">Actions</th>
+                    <th>#</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Course</th>
+                    <th>Phone</th>
+                    <th>Total Fee</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
 
-            </tr>
+                </tr>
 
-        </thead>
+            </thead>
 
 
 
-        <tbody>
+            <tbody>
 
-            {% for student in students %}
+                {% for student in students %}
 
-            <tr>
+                <tr>
 
-                <td>{{ forloop.counter }}</td>
+                    <td>{{ forloop.counter }}</td>
 
-                <td>
+                    <td>
 
-                    {% if student.photo %}
+                        {% if student.photo %}
 
-                    <img src="{{ student.photo.url }}" class="table-avatar" alt="Student">
+                        <img src="{{ student.photo.url }}" class="table-avatar" alt="Student">
 
-                    {% else %}
+                        {% else %}
 
-                    <div class="default-avatar">
-                        <i class="bi bi-person-fill"></i>
-                    </div>
+                        <div class="default-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
 
-                    {% endif %}
+                        {% endif %}
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    <strong>{{ student.student_name }}</strong>
+                        <strong>{{ student.student_name }}</strong>
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    {{ student.course.course_name }}
+                        {{ student.course.course_name }}
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    {{ student.phone }}
+                        {{ student.phone }}
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    ₹ {{ student.course_fee }}
+                        ₹ {{ student.course_fee }}
 
-                </td>
+                    </td>
 
-               
 
-                <td>
 
-                    {% if student.status == "Active" %}
+                    <td>
 
-                    <span class="badge bg-success">
+                        {% if student.status == "Active" %}
 
-                        Active
+                        <span class="badge bg-success">
 
-                    </span>
+                            Active
 
-                    {% else %}
+                        </span>
 
-                    <span class="badge bg-secondary">
+                        {% else %}
 
-                        {{ student.status }}
+                        <span class="badge bg-secondary">
 
-                    </span>
+                            {{ student.status }}
 
-                    {% endif %}
+                        </span>
 
-                </td>
+                        {% endif %}
 
-                <td class="text-center">
+                    </td>
 
-                    <a href="{% url 'view_student' student.id %}" class="btn btn-sm btn-info">
+                    <td>
 
-                        <i class="bi bi-eye"></i>
+                        <div class="action-buttons">
 
-                    </a>
+                            <a href="{% url 'view_student' student.id %}" class="view-btn">
 
-                    <a href="{% url 'edit_student' student.id %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-eye"></i>
 
-                        <i class="bi bi-pencil-square"></i>
+                            </a>
 
-                    </a>
+                            <a href="{% url 'edit_student' student.id %}" class="edit-btn">
 
-                    <a href="{% url 'delete_student' student.id %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-pencil-square"></i>
 
-                        <i class="bi bi-trash"></i>
+                            </a>
 
-                    </a>
+                            <a href="#" class="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                data-url="{% url 'delete_student' student.id %}">
 
-                </td>
+                                <i class="bi bi-trash"></i>
 
-            </tr>
+                            </a>
 
-            {% empty %}
+                        </div>
 
-            <tr>
+                    </td>
 
-                <td colspan="10" class="text-center">
+                </tr>
 
-                    No Students Found.
+                {% empty %}
 
-                </td>
+                <tr>
 
-            </tr>
+                    <td colspan="8">
 
-            {% endfor %}
+                        <div class="text-center py-5">
 
-        </tbody>
+                            <i class="bi bi-people display-4 text-secondary"></i>
 
-    </table>
+                            <h5 class="mt-3">
+
+                                No Students Found
+
+                            </h5>
+
+                            <p class="text-muted">
+
+                                There are no students available.
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% if page_obj %}
+
+<div class="pagination-container">
+
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    {% endif %}
+
+    {% for page in page_obj.paginator.page_range %}
+
+    {% if page == page_obj.number %}
+
+    <span class="page-btn active">{{ page }}</span>
+
+    {% else %}
+
+    <a href="?page={{ page }}" class="page-btn">{{ page }}</a>
+
+    {% endif %}
+
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-right"></i>
+    </a>
+    {% endif %}
 
 </div>
+
+{% endif %}
 <!-- ==========================================
 DELETE MODAL
 ========================================== -->

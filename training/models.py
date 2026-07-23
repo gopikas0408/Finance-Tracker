@@ -595,8 +595,7 @@ class StudentPaymentCashDenomination(models.Model):
         ("50", "₹50"),
         ("20", "₹20"),
         ("10", "₹10"),
-        ("Coins", "Coins"),
-        ("Others", "Others"),
+        
 
     )
 

@@ -226,15 +226,44 @@ SUMMARY CARDS
 TRANSACTION TABLE
 ========================================== -->
 
-<div class="dashboard-table">
+<div class="dashboard-box transaction-table-card">
 
     <div class="box-header">
 
-        <h3>Transaction List</h3>
+    <div>
+
+        <h3>
+
+            <i class="bi bi-table"></i>
+
+            Transaction List
+
+        </h3>
+
+        <small>
+
+            Total Records :
+            <strong>{{ page_obj.paginator.count }}</strong>
+
+        </small>
 
     </div>
 
-    <table>
+    <div>
+
+        <span class="badge bg-primary">
+
+            {{ page_obj.paginator.count }} Entries
+
+        </span>
+
+    </div>
+
+</div>
+
+    <div class="table-responsive">
+
+    <table class="table dashboard-table align-middle">
 
         <thead>
 
@@ -362,21 +391,27 @@ TRANSACTION TABLE
 
             <tr>
 
-                <td colspan="9" class="text-center py-5">
+                <td colspan="9">
 
-                    <i class="bi bi-receipt display-4 text-secondary"></i>
+    <div class="text-center py-5">
 
-                    <h5 class="mt-3">
-                        No Transactions Found
-                    </h5>
+        <i class="bi bi-receipt display-4 text-secondary"></i>
 
-                    <p class="text-muted">
-                        No transaction records are available.
-                    </p>
+        <h5 class="mt-3">
 
+            No Transactions Found
 
+        </h5>
 
-                </td>
+        <p class="text-muted">
+
+            No transaction records are available.
+
+        </p>
+
+    </div>
+
+</td>
 
             </tr>
 
@@ -386,6 +421,7 @@ TRANSACTION TABLE
 
     </table>
 
+</div>
 </div>
 <!-- ==========================================
 PAGINATION

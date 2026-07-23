@@ -158,7 +158,7 @@ class CashDenomination(BaseModel):
         ("50", "₹50"),
         ("20", "₹20"),
         ("10", "₹10"),
-        ("Other", "Other"),
+        
 
     ]
 

@@ -137,15 +137,44 @@
 <!-- TARGET TABLE -->
 <!-- ========================================== -->
 
-<div class="dashboard-table">
+<div class="dashboard-box target-table-card">
 
     <div class="box-header">
 
-        <h3>Monthly Target List</h3>
+    <div>
+
+        <h3>
+
+            <i class="bi bi-table"></i>
+
+            Monthly Target List
+
+        </h3>
+
+        <small>
+
+            Total Records :
+            <strong>{{ page_obj.paginator.count }}</strong>
+
+        </small>
 
     </div>
 
-    <table>
+    <div>
+
+        <span class="badge bg-primary">
+
+            {{ page_obj.paginator.count }} Entries
+
+        </span>
+
+    </div>
+
+</div>
+
+   <div class="table-responsive">
+
+    <table class="table dashboard-table align-middle">
 
         <thead>
 
@@ -213,11 +242,27 @@
 
         <tr>
 
-            <td colspan="5" align="center">
+            <td colspan="6">
 
-                No Monthly Target Found
+    <div class="text-center py-5">
 
-            </td>
+        <i class="bi bi-bullseye display-4 text-secondary"></i>
+
+        <h5 class="mt-3">
+
+            No Monthly Targets Found
+
+        </h5>
+
+        <p class="text-muted">
+
+            There are no monthly targets available.
+
+        </p>
+
+    </div>
+
+</td>
 
         </tr>
 
@@ -228,7 +273,48 @@
     </table>
 
 </div>
+</div>
+{% if page_obj %}
 
+<div class="pagination-container">
+
+    {% if page_obj.has_previous %}
+
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
+
+            <i class="bi bi-chevron-left"></i>
+
+        </a>
+
+    {% endif %}
+
+    {% for page in page_obj.paginator.page_range %}
+
+        {% if page == page_obj.number %}
+
+            <span class="page-btn active">{{ page }}</span>
+
+        {% else %}
+
+            <a href="?page={{ page }}" class="page-btn">{{ page }}</a>
+
+        {% endif %}
+
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+
+        <a href="?page={{ page_obj.next_page_number }}" class="page-btn">
+
+            <i class="bi bi-chevron-right"></i>
+
+        </a>
+
+    {% endif %}
+
+</div>
+
+{% endif %}
 <!-- ==========================================
 TARGET PROGRESS
 ========================================== -->

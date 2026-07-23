@@ -535,6 +535,31 @@ FORM CARD
 
     return true;
 }
+function validateDescription() {
+
+    if (!description) {
+        return true;
+    }
+
+    if (description.value.length > 500) {
+
+        setError(
+            description,
+            descriptionError,
+            "Maximum 500 characters allowed."
+        );
+
+        return false;
+
+    }
+
+    setSuccess(
+        description,
+        descriptionError
+    );
+
+    return true;
+}
         // ==========================
         // Attachment
         // ==========================

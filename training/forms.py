@@ -733,14 +733,15 @@ class StudentPaymentCashDenominationForm(forms.ModelForm):
         }
         
         
-StudentPaymentCashDenominationFormSet = inlineformset_factory(
+AddStudentPaymentCashDenominationFormSet = inlineformset_factory(
     StudentPayment,
     StudentPaymentCashDenomination,
     form=StudentPaymentCashDenominationForm,
     extra=1,
     can_delete=True
 )
-StudentPaymentCashDenominationFormSet = inlineformset_factory(
+
+EditStudentPaymentCashDenominationFormSet = inlineformset_factory(
     StudentPayment,
     StudentPaymentCashDenomination,
     form=StudentPaymentCashDenominationForm,

@@ -237,15 +237,44 @@ SEARCH & FILTER
 SALARY TABLE
 ========================================== -->
 
-<div class="dashboard-table">
+<div class="dashboard-box salary-table-card">
 
     <div class="box-header">
 
-        <h3>Employee Salary List</h3>
+    <div>
+
+        <h3>
+
+            <i class="bi bi-table"></i>
+
+            Employee Salary List
+
+        </h3>
+
+        <small>
+
+            Total Records :
+            <strong>{{ page_obj.paginator.count }}</strong>
+
+        </small>
 
     </div>
 
-    <table>
+    <div>
+
+        <span class="badge bg-success">
+
+            {{ page_obj.paginator.count }} Entries
+
+        </span>
+
+    </div>
+
+</div>
+
+    <div class="table-responsive">
+
+    <table class="table dashboard-table align-middle">
 
         <thead>
 
@@ -354,25 +383,27 @@ SALARY TABLE
 
             <tr>
 
-                <td colspan="7" class="text-center py-5">
+                <td colspan="7">
 
-                    <i class="bi bi-cash-stack display-5 text-secondary"></i>
+    <div class="text-center py-5">
 
-                    <h5 class="mt-3">
+        <i class="bi bi-cash-stack display-4 text-secondary"></i>
 
-                        No Salary Records Found
+        <h5 class="mt-3">
 
-                    </h5>
+            No Salary Records Found
 
-                    <p class="text-muted">
+        </h5>
 
-                        No employee salary has been added yet.
+        <p class="text-muted">
 
-                    </p>
+            No employee salary has been added yet.
 
-                    
+        </p>
 
-                </td>
+    </div>
+
+</td>
 
             </tr>
 
@@ -382,6 +413,7 @@ SALARY TABLE
 
     </table>
 
+</div>
 </div>
 <!-- ==========================================
 PAGINATION

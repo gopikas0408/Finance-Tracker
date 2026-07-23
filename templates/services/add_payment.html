@@ -26,7 +26,12 @@
 
 <div class="dashboard-box">
 
-    <form method="POST" id="paymentForm" enctype="multipart/form-data" novalidate>
+    <form
+    method="POST"
+    enctype="multipart/form-data"
+    id="paymentForm"
+    novalidate
+>
 
         {% csrf_token %}
 
@@ -191,15 +196,21 @@
 
                                 <td>
 
-                                    {% if not forloop.first %}
+    {% if forloop.first %}
 
-                                    <button type="button" class="btn btn-danger btn-sm remove-row">
+        -
 
-                                        <i class="bi bi-trash"></i>
+    {% else %}
 
-                                    </button>
+        <button type="button" class="btn btn-danger btn-sm remove-row">
 
-                                    {% endif %}
+            <i class="bi bi-trash"></i>
+
+        </button>
+
+    {% endif %}
+
+</td>
 
                                 </td>
 
@@ -342,34 +353,7 @@
             </div>
 
 
-            <!-- ========================= -->
-            <!-- ATTACHMENT -->
-            <!-- ========================= -->
-
-            <div class="form-group full-width">
-
-                <label>
-
-                    Attachment
-
-                </label>
-
-                {{ form.attachment }}
-
-                <small class="text-muted">
-
-                    Upload PDF / JPG / JPEG / PNG
-
-                </small>
-
-                <div id="attachmentError" class="text-danger mt-1"></div>
-
-                {{ form.attachment.errors }}
-
-            </div>
-
-        </div>
-
+            
         <!-- ========================= -->
         <!-- BUTTONS -->
         <!-- ========================= -->

@@ -132,9 +132,44 @@
 
 <!-- Table -->
 
-<div class="dashboard-table">
+<div class="dashboard-box payment-table-card">
 
-    <table>
+    <div class="box-header">
+
+        <div>
+
+            <h3>
+
+                <i class="bi bi-table"></i>
+
+                Student Payment List
+
+            </h3>
+
+            <small>
+
+                Total Records :
+                <strong>{{ page_obj.paginator.count }}</strong>
+
+            </small>
+
+        </div>
+
+        <div>
+
+            <span class="badge bg-success">
+
+                {{ page_obj.paginator.count }} Entries
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="table-responsive">
+
+    <table class="table dashboard-table align-middle">
 
         <thead>
             <tr>
@@ -185,7 +220,7 @@
 
                 <td>
 
-                    <div class="action-buttons justify-content-center">
+                    <div class="action-buttons">
 
                         <a href="{% url 'view_payment' payment.id %}" class="view-btn" title="View">
                             <i class="bi bi-eye-fill"></i>
@@ -210,17 +245,27 @@
 
             <tr>
 
-                <td colspan="10" class="text-center py-5">
+                <td colspan="10">
 
-                    <i class="bi bi-credit-card display-5 text-secondary"></i>
+    <div class="text-center py-5">
 
-                    <h5 class="mt-3">No Payments Found</h5>
+        <i class="bi bi-credit-card display-4 text-secondary"></i>
 
-                    <p class="text-muted">
-                        There are no payment records available.
-                    </p>
+        <h5 class="mt-3">
 
-                </td>
+            No Payments Found
+
+        </h5>
+
+        <p class="text-muted">
+
+            There are no payment records available.
+
+        </p>
+
+    </div>
+
+</td>
 
             </tr>
 
@@ -230,6 +275,40 @@
     </table>
 
 </div>
+</div>
+{% if page_obj %}
+
+<div class="pagination-container">
+
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    {% endif %}
+
+    {% for page in page_obj.paginator.page_range %}
+
+        {% if page == page_obj.number %}
+
+            <span class="page-btn active">{{ page }}</span>
+
+        {% else %}
+
+            <a href="?page={{ page }}" class="page-btn">{{ page }}</a>
+
+        {% endif %}
+
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}" class="page-btn">
+        <i class="bi bi-chevron-right"></i>
+    </a>
+    {% endif %}
+
+</div>
+
+{% endif %}
 <!-- ==========================================
 DELETE MODAL
 ========================================== -->

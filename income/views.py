@@ -146,9 +146,12 @@ def add_income(request):
 
     )
 
-    formset = CashDenominationFormSet(
-        request.POST or None,
-    )
+    if request.method == "POST":
+        formset = CashDenominationFormSet(request.POST)
+    else:
+        formset = CashDenominationFormSet(
+            queryset=CashDenomination.objects.none()
+        )
 
     if form.is_valid() and formset.is_valid():
 

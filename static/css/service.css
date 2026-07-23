@@ -87,96 +87,143 @@
     color:#fff;
 
 }
-/*=========================================
-PAGE ACTIONS
-=========================================*/
 
-.page-actions{
 
-    display:flex;
+
+/*====================================================
+                SERVICES RESPONSIVE
+====================================================*/
+
+/*=========================
+LAPTOP
+=========================*/
+
+@media (max-width:1200px){
+
+.service-nav{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
 
     gap:18px;
 
-    flex-wrap:wrap;
+}
 
-    align-items:center;
-
-    margin-top:20px;
 
 }
 
-.page-actions .btn{
 
-    min-width:210px;
+/*=========================
+TABLET
+=========================*/
 
-    height:55px;
+@media (max-width:992px){
 
-    border:none;
+.service-nav{
 
-    border-radius:16px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    gap:10px;
-
-    font-size:16px;
-
-    font-weight:600;
-
-    color:#fff;
-
-    transition:all .3s ease;
-
-    box-shadow:0 8px 18px rgba(0,0,0,.12);
+    grid-template-columns:repeat(2,1fr);
 
 }
 
-.page-actions .btn i{
+}
+
+
+/*=========================
+MOBILE
+=========================*/
+
+@media (max-width:768px){
+
+.service-nav{
+
+    grid-template-columns:1fr;
+
+    gap:15px;
+
+}
+
+.service-link{
+
+    width:100%;
+
+    min-width:0;
+
+    padding:16px;
+
+}
+
+.service-link i{
+
+    font-size:24px;
+
+}
+
+.service-link span{
+
+    font-size:15px;
+
+}
+
+
+}
+
+
+/*=========================
+SMALL MOBILE
+=========================*/
+
+@media (max-width:480px){
+
+.service-link{
+
+    padding:15px;
+
+    border-radius:12px;
+
+}
+
+.service-link i{
+
+    font-size:22px;
+
+}
+
+.service-link span{
+
+    font-size:14px;
+
+}
+
+
+
+}
+
+
+/*=========================
+EXTRA SMALL
+=========================*/
+
+@media (max-width:360px){
+
+.service-link{
+
+    padding:14px;
+
+}
+
+.service-link i{
 
     font-size:20px;
 
 }
 
-.page-actions .btn:hover{
+.service-link span{
 
-    transform:translateY(-3px);
-
-    color:#fff;
-
-    box-shadow:0 12px 24px rgba(0,0,0,.18);
+    font-size:13px;
 
 }
 
-/*==========================
-ADD BUTTON
-==========================*/
 
-.page-actions .btn-success{
-
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-
-}
-
-/*==========================
-EXCEL BUTTON
-==========================*/
-
-.page-actions .btn-primary{
-
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
-
-}
-
-/*==========================
-PDF BUTTON
-==========================*/
-
-.page-actions .btn-danger{
-
-    background:linear-gradient(135deg,#ef4444,#dc2626);
 
 }

@@ -69,30 +69,36 @@
 
 .brand-logo{
 
-    width:44px;
-    height:44px;
+    width:50px;
+    height:50px;
 
-    background:#0f172a;
+    background:#fff;
 
-    border-radius:12px;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    border-radius:16px;
 
     overflow:hidden;
 
-    padding:4px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
+    border:2px solid #ffffff;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
 }
 
-.brand-logo img{
+.brand-logo-img{
 
     width:100%;
     height:100%;
 
-    object-fit:contain;
+    object-fit:cover;
 
+    transform:scale(1.45);
+
+    transform-origin:center;
+
+    border-radius:12px;
 }
 
 .brand h2{
@@ -242,11 +248,76 @@
     width:calc(100% - 90px);
 }
 
-/* ==============================
-   MOBILE & TABLET
-================================= */
+/* ======================================================
+        SIDEBAR RESPONSIVE
+====================================================== */
+
+
+/* ======================================================
+        LARGE LAPTOP (1400px)
+====================================================== */
+
+@media (max-width:1400px){
+
+    .sidebar{
+        width:260px;
+    }
+
+    .main{
+        margin-left:260px;
+        width:calc(100% - 260px);
+    }
+
+}
+
+
+/* ======================================================
+        SMALL LAPTOP (1200px)
+====================================================== */
+
+@media (max-width:1200px){
+
+    .sidebar{
+        width:240px;
+    }
+
+    .main{
+        margin-left:240px;
+        width:calc(100% - 240px);
+    }
+
+}
+
+
+/* ======================================================
+        TABLET (992px)
+====================================================== */
 
 @media (max-width:992px){
+
+    .sidebar{
+
+        left:-280px;
+
+        width:280px;
+
+        transition:left .35s ease;
+
+    }
+
+    .sidebar.active{
+
+        left:0;
+
+    }
+
+    .main{
+
+        margin-left:0;
+
+        width:100%;
+
+    }
 
     .toggle-btn{
 
@@ -255,6 +326,190 @@
         justify-content:center;
 
         align-items:center;
+
+    }
+
+}
+
+
+/* ======================================================
+        MOBILE (768px)
+====================================================== */
+
+@media (max-width:768px){
+
+    .sidebar{
+
+        width:270px;
+
+        left:-270px;
+
+    }
+
+    .sidebar.active{
+
+        left:0;
+
+    }
+
+    .sidebar-header{
+
+        height:70px;
+
+        padding:15px;
+
+    }
+
+    .brand-logo{
+
+        width:45px;
+
+        height:45px;
+
+    }
+
+    .brand h2{
+
+        font-size:16px;
+
+    }
+
+    .brand span{
+
+        font-size:12px;
+
+    }
+
+    .sidebar-menu a{
+
+        padding:12px 14px;
+
+        font-size:14px;
+
+    }
+
+    .sidebar-menu i{
+
+        font-size:18px;
+
+    }
+
+}
+
+
+/* ======================================================
+        LARGE MOBILE (576px)
+====================================================== */
+
+@media (max-width:576px){
+
+    .sidebar{
+
+        width:250px;
+
+        left:-250px;
+
+    }
+
+    .brand-logo{
+
+        width:42px;
+
+        height:42px;
+
+    }
+
+    .sidebar-menu a{
+
+        padding:11px 12px;
+
+    }
+
+}
+
+
+/* ======================================================
+        SMALL MOBILE (480px)
+====================================================== */
+
+@media (max-width:480px){
+
+    .sidebar{
+
+        width:230px;
+
+        left:-230px;
+
+    }
+
+    .sidebar-header{
+
+        padding:12px;
+
+    }
+
+    .brand h2{
+
+        font-size:15px;
+
+    }
+
+    .brand span{
+
+        font-size:11px;
+
+    }
+
+    .sidebar-menu a{
+
+        gap:12px;
+
+        padding:10px 12px;
+
+    }
+
+}
+
+
+/* ======================================================
+        EXTRA SMALL DEVICES (360px)
+====================================================== */
+
+@media (max-width:360px){
+
+    .sidebar{
+
+        width:220px;
+
+        left:-220px;
+
+    }
+
+    .brand-logo{
+
+        width:38px;
+
+        height:38px;
+
+    }
+
+    .brand h2{
+
+        font-size:14px;
+
+    }
+
+    .sidebar-menu a{
+
+        padding:10px;
+
+        font-size:13px;
+
+    }
+
+    .sidebar-menu i{
+
+        font-size:16px;
 
     }
 

@@ -136,15 +136,44 @@
 <!-- ACHIEVEMENT TABLE -->
 <!-- ========================================== -->
 
-<div class="dashboard-table">
+<div class="dashboard-box achievement-table-card">
 
     <div class="box-header">
 
-        <h3>Achievement History</h3>
+    <div>
+
+        <h3>
+
+            <i class="bi bi-table"></i>
+
+            Achievement History
+
+        </h3>
+
+        <small>
+
+            Total Records :
+            <strong>{{ page_obj.paginator.count }}</strong>
+
+        </small>
 
     </div>
 
-    <table>
+    <div>
+
+        <span class="badge bg-primary">
+
+            {{ page_obj.paginator.count }} Entries
+
+        </span>
+
+    </div>
+
+</div>
+
+    <div class="table-responsive">
+
+    <table class="table dashboard-table align-middle">
 
         <thead>
 
@@ -194,11 +223,27 @@
 
             <tr>
 
-                <td colspan="5" class="text-center">
+                <td colspan="5">
 
-                    No Achievements Yet
+    <div class="text-center py-5">
 
-                </td>
+        <i class="bi bi-trophy display-4 text-secondary"></i>
+
+        <h5 class="mt-3">
+
+            No Achievements Found
+
+        </h5>
+
+        <p class="text-muted">
+
+            There are no achievements available.
+
+        </p>
+
+    </div>
+
+</td>
 
             </tr>
 
@@ -207,6 +252,8 @@
         </tbody>
 
     </table>
+
+</div>
 
 </div>
 <div class="pagination-container">

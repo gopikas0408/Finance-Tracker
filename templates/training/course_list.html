@@ -195,15 +195,44 @@ SEARCH
 COURSE TABLE
 ========================================== -->
 
-<div class="dashboard-table">
+<div class="dashboard-box course-table-card">
 
     <div class="box-header">
 
-        <h3>Course List</h3>
+    <div>
+
+        <h3>
+
+            <i class="bi bi-table"></i>
+
+            Course List
+
+        </h3>
+
+        <small>
+
+            Total Records :
+            <strong>{{ page_obj.paginator.count }}</strong>
+
+        </small>
 
     </div>
 
-    <table>
+    <div>
+
+        <span class="badge bg-primary">
+
+            {{ page_obj.paginator.count }} Entries
+
+        </span>
+
+    </div>
+
+</div>
+
+   <div class="table-responsive">
+
+    <table class="table dashboard-table align-middle">
 
         <thead>
 
@@ -275,7 +304,7 @@ COURSE TABLE
 
                 <td>
 
-    <div class="action-buttons justify-content-center">
+    <div class="action-buttons">
 
         <a href="{% url 'view_course' course.id %}"
            class="view-btn"
@@ -314,20 +343,27 @@ COURSE TABLE
 
             <tr>
 
-                <td colspan="8" class="text-center py-5">
+               <td colspan="8">
 
-    <i class="bi bi-journal-x display-5 text-secondary"></i>
+    <div class="text-center py-5">
 
-    <h5 class="mt-3">
-        No Courses Found
-    </h5>
+        <i class="bi bi-journal-x display-4 text-secondary"></i>
 
-    <p class="text-muted">
-        There are no courses available.
-    </p>
+        <h5 class="mt-3">
+
+            No Courses Found
+
+        </h5>
+
+        <p class="text-muted">
+
+            There are no courses available.
+
+        </p>
+
+    </div>
 
 </td>
-
             </tr>
 
             {% endfor %}
@@ -336,6 +372,7 @@ COURSE TABLE
 
     </table>
 
+</div>
 </div>
 
 <!-- ==========================================

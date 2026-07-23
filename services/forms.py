@@ -579,6 +579,11 @@ class ProjectPaymentForm(forms.ModelForm):
                 "rows": 3,
                 "placeholder": "Enter Remarks (Optional)"
             }),
+            "attachment": forms.ClearableFileInput(
+                attrs={
+                    "class": "form-control"
+                }
+            ),
 
         }
     
@@ -1221,26 +1226,31 @@ class EmployeeSalaryForm(forms.ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
+
         super().__init__(*args, **kwargs)
 
-        readonly_fields = [
-            "employee_id",
-            "salary_month",
-            "payment_mode",
-            "basic_salary",
-            "bonus",
-            "deduction",
-            "net_salary",
-            "payment_date",
-            "payment_status",
-            "transaction_id",
-            "cheque_number",
-            "bank_name",
-        ]
+        if self.instance and self.instance.pk:
 
-        for field in readonly_fields:
-            if field in self.fields:
-                self.fields[field].disabled = True
+            readonly_fields = [
+                
+                "salary_month",
+                "payment_mode",
+                "basic_salary",
+                "bonus",
+                "deduction",
+                "net_salary",
+                "payment_date",
+                "payment_status",
+                "transaction_id",
+                "cheque_number",
+                "bank_name",
+            ]
+
+            for field in readonly_fields:
+
+                if field in self.fields:
+
+                    self.fields[field].disabled = True
 
     # =====================================
     # EMPLOYEE NAME
@@ -1483,11 +1493,14 @@ class EmployeeSalaryCashDenominationForm(forms.ModelForm):
         }
         
     def __init__(self, *args, **kwargs):
+
         super().__init__(*args, **kwargs)
 
-        self.fields["denomination"].disabled = True
-        self.fields["notes_count"].disabled = True
-        self.fields["amount"].disabled = True
+        if self.instance and self.instance.pk:
+
+            self.fields["denomination"].disabled = True
+            self.fields["notes_count"].disabled = True
+            self.fields["amount"].disabled = True
             
 EmployeeSalaryCashDenominationFormSet = inlineformset_factory(
     EmployeeSalary,

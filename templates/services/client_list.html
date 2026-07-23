@@ -212,15 +212,44 @@ SEARCH
 CLIENT TABLE
 ========================================== -->
 
-<div class="dashboard-table">
+<div class="dashboard-box client-table-card">
 
-    <div class="box-header">
+   <div class="box-header">
 
-        <h3>Client List</h3>
+    <div>
+
+        <h3>
+
+            <i class="bi bi-table"></i>
+
+            Client List
+
+        </h3>
+
+        <small>
+
+            Total Records :
+            <strong>{{ page_obj.paginator.count }}</strong>
+
+        </small>
 
     </div>
 
-    <table>
+    <div>
+
+        <span class="badge bg-primary">
+
+            {{ page_obj.paginator.count }} Entries
+
+        </span>
+
+    </div>
+
+</div>
+
+    <div class="table-responsive">
+
+    <table class="table dashboard-table align-middle">
 
         <thead>
 
@@ -324,15 +353,21 @@ CLIENT TABLE
 
             <tr>
 
-                <td colspan="7" style="text-align:center;">
+               <td colspan="7">
 
-                    <i class="bi bi-folder2-open fs-3 text-muted"></i>
+    <div class="text-center py-5">
 
-                    <br><br>
+        <i class="bi bi-folder2-open display-4 text-muted"></i>
 
-                    No Clients Available
+        <h5 class="mt-3">
 
-                </td>
+            No Clients Available
+
+        </h5>
+
+    </div>
+
+</td>
 
             </tr>
 
@@ -341,6 +376,8 @@ CLIENT TABLE
         </tbody>
 
     </table>
+
+</div>
 
 </div>
 

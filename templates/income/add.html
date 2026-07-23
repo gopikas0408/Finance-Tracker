@@ -98,82 +98,74 @@
 
         </div>
 
-       <div id="cashFields" style="display:none;">
+        <div id="cashFields" style="display:none;">
 
-    <hr>
+            <hr>
 
-    <h5>Cash Details</h5>
+            <h5>Cash Details</h5>
 
-    {{ formset.management_form }}
+            {{ formset.management_form }}
 
-    <div id="denomination-container">
-        {% for cash_form in formset %}
+            <div id="denomination-container">
+                {% for cash_form in formset %}
 
-<div class="row denomination-row align-items-end mb-3">
+                <div class="row denomination-row align-items-end mb-3">
 
-    <div class="col-md-3">
+                    <div class="col-md-3">
 
-        <label>Denomination</label>
+                        <label>Denomination</label>
 
-        {{ cash_form.denomination }}
+                        {{ cash_form.denomination }}
 
-    </div>
+                    </div>
 
-    <div class="col-md-3">
+                    <div class="col-md-3">
 
-        <label>No of Notes</label>
+                        <label>No of Notes</label>
 
-        {{ cash_form.notes_count }}
+                        {{ cash_form.notes_count }}
 
-    </div>
+                    </div>
 
-    <div class="col-md-3">
+                    <div class="col-md-3">
 
-        <label>Total</label>
+                        <label>Total</label>
 
-        <input
-            type="text"
-            class="form-control row-total"
-            readonly>
+                        <input type="text" class="form-control row-total" readonly>
 
-    </div>
+                    </div>
 
-    <div class="col-md-3">
+                    <div class="col-md-3">
 
-        {% if not forloop.first %}
+                        {% if not forloop.first %}
 
-        <button
-            type="button"
-            class="btn btn-danger remove-row w-100">
+                        <button type="button" class="btn btn-danger remove-row w-100">
 
-            <i class="bi bi-trash"></i>
-            Remove
+                            <i class="bi bi-trash"></i>
+                            Remove
 
-        </button>
+                        </button>
 
-        {% endif %}
+                        {% endif %}
 
-    </div>
+                    </div>
 
-</div>
+                </div>
 
-{% endfor %}
+                {% endfor %}
 
-       
 
-    </div>
 
-    <button
-        type="button"
-        id="add-row"
-        class="btn btn-success">
+            </div>
 
-        + Add More
+            <button type="button" id="add-row" class="btn btn-success">
 
-    </button>
-    <hr>
+                + Add More
 
-</div>
+            </button>
+            <hr>
+
+        </div>
         <!-- ================================================= -->
         <!-- TRANSACTION -->
         <!-- ================================================= -->
@@ -369,25 +361,25 @@
 
         function setError(input, errorElement, message) {
 
-    input.classList.remove("is-valid");
-    input.classList.add("is-invalid");
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
 
-    if (errorElement) {
-        errorElement.innerText = message;
-    }
+            if (errorElement) {
+                errorElement.innerText = message;
+            }
 
-}
+        }
 
         function setSuccess(input, errorElement) {
 
-    input.classList.remove("is-invalid");
-    input.classList.add("is-valid");
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
 
-    if (errorElement) {
-        errorElement.innerText = "";
-    }
+            if (errorElement) {
+                errorElement.innerText = "";
+            }
 
-}
+        }
 
 
         // ===========================
@@ -711,7 +703,7 @@
 
     const chequeSection = document.getElementById("chequeSection");
 
-    
+
 
     const amount = document.getElementById("id_amount");
 
@@ -720,40 +712,40 @@
 
     function paymentModeUI() {
 
-    cashSection.style.display = "none";
-    transactionSection.style.display = "none";
-    chequeSection.style.display = "none";
+        cashSection.style.display = "none";
+        transactionSection.style.display = "none";
+        chequeSection.style.display = "none";
 
-    if (payment.value === "Cash") {
+        if (payment.value === "Cash") {
 
-        cashSection.style.display = "block";
+            cashSection.style.display = "block";
 
+        }
+
+        else if (payment.value === "UPI" ||
+            payment.value === "Bank" ||
+            payment.value === "Card") {
+
+            transactionSection.style.display = "block";
+
+        }
+
+        else if (payment.value === "Cheque") {
+
+            chequeSection.style.display = "block";
+
+        }
     }
 
-    else if (payment.value === "UPI" ||
-             payment.value === "Bank" ||
-             payment.value === "Card") {
+    payment.addEventListener("change", function () {
 
-        transactionSection.style.display = "block";
+        paymentModeUI();
 
-    }
+        toggleAmountField();
 
-    else if (payment.value === "Cheque") {
+    });
 
-        chequeSection.style.display = "block";
 
-    }
-}
-
-   payment.addEventListener("change", function () {
-
-    paymentModeUI();
-
-    toggleAmountField();
-
-});
-
-    
     // ==========================================
     // AUTO CALCULATE AMOUNT FOR CASH
     // ==========================================
@@ -763,26 +755,26 @@
     // Amount field should be readonly for Cash
     function toggleAmountField() {
 
-    if (payment.value === "Cash") {
+        if (payment.value === "Cash") {
 
-        amount.readOnly = true;
+            amount.readOnly = true;
+
+        }
+
+        else {
+
+            amount.readOnly = false;
+
+            amount.value = "";
+
+        }
 
     }
 
-    else {
 
-        amount.readOnly = false;
 
-        amount.value = "";
 
-    }
 
-}
-
-    
-    
-
-   
 
     payment.addEventListener("change", toggleAmountField);
 
@@ -813,119 +805,124 @@
     });
 
     // ==========================================
-// CASH DENOMINATION TOTAL
-// ==========================================
+    // CASH DENOMINATION TOTAL
+    // ==========================================
 
-function updateGrandTotal() {
+    function updateGrandTotal() {
 
-    let grandTotal = 0;
+        let grandTotal = 0;
 
-    document.querySelectorAll(".denomination-row").forEach(function (row) {
+        document.querySelectorAll(".denomination-row").forEach(function (row) {
 
-        const denominationField = row.querySelector("select");
+            const denominationField = row.querySelector("select");
 
-        const notesField = row.querySelector("input[type='number']");
+            const notesField = row.querySelector("input[type='number']");
 
-        const totalField = row.querySelector(".row-total");
+            const totalField = row.querySelector(".row-total");
 
-        const denomination = parseFloat(denominationField.value) || 0;
+            const denomination = parseFloat(denominationField.value) || 0;
 
-        const notes = parseInt(notesField.value) || 0;
+            const notes = parseInt(notesField.value) || 0;
 
-        const total = denomination * notes;
+            const total = denomination * notes;
 
-        totalField.value = total;
+            totalField.value = total;
 
-        grandTotal += total;
-
-    });
-
-    document.getElementById("id_amount").value = grandTotal;
-
-}
-
-document.addEventListener("input", function (e) {
-
-    if (
-        e.target.closest(".denomination-row")
-    ) {
-
-        updateGrandTotal();
-
-    }
-
-});
-
-updateGrandTotal();
-
-// ==========================================
-// ADD MORE CASH DENOMINATION
-// ==========================================
-
-const addButton = document.getElementById("add-row");
-
-const container = document.getElementById("denomination-container");
-
-const totalForms = document.querySelector(
-    'input[name$="-TOTAL_FORMS"]'
-);
-console.log(addButton);
-console.log(container);
-console.log(totalForms);
-if (addButton && container && totalForms) {
-
-    addButton.addEventListener("click", function () {
-        console.log("Add More Clicked");
-
-        const rows = container.querySelectorAll(".denomination-row");
-
-        const lastRow = rows[rows.length - 1];
-
-        const newRow = lastRow.cloneNode(true);
-
-        const formIndex = parseInt(totalForms.value);
-
-        newRow.querySelectorAll("input, select").forEach(function (field) {
-
-            if (field.name) {
-
-                field.name = field.name.replace(
-                   /cash_denominations-\d+-/,
-                    `cash_denominations-${formIndex}-`
-                );
-
-            }
-
-            if (field.id) {
-
-                field.id = field.id.replace(
-                    /id_cash_denominations-\d+-/,
-
-                    `cash_denominations-${formIndex}-`
-                );
-
-            }
-
-            if (field.tagName === "INPUT") {
-
-                field.value = "";
-
-            }
-
-            if (field.tagName === "SELECT") {
-
-                field.selectedIndex = 0;
-
-            }
+            grandTotal += total;
 
         });
 
-        newRow.querySelector(".row-total").value = "";
-        const buttonColumn = newRow.querySelector(".col-md-3:last-child");
+        document.getElementById("id_amount").value = grandTotal;
 
-        if (buttonColumn) {
+    }
 
-           buttonColumn.innerHTML = `
+    document.addEventListener("input", function (e) {
+
+        if (
+            e.target.closest(".denomination-row")
+        ) {
+
+            updateGrandTotal();
+
+        }
+
+    });
+
+    updateGrandTotal();
+
+    // ==========================================
+    // ADD MORE CASH DENOMINATION
+    // ==========================================
+
+    const addButton = document.getElementById("add-row");
+
+    const container = document.getElementById("denomination-container");
+
+    const totalForms = document.querySelector(
+        'input[name$="-TOTAL_FORMS"]'
+    );
+    console.log(addButton);
+    console.log(container);
+    console.log(totalForms);
+    if (addButton && container && totalForms) {
+
+        addButton.addEventListener("click", function () {
+            console.log("Add More Clicked");
+
+            const rows = container.querySelectorAll(".denomination-row");
+
+            if (rows.length === 0) {
+                alert("No denomination row found.");
+                return;
+            }
+
+            const lastRow = rows[rows.length - 1];
+
+            const newRow = lastRow.cloneNode(true);
+
+            const formIndex = parseInt(totalForms.value);
+
+            newRow.querySelectorAll("input, select").forEach(function (field) {
+
+                if (field.name) {
+
+                    field.name = field.name.replace(
+                        /cash_denominations-\d+-/,
+                        `cash_denominations-${formIndex}-`
+                    );
+
+                }
+
+                if (field.id) {
+
+                    field.id = field.id.replace(
+                        /id_cash_denominations-\d+-/,
+
+                        `cash_denominations-${formIndex}-`
+                    );
+
+                }
+
+                if (field.tagName === "INPUT") {
+
+                    field.value = "";
+
+                }
+
+                if (field.tagName === "SELECT") {
+
+                    field.selectedIndex = 0;
+
+                }
+
+            });
+
+            newRow.querySelector(".row-total").value = "";
+            const buttonColumn = newRow.querySelector(".col-md-3:last-child");
+
+            if (buttonColumn) {
+
+                buttonColumn.innerHTML = `
             <button
             type="button"
             class="btn btn-danger remove-row w-100">
@@ -936,43 +933,43 @@ if (addButton && container && totalForms) {
 
             </button>
             `;
-        }
+            }
 
-        container.appendChild(newRow);
+            container.appendChild(newRow);
 
-        totalForms.value = formIndex + 1;
+            totalForms.value = formIndex + 1;
 
-    });
-
-}
-
-// ==========================================
-// REMOVE ROW
-// ==========================================
-
-document.addEventListener("click", function (e) {
-
-    if (e.target.classList.contains("remove-row")) {
-
-        const rows = document.querySelectorAll(".denomination-row");
-
-        if (rows.length > 1) {
-
-            e.target.closest(".denomination-row").remove();
-
-            updateGrandTotal();
-
-        }
-
-        else {
-
-            alert("At least one denomination row is required.");
-
-        }
+        });
 
     }
 
-});
+    // ==========================================
+    // REMOVE ROW
+    // ==========================================
+
+    document.addEventListener("click", function (e) {
+
+        if (e.target.classList.contains("remove-row")) {
+
+            const rows = document.querySelectorAll(".denomination-row");
+
+            if (rows.length > 1) {
+
+                e.target.closest(".denomination-row").remove();
+
+                updateGrandTotal();
+
+            }
+
+            else {
+
+                alert("At least one denomination row is required.");
+
+            }
+
+        }
+
+    });
 </script>
 
 

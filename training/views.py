@@ -11,8 +11,10 @@ from activity.services import (
 )
 from .forms import (
     StudentPaymentForm,
-    StudentPaymentCashDenominationFormSet,
+    AddStudentPaymentCashDenominationFormSet,
+    EditStudentPaymentCashDenominationFormSet,
 )
+
 from transactions.services import TransactionService
 
 from activity.models import Achievement
@@ -661,9 +663,15 @@ def add_payment(request):
 
     form = StudentPaymentForm(request.POST or None)
 
-    formset = AddStudentPaymentCashDenominationFormSet(
-        request.POST or None
-    )
+    if request.method == "POST":
+        formset = AddStudentPaymentCashDenominationFormSet(
+            request.POST,
+            instance=StudentPayment()
+        )
+    else:
+        formset = AddStudentPaymentCashDenominationFormSet(
+            instance=StudentPayment()
+        )
 
     if form.is_valid() and formset.is_valid():
         payment = form.save()
@@ -797,7 +805,7 @@ def edit_payment(request, id):
         instance=payment
 
     )
-    formset = StudentPaymentCashDenominationFormSet(
+    formset = EditStudentPaymentCashDenominationFormSet(
         request.POST or None,
         instance=payment
     )

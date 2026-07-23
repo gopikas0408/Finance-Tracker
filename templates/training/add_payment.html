@@ -26,1022 +26,1004 @@
 
 <div class="dashboard-box">
 
-   <form method="POST" id="paymentForm" novalidate>
+    <form method="POST" id="paymentForm" novalidate>
 
-    {% csrf_token %}
-    {{ formset.management_form }}
+        {% csrf_token %}
+        {{ formset.management_form }}
 
-    <div class="row">
+        <div class="row">
 
-        <!-- Student -->
+            <!-- Student -->
 
-        <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3">
 
-            <label>
-                Student
-                <span class="text-danger">*</span>
-            </label>
+                <label>
+                    Student
+                    <span class="text-danger">*</span>
+                </label>
 
-            {{ form.student }}
+                {{ form.student }}
 
-            <small class="text-muted">
-                Select Student
-            </small>
+                <small class="text-muted">
+                    Select Student
+                </small>
 
-            <div id="studentError" class="text-danger mt-1"></div>
+                <div id="studentError" class="text-danger mt-1"></div>
 
-            {% if form.student.errors %}
-            <div class="text-danger">
-                {{ form.student.errors }}
-            </div>
-            {% endif %}
-
-        </div>
-
-        <!-- Total Fee -->
-
-        <div class="col-md-6 mb-3">
-
-            <label>Total Fee</label>
-
-            {{ form.course_fee }}
-
-        </div>
-
-        <!-- Already Paid -->
-
-        <div class="col-md-6 mb-3">
-
-            <label>Already Paid</label>
-
-            {{ form.paid_amount }}
-
-        </div>
-
-        <!-- Balance -->
-
-        <div class="col-md-6 mb-3">
-
-            <label>Balance Amount</label>
-
-            {{ form.balance_amount }}
-
-        </div>
-
-        <!-- Amount -->
-
-        <div class="col-md-6 mb-3">
-
-            <label>
-                Amount
-                <span class="text-danger">*</span>
-            </label>
-
-            {{ form.amount }}
-
-            <small class="text-muted">
-                Enter Payment Amount
-            </small>
-
-            <div id="amountError" class="text-danger mt-1"></div>
-
-            {% if form.amount.errors %}
-            <div class="text-danger">
-                {{ form.amount.errors }}
-            </div>
-            {% endif %}
-
-        </div>
-
-        <!-- Payment Mode -->
-
-        <div class="col-md-6 mb-3">
-
-            <label>
-                Payment Mode
-                <span class="text-danger">*</span>
-            </label>
-
-            {{ form.payment_mode }}
-
-            <small class="text-muted">
-                Select Payment Mode
-            </small>
-
-            <div id="paymentModeError" class="text-danger mt-1"></div>
-
-            {% if form.payment_mode.errors %}
-            <div class="text-danger">
-                {{ form.payment_mode.errors }}
-            </div>
-            {% endif %}
-
-        </div>
-
-        <!-- CASH DETAILS -->
-
-       <div id="cashFields" class="col-12" style="display:none;">
-
-    <hr>
-
-    <h5>Cash Details</h5>
-
-    {{ formset.management_form }}
-
-    <table class="table table-bordered" id="cashTable">
-
-        <thead>
-
-            <tr>
-
-                <th>Denomination</th>
-
-                <th>No. of Notes</th>
-
-                <th>Amount</th>
-
-                <th width="80">Action</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-            {% for cash_form in formset %}
-
-            <tr class="cash-row">
-
-                <td>{{ cash_form.denomination }}</td>
-
-
-                <td>{{ cash_form.notes_count }}</td>
-
-                <td>
-    <input
-        type="text"
-        class="form-control amount-field"
-        value="0"
-        readonly
-    >
-</td>
-
-                <td>
-
-                    <button
-                        type="button"
-                        class="btn btn-danger remove-row">
-
-                        Delete
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
-    <button
-        type="button"
-        class="btn btn-primary"
-        id="addRow">
-
-        Add More
-
-    </button>
-
-</div>
-
-        <!-- Transaction -->
-
-        <div
-            id="transactionSection"
-            class="col-12"
-            style="display:none;"
-        >
-
-            <hr>
-
-            <h5>Transaction Details</h5>
-
-            <label>Transaction ID</label>
-
-            {{ form.transaction_id }}
-
-            <div id="transactionError" class="text-danger mt-1"></div>
-
-            {% if form.transaction_id.errors %}
-            <div class="text-danger">
-                {{ form.transaction_id.errors }}
-            </div>
-            {% endif %}
-
-        </div>
-
-        <!-- Cheque -->
-
-        <div
-            id="chequeSection"
-            class="col-12"
-            style="display:none;"
-        >
-
-            <hr>
-
-            <h5>Cheque Details</h5>
-
-            <div class="row">
-
-                <div class="col-md-6 mb-3">
-
-                    <label>Cheque Number</label>
-
-                    {{ form.cheque_number }}
-
-                    <div id="chequeError" class="text-danger mt-1"></div>
-
-                    {% if form.cheque_number.errors %}
-                    <div class="text-danger">
-                        {{ form.cheque_number.errors }}
-                    </div>
-                    {% endif %}
-
+                {% if form.student.errors %}
+                <div class="text-danger">
+                    {{ form.student.errors }}
                 </div>
+                {% endif %}
 
-                <div class="col-md-6 mb-3">
+            </div>
 
-                    <label>Bank Name</label>
+            <!-- Total Fee -->
 
-                    {{ form.bank_name }}
+            <div class="col-md-6 mb-3">
 
-                    <div id="bankError" class="text-danger mt-1"></div>
+                <label>Total Fee</label>
 
-                    {% if form.bank_name.errors %}
-                    <div class="text-danger">
-                        {{ form.bank_name.errors }}
+                {{ form.course_fee }}
+
+            </div>
+
+            <!-- Already Paid -->
+
+            <div class="col-md-6 mb-3">
+
+                <label>Already Paid</label>
+
+                {{ form.paid_amount }}
+
+            </div>
+
+            <!-- Balance -->
+
+            <div class="col-md-6 mb-3">
+
+                <label>Balance Amount</label>
+
+                {{ form.balance_amount }}
+
+            </div>
+
+            <!-- Amount -->
+
+            <div class="col-md-6 mb-3">
+
+                <label>
+                    Amount
+                    <span class="text-danger">*</span>
+                </label>
+
+                {{ form.amount }}
+
+                <small class="text-muted">
+                    Enter Payment Amount
+                </small>
+
+                <div id="amountError" class="text-danger mt-1"></div>
+
+                {% if form.amount.errors %}
+                <div class="text-danger">
+                    {{ form.amount.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Payment Mode -->
+
+            <div class="col-md-6 mb-3">
+
+                <label>
+                    Payment Mode
+                    <span class="text-danger">*</span>
+                </label>
+
+                {{ form.payment_mode }}
+
+                <small class="text-muted">
+                    Select Payment Mode
+                </small>
+
+                <div id="paymentModeError" class="text-danger mt-1"></div>
+
+                {% if form.payment_mode.errors %}
+                <div class="text-danger">
+                    {{ form.payment_mode.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- CASH DETAILS -->
+
+            <div id="cashFields" class="col-12" style="display:none;">
+
+                <hr>
+
+                <h5>Cash Details</h5>
+
+                {{ formset.management_form }}
+
+                <table class="table table-bordered" id="cashTable">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Denomination</th>
+
+                            <th>No. of Notes</th>
+
+                            <th>Amount</th>
+
+                            <th width="80">Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for cash_form in formset %}
+
+                        <tr class="cash-row">
+
+                            <td>{{ cash_form.denomination }}</td>
+
+
+                            <td>{{ cash_form.notes_count }}</td>
+
+                            <td>
+                                <input type="text" class="form-control amount-field" value="0" readonly>
+                            </td>
+
+                            <td class="action-column">
+                                {% if not forloop.first %}
+                                <button type="button" class="btn btn-danger remove-row">
+                                    Delete
+                                </button>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+                <button type="button" class="btn btn-primary" id="addRow">
+
+                    Add More
+
+                </button>
+
+            </div>
+
+            <!-- Transaction -->
+
+            <div id="transactionSection" class="col-12" style="display:none;">
+
+                <hr>
+
+                <h5>Transaction Details</h5>
+
+                <label>Transaction ID</label>
+
+                {{ form.transaction_id }}
+
+                <div id="transactionError" class="text-danger mt-1"></div>
+
+                {% if form.transaction_id.errors %}
+                <div class="text-danger">
+                    {{ form.transaction_id.errors }}
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Cheque -->
+
+            <div id="chequeSection" class="col-12" style="display:none;">
+
+                <hr>
+
+                <h5>Cheque Details</h5>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Cheque Number</label>
+
+                        {{ form.cheque_number }}
+
+                        <div id="chequeError" class="text-danger mt-1"></div>
+
+                        {% if form.cheque_number.errors %}
+                        <div class="text-danger">
+                            {{ form.cheque_number.errors }}
+                        </div>
+                        {% endif %}
+
                     </div>
-                    {% endif %}
+
+                    <div class="col-md-6 mb-3">
+
+                        <label>Bank Name</label>
+
+                        {{ form.bank_name }}
+
+                        <div id="bankError" class="text-danger mt-1"></div>
+
+                        {% if form.bank_name.errors %}
+                        <div class="text-danger">
+                            {{ form.bank_name.errors }}
+                        </div>
+                        {% endif %}
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+            <!-- Payment Date -->
 
-        <!-- Payment Date -->
+            <div class="col-md-6 mb-3">
 
-        <div class="col-md-6 mb-3">
+                <label>
+                    Payment Date
+                    <span class="text-danger">*</span>
+                </label>
 
-            <label>
-                Payment Date
-                <span class="text-danger">*</span>
-            </label>
+                {{ form.payment_date }}
 
-            {{ form.payment_date }}
+                <small class="text-muted">
+                    Select Payment Date
+                </small>
 
-            <small class="text-muted">
-                Select Payment Date
-            </small>
+                <div id="paymentDateError" class="text-danger mt-1"></div>
 
-            <div id="paymentDateError" class="text-danger mt-1"></div>
+                {% if form.payment_date.errors %}
+                <div class="text-danger">
+                    {{ form.payment_date.errors }}
+                </div>
+                {% endif %}
 
-            {% if form.payment_date.errors %}
-            <div class="text-danger">
-                {{ form.payment_date.errors }}
             </div>
-            {% endif %}
 
-        </div>
+            <!-- Remarks -->
 
-        <!-- Remarks -->
+            <div class="col-12 mb-3">
 
-        <div class="col-12 mb-3">
+                <label>Remarks</label>
 
-            <label>Remarks</label>
+                {{ form.remarks }}
 
-            {{ form.remarks }}
+                <small class="text-muted">
+                    Optional Remarks
+                </small>
 
-            <small class="text-muted">
-                Optional Remarks
-            </small>
+                <div id="remarksError" class="text-danger mt-1"></div>
 
-            <div id="remarksError" class="text-danger mt-1"></div>
+                {% if form.remarks.errors %}
+                <div class="text-danger">
+                    {{ form.remarks.errors }}
+                </div>
+                {% endif %}
 
-            {% if form.remarks.errors %}
-            <div class="text-danger">
-                {{ form.remarks.errors }}
             </div>
-            {% endif %}
 
         </div>
 
-    </div>
+        <div class="form-buttons">
 
-    <div class="form-buttons">
+            <button type="submit" class="btn btn-success">
 
-        <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle-fill"></i>
 
-            <i class="bi bi-check-circle-fill"></i>
+                Receive Payment
 
-            Receive Payment
+            </button>
 
-        </button>
+            <button type="reset" class="btn btn-warning">
 
-        <button type="reset" class="btn btn-warning">
+                <i class="bi bi-arrow-clockwise"></i>
 
-            <i class="bi bi-arrow-clockwise"></i>
+                Reset
 
-            Reset
+            </button>
 
-        </button>
+            <a href="{% url 'payment_list' %}" class="btn btn-danger">
 
-        <a href="{% url 'payment_list' %}" class="btn btn-danger">
+                Cancel
 
-            Cancel
+            </a>
 
-        </a>
+        </div>
 
-    </div>
-
-</form>
+    </form>
 
 </div>
 <script>
 
-// ==========================================
-// DOM ELEMENTS
-// ==========================================
+    // ==========================================
+    // DOM ELEMENTS
+    // ==========================================
 
-const form = document.getElementById("paymentForm");
+    const form = document.getElementById("paymentForm");
 
-const student = document.getElementById("id_student");
-const amount = document.getElementById("id_amount");
-const paymentMode = document.getElementById("id_payment_mode");
-const paymentDate = document.getElementById("id_payment_date");
-const remarks = document.getElementById("id_remarks");
+    const student = document.getElementById("id_student");
+    const amount = document.getElementById("id_amount");
+    const paymentMode = document.getElementById("id_payment_mode");
+    const paymentDate = document.getElementById("id_payment_date");
+    const remarks = document.getElementById("id_remarks");
 
-const courseFee = document.getElementById("id_course_fee");
-const paidAmount = document.getElementById("id_paid_amount");
-const balanceAmount = document.getElementById("id_balance_amount");
+    const courseFee = document.getElementById("id_course_fee");
+    const paidAmount = document.getElementById("id_paid_amount");
+    const balanceAmount = document.getElementById("id_balance_amount");
 
-const studentError = document.getElementById("studentError");
-const amountError = document.getElementById("amountError");
-const paymentModeError = document.getElementById("paymentModeError");
-const paymentDateError = document.getElementById("paymentDateError");
-const remarksError = document.getElementById("remarksError");
-
-
-// ==========================================
-// COMMON FUNCTIONS
-// ==========================================
-
-function setError(input, errorDiv, message) {
-
-    input.classList.remove("is-valid");
-    input.classList.add("is-invalid");
-
-    errorDiv.innerHTML = message;
-
-}
-
-function setSuccess(input, errorDiv) {
-
-    input.classList.remove("is-invalid");
-    input.classList.add("is-valid");
-
-    errorDiv.innerHTML = "";
-
-}
+    const studentError = document.getElementById("studentError");
+    const amountError = document.getElementById("amountError");
+    const paymentModeError = document.getElementById("paymentModeError");
+    const paymentDateError = document.getElementById("paymentDateError");
+    const remarksError = document.getElementById("remarksError");
 
 
-// ==========================================
-// STUDENT VALIDATION
-// ==========================================
+    // ==========================================
+    // COMMON FUNCTIONS
+    // ==========================================
 
-function validateStudent() {
+    function setError(input, errorDiv, message) {
 
-    if (student.value === "") {
+        input.classList.remove("is-valid");
+        input.classList.add("is-invalid");
 
-        setError(
+        errorDiv.innerHTML = message;
+
+    }
+
+    function setSuccess(input, errorDiv) {
+
+        input.classList.remove("is-invalid");
+        input.classList.add("is-valid");
+
+        errorDiv.innerHTML = "";
+
+    }
+
+
+    // ==========================================
+    // STUDENT VALIDATION
+    // ==========================================
+
+    function validateStudent() {
+
+        if (student.value === "") {
+
+            setError(
+                student,
+                studentError,
+                "Please select a Student."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
             student,
-            studentError,
-            "Please select a Student."
+            studentError
         );
 
-        return false;
+        return true;
 
     }
 
-    setSuccess(
-        student,
-        studentError
-    );
 
-    return true;
+    // ==========================================
+    // AMOUNT VALIDATION
+    // ==========================================
 
-}
+    function validateAmount() {
 
+        const value = amount.value.trim();
 
-// ==========================================
-// AMOUNT VALIDATION
-// ==========================================
+        if (value === "") {
 
-function validateAmount() {
+            setError(
+                amount,
+                amountError,
+                "Amount is required."
+            );
 
-    const value = amount.value.trim();
+            return false;
 
-    if (value === "") {
+        }
 
-        setError(
+        if (isNaN(value)) {
+
+            setError(
+                amount,
+                amountError,
+                "Amount must be numeric."
+            );
+
+            return false;
+
+        }
+
+        if (parseFloat(value) <= 0) {
+
+            setError(
+                amount,
+                amountError,
+                "Amount must be greater than zero."
+            );
+
+            return false;
+
+        }
+
+        if (
+            balanceAmount.value &&
+            parseFloat(value) > parseFloat(balanceAmount.value)
+        ) {
+
+            setError(
+                amount,
+                amountError,
+                "Payment exceeds remaining balance."
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
             amount,
-            amountError,
-            "Amount is required."
+            amountError
         );
 
-        return false;
+        return true;
 
     }
 
-    if (isNaN(value)) {
 
-        setError(
-            amount,
-            amountError,
-            "Amount must be numeric."
-        );
+    // ==========================================
+    // PAYMENT MODE VALIDATION
+    // ==========================================
 
-        return false;
+    function validatePaymentMode() {
 
-    }
+        if (paymentMode.value === "") {
 
-    if (parseFloat(value) <= 0) {
+            setError(
+                paymentMode,
+                paymentModeError,
+                "Please select Payment Mode."
+            );
 
-        setError(
-            amount,
-            amountError,
-            "Amount must be greater than zero."
-        );
+            return false;
 
-        return false;
+        }
 
-    }
-
-    if (
-        balanceAmount.value &&
-        parseFloat(value) > parseFloat(balanceAmount.value)
-    ) {
-
-        setError(
-            amount,
-            amountError,
-            "Payment exceeds remaining balance."
-        );
-
-        return false;
-
-    }
-
-    setSuccess(
-        amount,
-        amountError
-    );
-
-    return true;
-
-}
-
-
-// ==========================================
-// PAYMENT MODE VALIDATION
-// ==========================================
-
-function validatePaymentMode() {
-
-    if (paymentMode.value === "") {
-
-        setError(
+        setSuccess(
             paymentMode,
-            paymentModeError,
-            "Please select Payment Mode."
+            paymentModeError
         );
 
-        return false;
+        return true;
 
     }
+    // ==========================================
+    // PAYMENT MODE UI
+    // ==========================================
 
-    setSuccess(
-        paymentMode,
-        paymentModeError
-    );
+    const cashFields = document.getElementById("cashFields");
 
-    return true;
+    const transactionSection = document.getElementById("transactionSection");
 
-}
-// ==========================================
-// PAYMENT MODE UI
-// ==========================================
+    const chequeSection = document.getElementById("chequeSection");
 
-const cashFields = document.getElementById("cashFields");
+    const transactionId = document.getElementById("transaction_id");
 
-const transactionSection = document.getElementById("transactionSection");
+    const chequeNumber = document.getElementById("cheque_number");
 
-const chequeSection = document.getElementById("chequeSection");
+    const bankName = document.getElementById("bank_name");
 
-const transactionId = document.getElementById("transaction_id");
 
-const chequeNumber = document.getElementById("cheque_number");
 
-const bankName = document.getElementById("bank_name");
+    const transactionError = document.getElementById("transactionError");
 
+    const chequeError = document.getElementById("chequeError");
 
+    const bankError = document.getElementById("bankError");
 
-const transactionError = document.getElementById("transactionError");
 
-const chequeError = document.getElementById("chequeError");
+    // ==========================================
+    // SHOW / HIDE PAYMENT FIELDS
+    // ==========================================
 
-const bankError = document.getElementById("bankError");
+    function paymentModeUI() {
 
+        cashFields.style.display = "none";
 
-// ==========================================
-// SHOW / HIDE PAYMENT FIELDS
-// ==========================================
+        transactionSection.style.display = "none";
 
-function paymentModeUI() {
+        chequeSection.style.display = "none";
 
-    cashFields.style.display = "none";
+        amount.readOnly = false;
 
-    transactionSection.style.display = "none";
+        if (paymentMode.value === "Cash") {
 
-    chequeSection.style.display = "none";
+            cashFields.style.display = "block";
 
-    amount.readOnly = false;
+            amount.readOnly = true;
 
-    if (paymentMode.value === "Cash") {
 
-        cashFields.style.display = "block";
 
-        amount.readOnly = true;
+        }
 
-       
+        else if (
 
-    }
+            paymentMode.value === "UPI" ||
 
-    else if (
+            paymentMode.value === "Bank" ||
 
-        paymentMode.value === "UPI" ||
+            paymentMode.value === "Card"
 
-        paymentMode.value === "Bank" ||
+        ) {
 
-        paymentMode.value === "Card"
+            transactionSection.style.display = "block";
 
-    ) {
+        }
 
-        transactionSection.style.display = "block";
+        else if (paymentMode.value === "Cheque") {
 
-    }
-
-    else if (paymentMode.value === "Cheque") {
-
-        chequeSection.style.display = "block";
-
-    }
-
-}
-
-
-
-
-
-
-
-// ==========================================
-// PAYMENT MODE CHANGE
-// ==========================================
-
-paymentMode.addEventListener("change", function () {
-
-    validatePaymentMode();
-
-    paymentModeUI();
-
-});
-
-
-// ==========================================
-// INITIAL LOAD
-// ==========================================
-
-paymentModeUI();
-// ==========================================
-// STUDENT CHANGE - LOAD FEE DETAILS
-// ==========================================
-
-student.addEventListener("change", function () {
-
-    validateStudent();
-
-    if (!this.value) {
-
-        courseFee.value = "";
-
-        paidAmount.value = "";
-
-        balanceAmount.value = "";
-
-        return;
-
-    }
-
-    fetch("/training/student-fee/" + this.value + "/")
-
-        .then(response => response.json())
-
-        .then(data => {
-
-            courseFee.value = data.course_fee;
-
-            paidAmount.value = data.paid_amount;
-
-            balanceAmount.value = data.balance_amount;
-
-        });
-
-});
-
-
-// ==========================================
-// BALANCE CALCULATION
-// ==========================================
-
-function calculateBalance() {
-
-    let total = parseFloat(courseFee.value) || 0;
-
-    let paid = parseFloat(paidAmount.value) || 0;
-
-    let current = parseFloat(amount.value) || 0;
-
-    let remaining = total - paid - current;
-
-    if (remaining < 0) {
-
-        remaining = total - paid;
-
-    }
-
-    balanceAmount.value = remaining.toFixed(2);
-
-}
-
-amount.addEventListener("input", function () {
-
-    if (!amount.readOnly) {
-
-        validateAmount();
-
-    }
-
-    calculateBalance();
-
-});
-
-
-// ==========================================
-// PAYMENT DATE VALIDATION
-// ==========================================
-
-function validatePaymentDate() {
-
-    if (paymentDate.value === "") {
-
-        setError(
-
-            paymentDate,
-
-            paymentDateError,
-
-            "Payment Date is required."
-
-        );
-
-        return false;
-
-    }
-
-    const today = new Date().toISOString().split("T")[0];
-
-    if (paymentDate.value > today) {
-
-        setError(
-
-            paymentDate,
-
-            paymentDateError,
-
-            "Future Date is not allowed."
-
-        );
-
-        return false;
-
-    }
-
-    setSuccess(
-
-        paymentDate,
-
-        paymentDateError
-
-    );
-
-    return true;
-
-}
-
-paymentDate.addEventListener(
-
-    "change",
-
-    validatePaymentDate
-
-);
-
-
-// ==========================================
-// REMARKS VALIDATION
-// ==========================================
-
-function validateRemarks() {
-
-    const value = remarks.value.trim();
-
-    if (value.length > 500) {
-
-        setError(
-
-            remarks,
-
-            remarksError,
-
-            "Maximum 500 characters allowed."
-
-        );
-
-        return false;
-
-    }
-
-    setSuccess(
-
-        remarks,
-
-        remarksError
-
-    );
-
-    return true;
-
-}
-
-remarks.addEventListener(
-
-    "input",
-
-    validateRemarks
-
-);
-
-
-// ==========================================
-// LIVE VALIDATION
-// ==========================================
-
-student.addEventListener(
-
-    "change",
-
-    validateStudent
-
-);
-
-paymentMode.addEventListener(
-
-    "change",
-
-    validatePaymentMode
-
-);
-
-
-// ==========================================
-// OPEN DATE PICKER
-// ==========================================
-
-if (paymentDate.showPicker) {
-
-    paymentDate.addEventListener("click", function () {
-
-        this.showPicker();
-
-    });
-
-}
-
-
-// ==========================================
-// FORM SUBMIT
-// ==========================================
-
-form.addEventListener("submit", function (e) {
-
-    let valid = true;
-
-    valid &= validateStudent();
-
-    valid &= validateAmount();
-
-    valid &= validatePaymentMode();
-
-    valid &= validatePaymentDate();
-
-    valid &= validateRemarks();
-
-    if (!amount.readOnly) {
-
-        calculateBalance();
-
-    }
-
-    if (!valid) {
-
-        e.preventDefault();
-
-    }
-
-});
-// ==========================================
-// CASH FORMSET
-// ==========================================
-
-const totalForms = document.getElementById(
-    "id_cash_denominations-TOTAL_FORMS"
-);
-
-const addRowBtn = document.getElementById("addRow");
-
-const cashTableBody = document.querySelector("#cashTable tbody");
-
-
-// ==========================================
-// ADD ROW
-// ==========================================
-
-addRowBtn.addEventListener("click", function () {
-
-    let total = parseInt(totalForms.value);
-
-    let firstRow = cashTableBody.querySelector(".cash-row");
-
-    let newRow = firstRow.cloneNode(true);
-
-    newRow.innerHTML = newRow.innerHTML.replace(
-        /cash_denominations-0-/g,
-        "cash_denominations-" + total + "-"
-    );
-
-    newRow.querySelectorAll("input").forEach(function(input){
-
-        input.value = "";
-
-    });
-
-    newRow.querySelectorAll("select").forEach(function(select){
-
-        select.selectedIndex = 0;
-
-    });
-
-    cashTableBody.appendChild(newRow);
-
-    totalForms.value = total + 1;
-
-});
-
-
-// ==========================================
-// DELETE ROW
-// ==========================================
-
-document.addEventListener("click", function(e){
-
-    if(e.target.classList.contains("remove-row")){
-
-        let rows = document.querySelectorAll(".cash-row");
-
-        if(rows.length > 1){
-
-            e.target.closest("tr").remove();
+            chequeSection.style.display = "block";
 
         }
 
     }
 
-});
 
 
-// ==========================================
-// AUTO AMOUNT
-// ==========================================
 
-document.addEventListener("input", function(e){
 
-    let row = e.target.closest(".cash-row");
 
-    if(!row) return;
 
-    let denomination = row.querySelector("select");
+    // ==========================================
+    // PAYMENT MODE CHANGE
+    // ==========================================
 
-    let custom = row.querySelector(
-        "input[name$='custom_denomination']"
-    );
+    paymentMode.addEventListener("change", function () {
 
-    let notes = row.querySelector(
-        "input[name$='notes_count']"
-    );
+        validatePaymentMode();
 
-    let amountField = row.querySelector(".amount-field");
-
-    let value = 0;
-
-    if(denomination.value === "Others"){
-
-        value = parseFloat(custom.value) || 0;
-
-    }
-
-    else{
-
-        value = parseFloat(denomination.value) || 0;
-
-    }
-
-    let total = value * (parseInt(notes.value) || 0);
-
-    amountField.value = total;
-
-    amount.value = 0;
-
-    document.querySelectorAll(
-    ".amount-field"
-).forEach(function(input){
-
-        amount.value =
-            Number(amount.value) + Number(input.value || 0);
+        paymentModeUI();
 
     });
 
-    calculateBalance();
 
-});
+    // ==========================================
+    // INITIAL LOAD
+    // ==========================================
+
+    paymentModeUI();
+    // ==========================================
+    // STUDENT CHANGE - LOAD FEE DETAILS
+    // ==========================================
+
+    student.addEventListener("change", function () {
+
+        validateStudent();
+
+        if (!this.value) {
+
+            courseFee.value = "";
+
+            paidAmount.value = "";
+
+            balanceAmount.value = "";
+
+            return;
+
+        }
+
+        fetch("/training/student-fee/" + this.value + "/")
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                courseFee.value = data.course_fee;
+
+                paidAmount.value = data.paid_amount;
+
+                balanceAmount.value = data.balance_amount;
+
+            });
+
+    });
 
 
-// ==========================================
-// SHOW / HIDE CUSTOM DENOMINATION
-// ==========================================
+    // ==========================================
+    // BALANCE CALCULATION
+    // ==========================================
 
-document.addEventListener("change", function(e){
+    function calculateBalance() {
 
-    let row = e.target.closest(".cash-row");
+        let total = parseFloat(courseFee.value) || 0;
 
-    if(!row) return;
+        let paid = parseFloat(paidAmount.value) || 0;
 
-    if(e.target.name.endsWith("denomination")){
+        let current = parseFloat(amount.value) || 0;
+
+        let remaining = total - paid - current;
+
+        if (remaining < 0) {
+
+            remaining = total - paid;
+
+        }
+
+        balanceAmount.value = remaining.toFixed(2);
+
+    }
+
+    amount.addEventListener("input", function () {
+
+        if (!amount.readOnly) {
+
+            validateAmount();
+
+        }
+
+        calculateBalance();
+
+    });
+
+
+    // ==========================================
+    // PAYMENT DATE VALIDATION
+    // ==========================================
+
+    function validatePaymentDate() {
+
+        if (paymentDate.value === "") {
+
+            setError(
+
+                paymentDate,
+
+                paymentDateError,
+
+                "Payment Date is required."
+
+            );
+
+            return false;
+
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+
+        if (paymentDate.value > today) {
+
+            setError(
+
+                paymentDate,
+
+                paymentDateError,
+
+                "Future Date is not allowed."
+
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+
+            paymentDate,
+
+            paymentDateError
+
+        );
+
+        return true;
+
+    }
+
+    paymentDate.addEventListener(
+
+        "change",
+
+        validatePaymentDate
+
+    );
+
+
+    // ==========================================
+    // REMARKS VALIDATION
+    // ==========================================
+
+    function validateRemarks() {
+
+        const value = remarks.value.trim();
+
+        if (value.length > 500) {
+
+            setError(
+
+                remarks,
+
+                remarksError,
+
+                "Maximum 500 characters allowed."
+
+            );
+
+            return false;
+
+        }
+
+        setSuccess(
+
+            remarks,
+
+            remarksError
+
+        );
+
+        return true;
+
+    }
+
+    remarks.addEventListener(
+
+        "input",
+
+        validateRemarks
+
+    );
+
+
+    // ==========================================
+    // LIVE VALIDATION
+    // ==========================================
+
+    student.addEventListener(
+
+        "change",
+
+        validateStudent
+
+    );
+
+    paymentMode.addEventListener(
+
+        "change",
+
+        validatePaymentMode
+
+    );
+
+
+    // ==========================================
+    // OPEN DATE PICKER
+    // ==========================================
+
+    if (paymentDate.showPicker) {
+
+        paymentDate.addEventListener("click", function () {
+
+            this.showPicker();
+
+        });
+
+    }
+
+
+    // ==========================================
+    // FORM SUBMIT
+    // ==========================================
+
+    form.addEventListener("submit", function (e) {
+
+        let valid = true;
+
+        valid &= validateStudent();
+
+        valid &= validateAmount();
+
+        valid &= validatePaymentMode();
+
+        valid &= validatePaymentDate();
+
+        valid &= validateRemarks();
+
+        if (!amount.readOnly) {
+
+            calculateBalance();
+
+        }
+
+        if (!valid) {
+
+            e.preventDefault();
+
+        }
+
+    });
+    // ==========================================
+    // CASH FORMSET
+    // ==========================================
+
+    const totalForms = document.getElementById(
+        "id_cash_denominations-TOTAL_FORMS"
+    );
+
+    const addRowBtn = document.getElementById("addRow");
+
+    const cashTableBody = document.querySelector("#cashTable tbody");
+
+
+    // ==========================================
+    // ADD ROW
+    // ==========================================
+
+    addRowBtn.addEventListener("click", function () {
+
+        let total = parseInt(totalForms.value);
+
+        let firstRow = cashTableBody.querySelector(".cash-row");
+
+        let newRow = firstRow.cloneNode(true);
+
+        newRow.innerHTML = newRow.innerHTML.replace(
+            /cash_denominations-0-/g,
+            "cash_denominations-" + total + "-"
+        );
+
+        newRow.querySelectorAll("input").forEach(function (input) {
+
+            input.value = "";
+
+        });
+
+        newRow.querySelectorAll("select").forEach(function (select) {
+
+            select.selectedIndex = 0;
+
+        });
+
+        cashTableBody.appendChild(newRow);
+
+        totalForms.value = total + 1;
+
+    });
+
+
+    // ==========================================
+    // DELETE ROW
+    // ==========================================
+
+    document.addEventListener("click", function (e) {
+
+        if (e.target.classList.contains("remove-row")) {
+
+            let rows = document.querySelectorAll(".cash-row");
+
+            if (rows.length > 1) {
+
+                e.target.closest("tr").remove();
+
+            }
+
+        }
+
+    });
+
+
+    // ==========================================
+    // AUTO AMOUNT
+    // ==========================================
+
+    document.addEventListener("input", function (e) {
+
+        let row = e.target.closest(".cash-row");
+
+        if (!row) return;
+
+        let denomination = row.querySelector("select");
 
         let custom = row.querySelector(
             "input[name$='custom_denomination']"
         );
 
-        if(e.target.value === "Others"){
+        let notes = row.querySelector(
+            "input[name$='notes_count']"
+        );
 
-            custom.parentElement.style.display = "block";
+        let amountField = row.querySelector(".amount-field");
+
+        let value = 0;
+
+        if (denomination.value === "Others") {
+
+            value = parseFloat(custom.value) || 0;
 
         }
 
-        else{
+        else {
 
-            custom.parentElement.style.display = "none";
-
-            custom.value = "";
+            value = parseFloat(denomination.value) || 0;
 
         }
 
-    }
+        let total = value * (parseInt(notes.value) || 0);
 
-});
+        amountField.value = total;
+
+        amount.value = 0;
+
+        document.querySelectorAll(
+            ".amount-field"
+        ).forEach(function (input) {
+
+            amount.value =
+                Number(amount.value) + Number(input.value || 0);
+
+        });
+
+        calculateBalance();
+
+    });
+
+
+    // ==========================================
+    // SHOW / HIDE CUSTOM DENOMINATION
+    // ==========================================
+
+    document.addEventListener("change", function (e) {
+
+        let row = e.target.closest(".cash-row");
+
+        if (!row) return;
+
+        if (e.target.name.endsWith("denomination")) {
+
+            let custom = row.querySelector(
+                "input[name$='custom_denomination']"
+            );
+
+            if (e.target.value === "Others") {
+
+                custom.parentElement.style.display = "block";
+
+            }
+
+            else {
+
+                custom.parentElement.style.display = "none";
+
+                custom.value = "";
+
+            }
+
+        }
+
+    });
 </script>
 {% endblock %}

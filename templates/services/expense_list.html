@@ -91,17 +91,20 @@ SERVICES NAVIGATION
         Clients
     </a>
 
-    <a href="{% url 'services:project_list' %}" class="service-link {% if active_page == 'projects' %}active{% endif %}">
+    <a href="{% url 'services:project_list' %}"
+        class="service-link {% if active_page == 'projects' %}active{% endif %}">
         <i class="bi bi-kanban-fill"></i>
         Projects
     </a>
 
-    <a href="{% url 'services:service_payment_list' %}" class="service-link {% if active_page == 'payments' %}active{% endif %}">
+    <a href="{% url 'services:service_payment_list' %}"
+        class="service-link {% if active_page == 'payments' %}active{% endif %}">
         <i class="bi bi-credit-card-fill"></i>
         Payments
     </a>
 
-    <a href="{% url 'services:expense_list' %}" class="service-link {% if active_page == 'expenses' %}active{% endif %}">
+    <a href="{% url 'services:expense_list' %}"
+        class="service-link {% if active_page == 'expenses' %}active{% endif %}">
         <i class="bi bi-wallet2"></i>
         Project Expenses
     </a>
@@ -116,106 +119,142 @@ SERVICES NAVIGATION
 TABLE
 ========================================== -->
 
-<div class="dashboard-table">
+<div class="dashboard-box expense-table-card">
 
     <div class="box-header">
 
-        <h3>Expense List</h3>
+        <div>
+
+            <h3>
+
+                <i class="bi bi-table"></i>
+
+                Expense List
+
+            </h3>
+
+            <small>
+
+                Total Records :
+                <strong>{{ page_obj.paginator.count }}</strong>
+
+            </small>
+
+        </div>
+
+        <div>
+
+            <span class="badge bg-danger">
+
+                {{ page_obj.paginator.count }} Entries
+
+            </span>
+
+        </div>
 
     </div>
 
-    <table>
+    <div class="table-responsive">
 
-        <thead>
+        <table class="table dashboard-table align-middle">
 
-            <tr>
+            <thead>
 
-                <th>#</th>
-                <th>Project</th>
-                <th>Expense</th>
-                <th>Amount</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <tr>
 
-            </tr>
+                    <th>#</th>
+                    <th>Project</th>
+                    <th>Expense</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Actions</th>
 
-        </thead>
+                </tr>
 
-        <tbody>
+            </thead>
 
-            {% for expense in expenses %}
+            <tbody>
 
-            <tr>
+                {% for expense in expenses %}
 
-                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                <tr>
 
-                <td>{{ expense.project.project_name }}</td>
+                    <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
 
-                <td>{{ expense.expense_name }}</td>
+                    <td>{{ expense.project.project_name }}</td>
 
-                <td>₹ {{ expense.amount|floatformat:2 }}</td>
+                    <td>{{ expense.expense_name }}</td>
 
-                <td>{{ expense.expense_date }}</td>
+                    <td>₹ {{ expense.amount|floatformat:2 }}</td>
 
-                <td>
+                    <td>{{ expense.expense_date }}</td>
 
-                    <div class="action-buttons">
+                    <td>
 
-                        <a href="{% url 'services:view_expense' expense.id %}" class="view-btn">
+                        <div class="action-buttons">
 
-                            <i class="bi bi-eye"></i>
+                            <a href="{% url 'services:view_expense' expense.id %}" class="view-btn">
 
-                        </a>
+                                <i class="bi bi-eye"></i>
 
-                        <a href="{% url 'services:edit_expense' expense.id %}" class="edit-btn">
+                            </a>
 
-                            <i class="bi bi-pencil-square"></i>
+                            <a href="{% url 'services:edit_expense' expense.id %}" class="edit-btn">
 
-                        </a>
+                                <i class="bi bi-pencil-square"></i>
 
-                        <a href="#" class="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                            data-url="{% url 'services:delete_expense' expense.id %}">
+                            </a>
 
-                            <i class="bi bi-trash"></i>
+                            <a href="#" class="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                data-url="{% url 'services:delete_expense' expense.id %}">
 
-                        </a>
+                                <i class="bi bi-trash"></i>
 
-                    </div>
+                            </a>
 
-                </td>
+                        </div>
 
-            </tr>
+                    </td>
 
-            {% empty %}
+                </tr>
 
-            <tr>
+                {% empty %}
 
-
-
-                <td colspan="6" class="text-center py-5">
-
-                    <i class="bi bi-wallet2 display-5 text-secondary"></i>
-
-                    <h5 class="mt-3">No Expenses Found</h5>
-
-                    <p class="text-muted">
-                        No project expenses have been added yet.
-                    </p>
+                <tr>
 
 
 
-                </td>
+                    <td colspan="6">
 
-                </td>
+                        <div class="text-center py-5">
 
-            </tr>
+                            <i class="bi bi-wallet2 display-4 text-secondary"></i>
 
-            {% endfor %}
+                            <h5 class="mt-3">
 
-        </tbody>
+                                No Expenses Found
 
-    </table>
+                            </h5>
 
+                            <p class="text-muted">
+
+                                No project expenses have been added yet.
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 </div>
 
 <!-- ==========================================
@@ -320,109 +359,109 @@ DELETE MODAL
 </div>
 <script>
 
-// ==========================================
-// DELETE MODAL
-// ==========================================
+    // ==========================================
+    // DELETE MODAL
+    // ==========================================
 
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    const deleteButtons = document.querySelectorAll(".delete-btn");
+        const deleteButtons = document.querySelectorAll(".delete-btn");
 
-    const deleteLink = document.getElementById("deleteLink");
+        const deleteLink = document.getElementById("deleteLink");
 
-    deleteButtons.forEach(button => {
+        deleteButtons.forEach(button => {
 
-        button.addEventListener("click", function () {
+            button.addEventListener("click", function () {
 
-            deleteLink.href = this.dataset.url;
+                deleteLink.href = this.dataset.url;
+
+            });
 
         });
 
     });
 
-});
+
+    // ==========================================
+    // AUTO HIDE ALERTS
+    // ==========================================
+
+    setTimeout(() => {
+
+        document.querySelectorAll(".alert").forEach(alert => {
+
+            alert.style.transition = ".4s";
+
+            alert.style.opacity = "0";
+
+            setTimeout(() => {
+
+                alert.remove();
+
+            }, 400);
+
+        });
+
+    }, 3000);
 
 
-// ==========================================
-// AUTO HIDE ALERTS
-// ==========================================
+    // ==========================================
+    // BUTTON LOADING EFFECT
+    // ==========================================
 
-setTimeout(() => {
+    document.querySelectorAll(".btn-success").forEach(btn => {
 
-    document.querySelectorAll(".alert").forEach(alert => {
+        btn.addEventListener("click", function () {
 
-        alert.style.transition = ".4s";
+            if (this.type === "submit") {
 
-        alert.style.opacity = "0";
+                this.innerHTML = "<i class='bi bi-arrow-repeat spin'></i> Processing...";
 
-        setTimeout(() => {
+            }
 
-            alert.remove();
-
-        },400);
-
-    });
-
-},3000);
-
-
-// ==========================================
-// BUTTON LOADING EFFECT
-// ==========================================
-
-document.querySelectorAll(".btn-success").forEach(btn=>{
-
-    btn.addEventListener("click",function(){
-
-        if(this.type==="submit"){
-
-            this.innerHTML="<i class='bi bi-arrow-repeat spin'></i> Processing...";
-
-        }
-
-    });
-
-});
-
-
-// ==========================================
-// TABLE ROW HOVER
-// ==========================================
-
-document.querySelectorAll("tbody tr").forEach(row=>{
-
-    row.addEventListener("mouseenter",()=>{
-
-        row.style.transition=".3s";
-
-        row.style.background="#f8fafc";
+        });
 
     });
 
-    row.addEventListener("mouseleave",()=>{
 
-        row.style.background="";
+    // ==========================================
+    // TABLE ROW HOVER
+    // ==========================================
+
+    document.querySelectorAll("tbody tr").forEach(row => {
+
+        row.addEventListener("mouseenter", () => {
+
+            row.style.transition = ".3s";
+
+            row.style.background = "#f8fafc";
+
+        });
+
+        row.addEventListener("mouseleave", () => {
+
+            row.style.background = "";
+
+        });
 
     });
 
-});
 
+    // ==========================================
+    // PAGINATION LOADING
+    // ==========================================
 
-// ==========================================
-// PAGINATION LOADING
-// ==========================================
+    document.querySelectorAll(".page-btn").forEach(btn => {
 
-document.querySelectorAll(".page-btn").forEach(btn=>{
+        btn.addEventListener("click", function () {
 
-    btn.addEventListener("click",function(){
+            this.style.pointerEvents = "none";
 
-        this.style.pointerEvents="none";
+        });
 
     });
-
-});
 
 </script>
-</script>
+
 
 {% endblock %}

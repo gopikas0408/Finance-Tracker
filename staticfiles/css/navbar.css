@@ -144,17 +144,7 @@
     gap:18px;
 }
 
-/* =====================================================
-                    ICON
-===================================================== */
 
-/* =====================================================
-                NOTIFICATION ICON
-===================================================== */
-
-/* ===========================================
-        NOTIFICATION ICON
-=========================================== */
 
 /* ===========================================
         NOTIFICATION ICON
@@ -274,11 +264,30 @@ transform:scale(1);
 }
 
 .profile img{
-    width:44px;
-    height:44px;
-    border-radius:50%;
+    width:42px;
+    height:42px;
+
     object-fit:cover;
-    border:2px solid #0a0a0a;
+
+    border-radius:50%;
+
+    background:#fff;
+
+    border:2px solid #ffffff;
+
+    padding:0;
+
+    transform:scale(1.45);
+
+    transform-origin:center;
+
+    box-shadow:0 4px 12px rgba(18, 16, 16, 0.18);
+
+    transition:.3s ease;
+}
+
+.profile img:hover{
+    transform:scale(1.55);
 }
 
 .profile h5{
@@ -349,40 +358,221 @@ transform:scale(1);
     font-size:12px;
 }
 
-/* =====================================================
-                RESPONSIVE
-===================================================== */
+/* ======================================================
+        NAVBAR RESPONSIVE
+====================================================== */
 
-@media(max-width:992px){
 
-.mobile-menu-btn{
-display:flex;
-justify-content:center;
-align-items:center;
+/* ======================================================
+        LARGE LAPTOP (1400px)
+====================================================== */
+
+@media (max-width:1400px){
+
+    .search-box{
+        width:360px;
+    }
+
 }
 
-.search-box{
-width:260px;
-}
+
+/* ======================================================
+        SMALL LAPTOP (1200px)
+====================================================== */
+
+@media (max-width:1200px){
+
+    .search-box{
+        width:300px;
+    }
 
 }
 
-@media(max-width:768px){
 
-.navbar{
-padding:0 18px;
+/* ======================================================
+        TABLET (992px)
+====================================================== */
+
+@media (max-width:992px){
+
+    .navbar{
+        padding:0 22px;
+    }
+
+    .mobile-menu-btn{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+    }
+
+    .search-box{
+        width:240px;
+    }
+
+    .navbar-right{
+        gap:14px;
+    }
+
 }
 
-.search-box{
-display:none;
+
+/* ======================================================
+        MOBILE (768px)
+====================================================== */
+
+@media (max-width:768px){
+
+    .navbar{
+        height:70px;
+        padding:0 15px;
+    }
+
+    .search-box{
+        display:none;
+    }
+
+    .navbar-left{
+        gap:12px;
+    }
+
+    .navbar-right{
+        gap:10px;
+    }
+
+    .profile div{
+        display:none;
+    }
+
+    .profile{
+        padding:4px;
+    }
+
+    .profile img{
+        width:38px;
+        height:38px;
+        transform:scale(1.2);
+    }
+
+    .nav-icon{
+        width:40px;
+        height:40px;
+        font-size:22px;
+    }
+
+    .notification-menu{
+        width:290px;
+        right:0;
+    }
+
 }
 
-.profile div{
-display:none;
+
+/* ======================================================
+        LARGE MOBILE (576px)
+====================================================== */
+
+@media (max-width:576px){
+
+    .navbar{
+        padding:0 12px;
+    }
+
+    .mobile-menu-btn{
+        width:42px;
+        height:42px;
+        font-size:22px;
+    }
+
+    .profile img{
+        width:34px;
+        height:34px;
+    }
+
+    .nav-icon{
+        width:36px;
+        height:36px;
+        font-size:20px;
+    }
+
+    .notification-menu{
+        width:260px;
+    }
+
 }
 
-.navbar-right{
-gap:12px;
+
+/* ======================================================
+        SMALL MOBILE (480px)
+====================================================== */
+
+@media (max-width:480px){
+
+    .navbar{
+        height:65px;
+    }
+
+    .navbar-right{
+        gap:8px;
+    }
+
+    .mobile-menu-btn{
+        width:38px;
+        height:38px;
+        font-size:20px;
+    }
+
+    .profile img{
+        width:32px;
+        height:32px;
+    }
+
+    .nav-icon{
+        width:34px;
+        height:34px;
+        font-size:18px;
+    }
+
+    .notification-menu{
+        width:240px;
+    }
+
 }
+
+
+/* ======================================================
+        EXTRA SMALL DEVICES (360px)
+====================================================== */
+
+@media (max-width:360px){
+
+    .navbar{
+        padding:0 10px;
+    }
+
+    .navbar-right{
+        gap:6px;
+    }
+
+    .mobile-menu-btn{
+        width:36px;
+        height:36px;
+        font-size:18px;
+    }
+
+    .profile img{
+        width:28px;
+        height:28px;
+    }
+
+    .nav-icon{
+        width:30px;
+        height:30px;
+        font-size:16px;
+    }
+
+    .notification-menu{
+        width:220px;
+        right:-10px;
+    }
 
 }
