@@ -186,25 +186,25 @@ def add_income(request):
         # CREATE TRANSACTION
         # ==========================================
 
-        #TransactionService.create_transaction(
+        TransactionService.create_transaction(
 
-          #  source_module="Income",
+            source_module="Income",
 
-           # transaction_type="Income",
+            transaction_type="Income",
 
-           # reference=income.income_source.source_name,
+            reference=income.income_source.source_name,
 
-          #  amount=income.amount,
+            amount=income.amount,
 
-            #payment_mode=income.payment_mode,
+            payment_mode=income.payment_mode,
 
-          #  status="Completed",
+            status="Completed",
 
-          #  notes=income.description or "",
+            notes=income.description or "",
 
-          #  user=request.user,
+            user=request.user,
 
-       # )
+        )
 
         # ==========================================
         # ACHIEVEMENT CHECK
