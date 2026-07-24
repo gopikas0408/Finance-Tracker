@@ -4,7 +4,7 @@ from django.utils import timezone
 import os
 from django.forms import inlineformset_factory
 from .models import Expense, CashDenomination
-
+from datetime import date
 
 class ExpenseForm(forms.ModelForm):
 
@@ -33,6 +33,7 @@ class ExpenseForm(forms.ModelForm):
             "id": "bank_name"
         })
     )
+   
 
     class Meta:
 
@@ -114,6 +115,22 @@ class ExpenseForm(forms.ModelForm):
             ),
 
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["expense_date"].initial = date.today()
+        self.fields["expense_date"].widget.attrs["max"] = date.today().isoformat()
+
+        if self.instance.pk:
+
+            self.fields["payment_mode"].widget.attrs["disabled"] = True
+            self.fields["payment_mode"].widget.attrs["style"] = (
+                "pointer-events:none;background:#f8f9fa;"
+            )
+
+            self.fields["amount"].widget.attrs["readonly"] = True
+            self.fields["expense_date"].widget.attrs["readonly"] = True
+    
 
     # ==========================================
     # Expense Name Validation
@@ -230,19 +247,21 @@ class ExpenseForm(forms.ModelForm):
 
     def clean_expense_date(self):
 
-            expense_date = self.cleaned_data.get("expense_date")
+        expense_date = self.cleaned_data.get("expense_date")
 
-            if not expense_date:
-                raise ValidationError(
-                    "Expense Date is required."
-                )
+        if not expense_date:
+            raise ValidationError(
+                "Expense Date is required."
+            )
 
-            if expense_date > timezone.localdate():
-                raise ValidationError(
-                    "Future dates are not allowed."
-                )
+        today = date.today()
 
-            return expense_date
+        if expense_date > today:
+            raise ValidationError(
+                "Future dates are not allowed."
+            )
+
+        return expense_date
 
         # ==========================================
         # Description Validation
@@ -304,6 +323,21 @@ class ExpenseForm(forms.ModelForm):
         return attachment
     
 class CashDenominationForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.pk:
+
+            self.fields["denomination"].widget.attrs["disabled"] = True
+            self.fields["denomination"].widget.attrs["style"] = (
+                "pointer-events:none;background:#f8f9fa;"
+            )
+
+            self.fields["notes_count"].widget.attrs["readonly"] = True
+            self.fields["notes_count"].widget.attrs["style"] = (
+                "background:#f8f9fa;"
+            )
 
     class Meta:
 

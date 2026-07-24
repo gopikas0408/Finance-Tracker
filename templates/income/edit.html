@@ -177,7 +177,12 @@
 
                             <label>Total</label>
 
-                            {{ cash_form.amount }}
+                            <input
+    type="text"
+    class="form-control row-total"
+    value="{{ cash_form.instance.amount }}"
+    readonly
+>
 
                         </div>
 

@@ -479,6 +479,21 @@ class StudentPaymentForm(forms.ModelForm):
             "class": "form-control"
         })
     )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.pk:
+
+            self.fields["student"].widget.attrs["disabled"] = True
+
+            self.fields["amount"].widget.attrs["readonly"] = True
+
+            self.fields["payment_mode"].widget.attrs["disabled"] = True
+            self.fields["payment_mode"].widget.attrs["style"] = (
+                "pointer-events:none;background:#f8f9fa;"
+            )
+
+            self.fields["payment_date"].widget.attrs["readonly"] = True
     class Meta:
 
         model = StudentPayment
@@ -523,29 +538,7 @@ class StudentPaymentForm(forms.ModelForm):
             ),
 
         }
-        def __init__(self, *args, **kwargs):
-
-            super().__init__(*args, **kwargs)
-
-            if self.is_bound:
-
-                student_id = self.data.get("student")
-
-                if student_id:
-
-                    try:
-
-                        student = Student.objects.get(id=student_id)
-
-                        self.fields["course_fee"].initial = student.course_fee
-
-                        self.fields["paid_amount"].initial = student.paid_amount
-
-                        self.fields["balance_amount"].initial = student.balance_amount
-
-                    except Student.DoesNotExist:
-
-                        pass
+        
                     
    
 
@@ -698,6 +691,26 @@ def clean(self):
     return cleaned_data
 
 class StudentPaymentCashDenominationForm(forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.pk:
+
+            self.fields["denomination"].widget.attrs["disabled"] = True
+            self.fields["denomination"].widget.attrs["style"] = (
+                "pointer-events:none;background:#f8f9fa;"
+            )
+
+            self.fields["notes_count"].widget.attrs["readonly"] = True
+            self.fields["notes_count"].widget.attrs["style"] = (
+                "background:#f8f9fa;"
+            )
+
+            self.fields["custom_denomination"].widget.attrs["readonly"] = True
+            self.fields["custom_denomination"].widget.attrs["style"] = (
+                "background:#f8f9fa;"
+            )
 
     class Meta:
 

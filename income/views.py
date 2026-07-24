@@ -14,6 +14,7 @@ from .models import (
 from .forms import (
     IncomeForm,
     CashDenominationFormSet,
+    IncomeCashDenominationEditFormSet,
 )
 from django.db.models import Sum
 from django.utils import timezone
@@ -210,7 +211,7 @@ def add_income(request):
         # ACHIEVEMENT CHECK
         # ==========================================
 
-      target = MonthlyTarget.objects.order_by("-id").first()
+        target = MonthlyTarget.objects.order_by("-id").first()
 
         if target:
 
@@ -338,7 +339,7 @@ def edit_income(request, id):
         instance=income,
 
     )
-    formset = CashDenominationFormSet(
+    formset = IncomeCashDenominationEditFormSet(
         request.POST or None,
         instance=income
     )

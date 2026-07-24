@@ -7,6 +7,7 @@ from .models import Expense
 from .forms import (
     ExpenseForm,
     ExpenseCashDenominationFormSet,
+    ExpenseCashDenominationEditFormSet,
 )
 import openpyxl
 
@@ -220,7 +221,7 @@ def edit_expense(request, id):
         instance=expense,
 
     )
-    formset = ExpenseCashDenominationFormSet(
+    formset = ExpenseCashDenominationEditFormSet(
         request.POST or None,
         instance=expense
     )
