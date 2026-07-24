@@ -45,6 +45,7 @@ class TransactionService:
             created_by=user,
 
         )
+        print("Transaction Created")
 
         Notification.objects.create(
 
@@ -61,6 +62,7 @@ class TransactionService:
             created_by=user,
 
         )
+        print("Notification Created")
 
         ActivityLog.objects.create(
 
@@ -75,6 +77,7 @@ class TransactionService:
             user=user,
 
         )
+        print("Activity Log Created")
 
         return transaction
 
