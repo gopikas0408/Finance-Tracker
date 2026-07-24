@@ -210,81 +210,81 @@ def add_income(request):
         # ACHIEVEMENT CHECK
         # ==========================================
 
-      #  target = MonthlyTarget.objects.order_by("-id").first()
+      target = MonthlyTarget.objects.order_by("-id").first()
 
-      #  if target:
+        if target:
 
-        #    current_income = Transaction.objects.filter(
+            current_income = Transaction.objects.filter(
 
-            #    transaction_type="Income"
+                transaction_type="Income"
 
-           # ).aggregate(
+            ).aggregate(
 
-              #  total=Sum("amount")
+                total=Sum("amount")
 
-        #    )["total"] or 0
+            )["total"] or 0
 
-          #  current_expense = Transaction.objects.filter(
+            current_expense = Transaction.objects.filter(
 
-            #    transaction_type="Expense"
+                transaction_type="Expense"
 
-          #  ).aggregate(
+            ).aggregate(
 
-            #    total=Sum("amount")
+                total=Sum("amount")
 
-          #  )["total"] or 0
+            )["total"] or 0
 
-           # current_profit = current_income - current_expense
+            current_profit = current_income - current_expense
             
-           # print("=" * 50)
-           # print("TARGET :", target)
-           # print("CURRENT INCOME :", current_income)
-           # print("TARGET INCOME :", target.income_target)
-           # print("CURRENT PROFIT :", current_profit)
-           # print("TARGET PROFIT :", target.profit_target)
-           # print("=" * 50)
+            print("=" * 50)
+            print("TARGET :", target)
+            print("CURRENT INCOME :", current_income)
+            print("TARGET INCOME :", target.income_target)
+            print("CURRENT PROFIT :", current_profit)
+            print("TARGET PROFIT :", target.profit_target)
+            print("=" * 50)
 
             # --------------------------------------
             # Income Target Achievement
             # --------------------------------------
 
-           # if current_income >= target.income_target:
+            if current_income >= target.income_target:
 
-           #     print("INSIDE INCOME ACHIEVEMENT")
+                print("INSIDE INCOME ACHIEVEMENT")
 
-              #  achievement, created = Achievement.objects.get_or_create(
+                achievement, created = Achievement.objects.get_or_create(
 
-                  #  title="Monthly Income Target Achieved",
+                    title="Monthly Income Target Achieved",
 
-                  #  defaults={
+                    defaults={
 
-                     #   "description":
-                      #  "Monthly income target has been successfully achieved."
+                        "description":
+                        "Monthly income target has been successfully achieved."
 
-                 #   }
+                    }
 
-               # )
+                )
 
-               # print("CREATED :", created)
+                print("CREATED :", created)
 
             # --------------------------------------
             # Profit Target Achievement
             # --------------------------------------
 
-          #  if current_profit >= target.profit_target:
+            if current_profit >= target.profit_target:
 
-             #   Achievement.objects.get_or_create(
+                Achievement.objects.get_or_create(
 
-                #    title="Profit Goal Achieved",
+                    title="Profit Goal Achieved",
 
-                  #  defaults={
+                    defaults={
 
-                     #   "description":
-                      #  "Monthly profit goal has been successfully achieved."
+                        "description":
+                        "Monthly profit goal has been successfully achieved."
 
-                   # }
+                    }
 
-               # )'''
+                )
 
         messages.success(
 
